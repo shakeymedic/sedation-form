@@ -12,7 +12,7 @@
             @apply block text-sm font-medium text-gray-700;
         }
         
-        /* NEW: Styling for "card-in-card" fieldsets */
+        /* Styling for "card-in-card" fieldsets */
         .section-box fieldset {
             @apply mt-6 bg-white border border-gray-300 rounded-lg p-4 shadow-sm;
         }
@@ -27,18 +27,26 @@
             @apply mt-4 bg-blue-50 border border-blue-200 rounded-lg p-4 space-y-3;
         }
         
-        /* NEW: Style for expandable guide content */
+        /* Style for expandable guide content */
         .guide-content {
             @apply mt-2 p-4 bg-blue-50 border border-blue-200 rounded-lg;
         }
 
         /* Keep table input style simple */
-        table input[type="text"] {
-            @apply border-none focus:ring-0 p-2 w-full;
+        table input[type="text"], table select {
+            @apply border-none focus:ring-0 p-2 w-full bg-transparent;
         }
         /* Style for disabled timestamp buttons */
         button:disabled {
             @apply bg-gray-300 cursor-not-allowed;
+        }
+        
+        /* NEW: Drug/Obs button styles */
+        .action-button {
+            @apply bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg;
+        }
+        .delete-row-button {
+            @apply bg-red-100 hover:bg-red-200 text-red-700 font-bold py-1 px-3 rounded-full text-xs;
         }
         
         /* Styles for printing */
@@ -95,16 +103,22 @@
             .guide-content.hidden {
                 display: block !important;
             }
+            /* Hide delete buttons in print */
+            .delete-row-button {
+                display: none !important;
+            }
+            /* Ensure table inputs are readable */
+            table input[type="text"], table select {
+                border: 1px solid #eee;
+            }
         }
         
-        /* Modal Styles (REMOVED) */
-        
-        /* 5-Minute Obs Prompt Toast - RELOCATED */
+        /* 5-Minute Obs Prompt Toast */
         #obs-toast {
             @apply bg-yellow-400 text-black p-3 text-center font-bold shadow-md rounded-lg my-4 flex justify-between items-center no-print;
         }
         
-        /* Complications list styling (now in guide-content) */
+        /* Complications list styling */
         .complications-list h4 {
             @apply text-lg font-semibold text-blue-700 mt-4 first:mt-0;
         }
@@ -116,6 +130,14 @@
         }
         .complications-list .management-steps strong {
             @apply font-semibold text-gray-800;
+        }
+        
+        /* NEW: Custom Prompt Modal */
+        #custom-modal-backdrop {
+            @apply fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50 transition-opacity no-print;
+        }
+        #custom-modal {
+            @apply bg-white rounded-lg shadow-xl p-6 w-full max-w-sm transform transition-all;
         }
 
     </style>
@@ -138,7 +160,7 @@
                 onerror="this.style.display='none'">
         </header>
 
-        <form id="sedation-form">
+        <form id="sedation-form" onsubmit="return false;">
             
             <!-- 1. Patient & Procedure Section Box -->
             <div class="bg-gray-50 sm:rounded-xl shadow-lg mb-8 overflow-hidden section-box">
@@ -259,13 +281,13 @@
                             <button type="button" id="asa-guide-button" class="ml-2 bg-blue-100 text-blue-700 w-5 h-5 rounded-full flex items-center justify-center font-bold text-sm no-print">(?)</button>
                         </legend>
                         <div class="mt-2 grid grid-cols-2 sm:grid-cols-5 gap-4">
-                            <div class="flex items-center gap-2"><input id="asa-1" name="asa-grade" type="radio" value="I" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="asa-1">I</label></div>
-                            <div class="flex items-center gap-2"><input id="asa-2" name="asa-grade" type="radio" value="II" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="asa-2">II</label></div>
-                            <div class="flex items-center gap-2"><input id="asa-3" name="asa-grade" type="radio" value="III" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="asa-3">III</label></div>
-                            <div class="flex items-center gap-2"><input id="asa-4" name="asa-grade" type="radio" value="IV" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="asa-4">IV</label></div>
-                            <div class="flex items-center gap-2"><input id="asa-5" name="asa-grade" type="radio" value="V" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="asa-5">V</label></div>
+                            <div class="flex items-center gap-2"><input id="asa-1" name="asa-grade" type="radio" value="I" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"><label for="asa-1">I</label></div>
+                            <div class="flex items-center gap-2"><input id="asa-2" name="asa-grade" type="radio" value="II" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"><label for="asa-2">II</label></div>
+                            <div class="flex items-center gap-2"><input id="asa-3" name="asa-grade" type="radio" value="III" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"><label for="asa-3">III</label></div>
+                            <div class="flex items-center gap-2"><input id="asa-4" name="asa-grade" type="radio" value="IV" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"><label for="asa-4">IV</label></div>
+                            <div class="flex items-center gap-2"><input id="asa-5" name="asa-grade" type="radio" value="V" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"><label for="asa-5">V</label></div>
                         </div>
-                        <!-- NEW: ASA Expandable Content -->
+                        <!-- ASA Expandable Content -->
                         <div id="asa-guide-content" class="guide-content hidden">
                             <ul class="list-disc list-inside space-y-3">
                                 <li><strong>ASA I:</strong> A normal healthy patient.</li>
@@ -284,24 +306,24 @@
                         <div class="mt-2 space-y-3">
                             <div class="flex items-center gap-4">
                                 <span class="font-bold text-blue-600 w-8 text-lg">L</span>
-                                <div class="flex items-center gap-2"><input id="lemon-l-normal" name="lemon-l" type="radio" value="Normal" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="lemon-l-normal">Look Normal</label></div>
-                                <div class="flex items-center gap-2"><input id="lemon-l-abnormal" name="lemon-l" type="radio" value="Abnormal" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="lemon-l-abnormal">Abnormal</label></div>
+                                <div class="flex items-center gap-2"><input id="lemon-l-normal" name="lemon-l" type="radio" value="Normal" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"><label for="lemon-l-normal">Look Normal</label></div>
+                                <div class="flex items-center gap-2"><input id="lemon-l-abnormal" name="lemon-l" type="radio" value="Abnormal" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"><label for="lemon-l-abnormal">Abnormal</label></div>
                                 <input type="text" id="lemon-l-specify" class="flex-1 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" placeholder="Specify (e.g., beard, blood)">
                             </div>
                             <div class="flex items-center gap-4">
                                 <span class="font-bold text-blue-600 w-8 text-lg">E</span>
-                                <div class="flex items-center gap-2"><input id="lemon-e-met" name="lemon-e" type="radio" value="Met" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="lemon-e-met">3-3-2 Met</label></div>
-                                <div class="flex items-center gap-2"><input id="lemon-e-not-met" name="lemon-e" type="radio" value="Not Met" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="lemon-e-not-met">Not Met</label></div>
+                                <div class="flex items-center gap-2"><input id="lemon-e-met" name="lemon-e" type="radio" value="Met" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"><label for="lemon-e-met">3-3-2 Met</label></div>
+                                <div class="flex items-center gap-2"><input id="lemon-e-not-met" name="lemon-e" type="radio" value="Not Met" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"><label for="lemon-e-not-met">Not Met</label></div>
                             </div>
                             <div class="flex items-center gap-4">
                                 <span class="font-bold text-blue-600 w-8 text-lg">M</span>
-                                <div class="flex items-center gap-2"><input id="lemon-m-1" name="lemon-m" type="radio" value="I" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="lemon-m-1">Mallampati I</label></div>
-                                <div class="flex items-center gap-2"><input id="lemon-m-2" name="lemon-m" type="radio" value="II" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="lemon-m-2">II</label></div>
-                                <div class="flex items-center gap-2"><input id="lemon-m-3" name="lemon-m" type="radio" value="III" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="lemon-m-3">III</label></div>
-                                <div class="flex items-center gap-2"><input id="lemon-m-4" name="lemon-m" type="radio" value="IV" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="lemon-m-4">IV</label></div>
+                                <div class="flex items-center gap-2"><input id="lemon-m-1" name="lemon-m" type="radio" value="I" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"><label for="lemon-m-1">Mallampati I</label></div>
+                                <div class="flex items-center gap-2"><input id="lemon-m-2" name="lemon-m" type="radio" value="II" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"><label for="lemon-m-2">II</label></div>
+                                <div class="flex items-center gap-2"><input id="lemon-m-3" name="lemon-m" type="radio" value="III" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"><label for="lemon-m-3">III</label></div>
+                                <div class="flex items-center gap-2"><input id="lemon-m-4" name="lemon-m" type="radio" value="IV" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"><label for="lemon-m-4">IV</label></div>
                                 <button type="button" id="mallampati-guide-button" class="ml-auto bg-blue-100 text-blue-700 w-5 h-5 rounded-full flex items-center justify-center font-bold text-sm no-print">(?)</button>
                             </div>
-                            <!-- NEW: Mallampati Expandable Content -->
+                            <!-- Mallampati Expandable Content -->
                             <div id="mallampati-guide-content" class="guide-content hidden text-center">
                                 <p class="text-sm text-gray-600 mb-4">Patient sitting upright, mouth open, tongue protruded *without* phonating ("saying ahh").</p>
                                 <img src="images/Mallampati.jpg" alt="Mallampati Scores I-IV" class="w-full h-auto rounded-md border" onerror="this.alt='Diagram showing Mallampati classes I, II, III, and IV'">
@@ -314,12 +336,12 @@
                             </div>
                             <div class="flex items-center gap-4">
                                 <span class="font-bold text-blue-600 w-8 text-lg">U</span>
-                                <div class="flex items-center gap-2"><input id="ulbt-1" name="ulbt" type="radio" value="Class I" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="ulbt-1">ULBT Class I</label></div>
-                                <div class="flex items-center gap-2"><input id="ulbt-2" name="ulbt" type="radio" value="Class II" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="ulbt-2">Class II</label></div>
-                                <div class="flex items-center gap-2"><input id="ulbt-3" name="ulbt" type="radio" value="Class III" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="ulbt-3">Class III</label></div>
+                                <div class="flex items-center gap-2"><input id="ulbt-1" name="ulbt" type="radio" value="Class I" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"><label for="ulbt-1">ULBT Class I</label></div>
+                                <div class="flex items-center gap-2"><input id="ulbt-2" name="ulbt" type="radio" value="Class II" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"><label for="ulbt-2">Class II</label></div>
+                                <div class="flex items-center gap-2"><input id="ulbt-3" name="ulbt" type="radio" value="Class III" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"><label for="ulbt-3">Class III</label></div>
                                 <button type="button" id="ulbt-guide-button" class="ml-auto bg-blue-100 text-blue-700 w-5 h-5 rounded-full flex items-center justify-center font-bold text-sm no-print">(?)</button>
                             </div>
-                            <!-- NEW: ULBT Expandable Content -->
+                            <!-- ULBT Expandable Content -->
                             <div id="ulbt-guide-content" class="guide-content hidden text-center">
                                 <p class="text-sm text-gray-600 mb-4">Patient attempts to bite their upper lip with their lower teeth.</p>
                                 <img src="images/upperlipbitetest.png" alt="Upper Lip Bite Test Classes I-III" class="w-full h-auto rounded-md border" onerror="this.alt='Diagram showing ULBT classes I, II, and III'">
@@ -331,14 +353,14 @@
                             </div>
                             <div class="flex items-center gap-4">
                                 <span class="font-bold text-blue-600 w-8 text-lg">O</span>
-                                <div class="flex items-center gap-2"><input id="lemon-o-no" name="lemon-o" type="radio" value="No" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="lemon-o-no">No Obstruction/OSA</label></div>
-                                <div class="flex items-center gap-2"><input id="lemon-o-yes" name="lemon-o" type="radio" value="Yes" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="lemon-o-yes">Yes</label></div>
+                                <div class="flex items-center gap-2"><input id="lemon-o-no" name="lemon-o" type="radio" value="No" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"><label for="lemon-o-no">No Obstruction/OSA</label></div>
+                                <div class="flex items-center gap-2"><input id="lemon-o-yes" name="lemon-o" type="radio" value="Yes" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"><label for="lemon-o-yes">Yes</label></div>
                                 <input type="text" id="lemon-o-specify" class="flex-1 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" placeholder="Specify (e.g., OSA)">
                             </div>
                             <div class="flex items-center gap-4">
                                 <span class="font-bold text-blue-600 w-8 text-lg">N</span>
-                                <div class="flex items-center gap-2"><input id="lemon-n-normal" name="lemon-n" type="radio" value="Normal" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="lemon-n-normal">Normal Neck Mobility</label></div>
-                                <div class="flex items-center gap-2"><input id="lemon-n-restricted" name="lemon-n" type="radio" value="Restricted" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="lemon-n-restricted">Restricted</label></div>
+                                <div class="flex items-center gap-2"><input id="lemon-n-normal" name="lemon-n" type="radio" value="Normal" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"><label for="lemon-n-normal">Normal Neck Mobility</label></div>
+                                <div class="flex items-center gap-2"><input id="lemon-n-restricted" name="lemon-n" type="radio" value="Restricted" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"><label for="lemon-n-restricted">Restricted</label></div>
                             </div>
                         </div>
                     </fieldset>
@@ -356,7 +378,7 @@
                 </div>
             </div> <!-- End Section 2 Box -->
 
-            <!-- 3. Sedation Plan & Preparation Section Box (NEW) -->
+            <!-- 3. Sedation Plan & Preparation Section Box -->
             <div class="bg-gray-50 sm:rounded-xl shadow-lg mb-8 overflow-hidden section-box">
                 <div class="flex items-center bg-gray-100 border-b border-gray-200 p-4 section-header">
                     <div class="flex-shrink-0 bg-blue-500 rounded-full h-10 w-10 flex items-center justify-center section-header-number">
@@ -378,6 +400,7 @@
                                     <option>Minimal (Anxiolysis)</option>
                                     <option>Moderate (Conscious)</option>
                                     <option>Deep</option>
+                                    <option>Dissociation</option>
                                 </select>
                             </div>
                             <div>
@@ -462,7 +485,7 @@
                 </div>
             </div> <!-- End Section 3 Box -->
 
-            <!-- 4. Intra-Sedation Record Section Box (Renumbered) -->
+            <!-- 4. Intra-Sedation Record Section Box -->
             <div class="bg-gray-50 sm:rounded-xl shadow-lg mb-8 overflow-hidden section-box page-break">
                 <div class="flex items-center bg-gray-100 border-b border-gray-200 p-4 section-header">
                     <div class="flex-shrink-0 bg-blue-500 rounded-full h-10 w-10 flex items-center justify-center section-header-number">
@@ -475,7 +498,7 @@
                 </div>
 
                 <div class="p-6">
-                    <!-- NEW: Complications Expandable Content -->
+                    <!-- Complications Expandable Content -->
                     <div id="complications-guide-content" class="guide-content hidden mb-6 complications-list">
                         <h4>Apnoea / Airway Obstruction</h4>
                         <p><strong>Signs:</strong> Loss of EtCO2 waveform, silent chest, desaturation, paradoxical "see-saw" breathing.</p>
@@ -556,29 +579,27 @@
                     <!-- Drug Administration -->
                     <fieldset>
                         <legend>Drug Administration</legend>
-                        <div class="overflow-x-auto mt-2 rounded-lg border">
+                        <!-- NEW: Drug log buttons -->
+                        <div id="drug-admin-container" class="flex flex-wrap gap-2 mt-2 no-print">
+                            <button type="button" class="action-button" data-drug="Propofol IV">Log Propofol</button>
+                            <button type="button" class="action-button" data-drug="Ketamine IV">Log Ketamine</button>
+                            <button type="button" class="action-button" data-drug="Midazolam IV">Log Midazolam</button>
+                            <button type="button" class="action-button" data-drug="Fentanyl IV">Log Fentanyl</button>
+                            <button type="button" class="action-button !bg-purple-600 hover:!bg-purple-700" data-drug="Other">Log Other</button>
+                        </div>
+                        <div class="overflow-x-auto mt-4 rounded-lg border">
                             <table class="min-w-full divide-y divide-gray-200">
                                 <thead class="bg-gray-100">
                                     <tr>
-                                        <th class="p-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time (HH:MM)</th>
+                                        <th class="p-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-24">Time (T+)</th>
                                         <th class="p-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Drug & Route</th>
-                                        <th class="p-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dose (mg)</th>
+                                        <th class="p-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-24">Dose (mg)</th>
                                         <th class="p-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Administered By</th>
+                                        <th class="p-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-16 no-print"></th>
                                     </tr>
                                 </thead>
                                 <tbody class="bg-white divide-y divide-gray-200" id="drug-table-body">
-                                    <tr>
-                                        <td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td>
-                                    </tr>
-                                    <tr>
-                                        <td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td>
-                                    </tr>
-                                    <tr>
-                                        <td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td>
-                                    </tr>
-                                    <tr>
-                                        <td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td>
-                                    </tr>
+                                    <!-- Dynamic rows will be inserted here -->
                                 </tbody>
                             </table>
                         </div>
@@ -593,12 +614,19 @@
                             <span>&#9200; <strong>5 Minute Alert:</strong> Please record patient observations.</span>
                             <button id="dismiss-toast-button" class="bg-white/60 hover:bg-white text-yellow-800 py-1 px-3 rounded-full text-sm font-semibold">Dismiss</button>
                         </div>
+                        
+                         <!-- NEW: Add Obs button -->
+                        <div class="mt-2 no-print">
+                            <button type="button" id="add-obs-button" class="action-button !bg-green-600 hover:!bg-green-700 w-full sm:w-auto">
+                                Add Observations Now
+                            </button>
+                        </div>
 
-                        <div class="overflow-x-auto mt-2 rounded-lg border">
+                        <div class="overflow-x-auto mt-4 rounded-lg border">
                             <table class="min-w-full divide-y divide-gray-200">
                                 <thead class="bg-gray-100">
                                     <tr>
-                                        <th class="p-3 text-left text-xs font-medium text-gray-500 uppercase">Time</th>
+                                        <th class="p-3 text-left text-xs font-medium text-gray-500 uppercase w-24">Time (T+)</th>
                                         <th class="p-3 text-left text-xs font-medium text-gray-500 uppercase">HR</th>
                                         <th class="p-3 text-left text-xs font-medium text-gray-500 uppercase">BP</th>
                                         <th class="p-3 text-left text-xs font-medium text-gray-500 uppercase">SpO2</th>
@@ -606,28 +634,11 @@
                                         <th class="p-3 text-left text-xs font-medium text-gray-500 uppercase">EtCO2</th>
                                         <th class="p-3 text-left text-xs font-medium text-gray-500 uppercase">O₂ (L/m)</th>
                                         <th class="p-3 text-left text-xs font-medium text-gray-500 uppercase">Score</th>
+                                        <th class="p-3 text-center text-xs font-medium text-gray-500 uppercase w-16 no-print"></th>
                                     </tr>
                                 </thead>
                                 <tbody class="bg-white divide-y divide-gray-200" id="monitoring-log-body">
-                                    <!-- 8 rows for data -->
-                                    <tr>
-                                        <td><input type="text" class="w-20"></td><td><input type="text" class="w-16"></td><td><input type="text" class="w-24"></td><td><input type="text" classs="w-16"></td><td><input type="text" class="w-16"></td><td><input type="text" class="w-16"></td><td><input type="text" class="w-16"></td><td><input type="text" class="w-20" placeholder="e.g., RSS"></td>
-                                    </tr>
-                                    <tr>
-                                        <td><input type="text" class="w-20"></td><td><input type="text" class="w-16"></td><td><input type="text" class="w-24"></td><td><input type="text" class="w-16"></td><td><input type="text" class...</td><td><input type="text" class="w-16"></td><td><input type="text" class="w-16"></td><td><input type="text" class="w-20"></td>
-                                    </tr>
-                                    <tr>
-                                        <td><input type="text" class="w-20"></td><td><input type="text" class="w-16"></td><td><input type="text" class="w-24"></td><td><input type="text" class="w-16"></td><td><input type="text" class="w-16"></td><td><input type="text" class="w-16"></td><td><input type="text" class="w-16"></td><td><input type="text" class="w-20"></td>
-                                    </tr>
-                                    <tr>
-                                        <td><input type="text" class="w-20"></td><td><input type="text" class="w-16"></td><td><input type="text" class="w-24"></td><td><input type="text" class="w-16"></td><td><input type="text" class="w-16"></td><td><input type="text" class="w-16"></td><td><input type="text" class="w-16"></td><td><input type="text" class="w-20"></td>
-                                    </tr>
-                                    <tr>
-                                        <td><input type="text" class="w-20"></td><td><input type="text" class="w-16"></td><td><input type="text" class="w-24"></td><td><input type="text" class="w-16"></td><td><input type="text" class="w-16"></td><td><input type="text" class="w-16"></td><td><input type="text" class="w-16"></td><td><input type="text" class="w-20"></td>
-                                    </tr>
-                                    <tr>
-                                        <td><input type="text" class="w-20"></td><td><input type="text" class="w-16"></td><td><input type="text" class="w-24"></td><td><input type="text" class="w-16"></td><td><input type="text" class="w-16"></td><td><input type="text" class="w-16"></td><td><input type="text" class="w-16"></td><td><input type="text" class="w-20"></td>
-                                    </tr>
+                                    <!-- Dynamic rows will be inserted here -->
                                 </tbody>
                             </table>
                         </div>
@@ -666,7 +677,7 @@
                 </div>
             </div> <!-- End Section 4 Box -->
 
-            <!-- 5. Post-Sedation Section Box (Renumbered) -->
+            <!-- 5. Post-Sedation Section Box -->
             <div class="bg-gray-50 sm:rounded-xl shadow-lg mb-8 overflow-hidden section-box">
                 <div class="flex items-center bg-gray-100 border-b border-gray-200 p-4 section-header">
                     <div class="flex-shrink-0 bg-blue-500 rounded-full h-10 w-10 flex items-center justify-center section-header-number">
@@ -683,12 +694,12 @@
                             <fieldset>
                                 <legend>Procedure & Sedation Outcome</legend>
                                 <div class="mt-2 space-y-2">
-                                    <div class="flex items-center gap-2"><input id="outcome-proc-yes" name="outcome-proc" type="radio" value="Yes" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="outcome-proc-yes">Procedure Successful</label></div>
-                                    <div class="flex items-center gap-2"><input id="outcome-proc-no" name="outcome-proc" type="radio" value="No" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="outcome-proc-no">Procedure Unsuccessful</label></div>
-                                    <div class="flex items-center gap-2"><input id="outcome-proc-partial" name="outcome-proc" type="radio" value="Partial" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="outcome-proc-partial">Procedure Partially Successful</label></div>
+                                    <div class="flex items-center gap-2"><input id="outcome-proc-yes" name="outcome-proc" type="radio" value="Procedure Successful" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"><label for="outcome-proc-yes">Procedure Successful</label></div>
+                                    <div class="flex items-center gap-2"><input id="outcome-proc-no" name="outcome-proc" type="radio" value="Procedure Unsuccessful" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"><label for="outcome-proc-no">Procedure Unsuccessful</label></div>
+                                    <div class="flex items-center gap-2"><input id="outcome-proc-partial" name="outcome-proc" type="radio" value="Procedure Partially Successful" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"><label for="outcome-proc-partial">Procedure Partially Successful</label></div>
                                     <hr class="my-2 border-gray-200">
-                                    <div class="flex items-center gap-2"><input id="outcome-sed-yes" name="outcome-sed" type="radio" value="Yes" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="outcome-sed-yes">Sedation Successful (Amnesia/Comfort)</label></div>
-                                    <div class="flex items-center gap-2"><input id="outcome-sed-no" name="outcome-sed" type="radio" value="No" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="outcome-sed-no">Sedation Unsuccessful</label></div>
+                                    <div class="flex items-center gap-2"><input id="outcome-sed-yes" name="outcome-sed" type="radio" value="Sedation Successful (Amnesia/Comfort)" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"><label for="outcome-sed-yes">Sedation Successful (Amnesia/Comfort)</label></div>
+                                    <div class="flex items-center gap-2"><input id="outcome-sed-no" name="outcome-sed" type="radio" value="Sedation Unsuccessful" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"><label for="outcome-sed-no">Sedation Unsuccessful</label></div>
                                 </div>
                             </fieldset>
 
@@ -744,10 +755,10 @@
             <!-- Footer Buttons (Print/Clear) -->
             <footer class="mt-12 text-center no-print">
                 <div class="flex flex-col sm:flex-row justify-center gap-4">
-                    <button id="print-button" class="w-full sm:w-auto bg-blue-700 hover:bg-blue-800 text-white font-bold py-3 px-8 rounded-lg transition shadow-lg">
+                    <button type="button" id="print-button" class="w-full sm:w-auto bg-blue-700 hover:bg-blue-800 text-white font-bold py-3 px-8 rounded-lg transition shadow-lg">
                         Print / Save as PDF
                     </button>
-                    <button id="clear-form-button" class="w-full sm:w-auto bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-8 rounded-lg transition shadow-lg">
+                    <button type="button" id="clear-form-button" class="w-full sm:w-auto bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-8 rounded-lg transition shadow-lg">
                         Clear Form
                     </button>
                 </div>
@@ -755,7 +766,7 @@
         </form>
     </main>
     
-    <!-- 6. Always-Visible EPR Log Section (Renumbered) -->
+    <!-- 6. Always-Visible EPR Log Section -->
     <section class="max-w-6xl mx-auto my-8 no-print">
         <div class="bg-gray-50 sm:rounded-xl shadow-lg overflow-hidden section-box">
             <div class="flex items-center bg-gray-100 border-b border-gray-200 p-4 section-header">
@@ -767,10 +778,10 @@
             
             <div class="p-6">
                 <div class="flex flex-col sm:flex-row justify-center gap-4 mb-4">
-                     <button id="generate-update-log-button" class="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-lg transition shadow-lg">
+                     <button type="button" id="generate-update-log-button" class="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-lg transition shadow-lg">
                         Generate / Update Log
                     </button>
-                    <button id="copy-log-button-bottom" class="w-full sm:w-auto bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-8 rounded-lg transition shadow-lg">
+                    <button type="button" id="copy-log-button-bottom" class="w-full sm:w-auto bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-8 rounded-lg transition shadow-lg">
                         Copy to Clipboard
                     </button>
                 </div>
@@ -779,19 +790,57 @@
         </div>
     </section>
 
-    <!-- 
-    ================================================================
-    MODAL HTML REMOVED
-    ================================================================
-    -->
+    <!-- NEW: Custom Modal for Dose Input -->
+    <div id="custom-modal-backdrop" class="hidden opacity-0">
+        <div id="custom-modal" class="opacity-0 scale-95">
+            <h3 class="text-lg font-medium leading-6 text-gray-900" id="custom-modal-title">Enter Dose</h3>
+            <div class="mt-4">
+                <label for="custom-modal-input" class="block text-sm font-medium text-gray-700" id="custom-modal-label">Dose (mg):</label>
+                <input type="text" id="custom-modal-input" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+            </div>
+            <div class="mt-5 sm:mt-6 flex gap-3">
+                <button type="button" id="custom-modal-ok" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm">
+                    OK
+                </button>
+                <button type="button" id="custom-modal-cancel" class="w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Template for Obs Score Select -->
+    <template id="obs-score-template">
+        <select class="obs-score-select w-full">
+            <option value="">-</option>
+            <option value="RSS 1">RSS 1 (Awake)</option>
+            <option value="RSS 2">RSS 2 (Drowsy)</option>
+            <option value="RSS 3">RSS 3 (Eyes closed, responds to voice)</option>
+            <option value="RSS 4">RSS 4 (Eyes closed, responds to shake)</option>
+            <option value="RSS 5">RSS 5 (Responds to pain)</option>
+            <option value="RSS 6">RSS 6 (No response)</option>
+            <option value="Dissoc.">Dissoc. (Eyes open, not responding)</option>
+        </select>
+    </template>
+
 
     <script>
         document.addEventListener('DOMContentLoaded', (event) => {
             // --- Helper Functions ---
-            const val = (id) => document.getElementById(id)?.value || '';
-            const text = (id) => document.getElementById(id)?.innerText || '';
-            const isChecked = (id) => document.getElementById(id)?.checked;
+            const $ = (id) => document.getElementById(id);
+            const val = (id) => $(id)?.value || '';
+            const text = (id) => $(id)?.innerText || '';
+            const isChecked = (id) => $(id)?.checked;
+            // UPDATED: Gets the *value* of the selected radio, not the element
             const getRadio = (name) => document.querySelector(`input[name="${name}"]:checked`)?.value || 'N/A';
+            // NEW: Gets the *label text* for the selected radio
+            const getRadioLabel = (name) => {
+                const radio = document.querySelector(`input[name="${name}"]:checked`);
+                if (radio) {
+                    return document.querySelector(`label[for="${radio.id}"]`)?.innerText || radio.value;
+                }
+                return 'N/A';
+            }
             const timeStamp = () => new Date().toLocaleString('en-GB');
             const formatTime = (date) => date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
             
@@ -801,88 +850,90 @@
             let secondsElapsed = 0;
 
             // --- Form Buttons ---
-            const printButton = document.getElementById('print-button');
-            const clearFormButton = document.getElementById('clear-form-button');
-            const generateLogButton = document.getElementById('generate-update-log-button');
-            const calculateDosesButton = document.getElementById('calculate-doses-button');
+            const printButton = $('print-button');
+            const clearFormButton = $('clear-form-button');
+            const generateLogButton = $('generate-update-log-button');
+            const calculateDosesButton = $('calculate-doses-button');
             
             // --- EPR Log Elements ---
-            const copyLogButton = document.getElementById('copy-log-button-bottom');
-            const eprLogOutput = document.getElementById('epr-log-output');
+            const copyLogButton = $('copy-log-button-bottom');
+            const eprLogOutput = $('epr-log-output');
             
-            // --- NEW: Expandable Guide Elements ---
-            const asaGuideButton = document.getElementById('asa-guide-button');
-            const asaGuideContent = document.getElementById('asa-guide-content');
-            
-            const complicationsGuideButton = document.getElementById('complications-guide-button');
-            const complicationsGuideContent = document.getElementById('complications-guide-content');
-            
-            const mallampatiGuideButton = document.getElementById('mallampati-guide-button');
-            const mallampatiGuideContent = document.getElementById('mallampati-guide-content');
-            
-            const ulbtGuideButton = document.getElementById('ulbt-guide-button');
-            const ulbtGuideContent = document.getElementById('ulbt-guide-content');
+            // --- Expandable Guide Elements ---
+            const asaGuideButton = $('asa-guide-button');
+            const asaGuideContent = $('asa-guide-content');
+            const complicationsGuideButton = $('complications-guide-button');
+            const complicationsGuideContent = $('complications-guide-content');
+            const mallampatiGuideButton = $('mallampati-guide-button');
+            const mallampatiGuideContent = $('mallampati-guide-content');
+            const ulbtGuideButton = $('ulbt-guide-button');
+            const ulbtGuideContent = $('ulbt-guide-content');
 
             // --- Timer/Event Elements ---
-            const obsToast = document.getElementById('obs-toast');
-            const dismissToastButton = document.getElementById('dismiss-toast-button');
-            const sedationTimerButton = document.getElementById('sedation-timer-button');
-            const timerDisplay = document.getElementById('timer-display');
-            const procStartButton = document.getElementById('procedure-start-button');
-            const procStartOutput = document.getElementById('procedure-start-output');
-            const procEndButton = document.getElementById('procedure-end-button');
-            const procEndOutput = document.getElementById('procedure-end-output');
-            const patientAwakeButton = document.getElementById('patient-awake-button');
-            const patientAwakeOutput = document.getElementById('patient-awake-output');
+            const obsToast = $('obs-toast');
+            const dismissToastButton = $('dismiss-toast-button');
+            const sedationTimerButton = $('sedation-timer-button');
+            const timerDisplay = $('timer-display');
+            const procStartButton = $('procedure-start-button');
+            const procStartOutput = $('procedure-start-output');
+            const procEndButton = $('procedure-end-button');
+            const procEndOutput = $('procedure-end-output');
+            const patientAwakeButton = $('patient-awake-button');
+            const patientAwakeOutput = $('patient-awake-output');
+            
+            // --- NEW: Dynamic Logging Elements ---
+            const drugAdminContainer = $('drug-admin-container');
+            const drugTableBody = $('drug-table-body');
+            const addObsButton = $('add-obs-button');
+            const obsTableBody = $('monitoring-log-body');
+            
+            // --- NEW: Custom Modal Elements ---
+            const modalBackdrop = $('custom-modal-backdrop');
+            const modal = $('custom-modal');
+            const modalTitle = $('custom-modal-title');
+            const modalLabel = $('custom-modal-label');
+            const modalInput = $('custom-modal-input');
+            const modalOk = $('custom-modal-ok');
+            const modalCancel = $('custom-modal-cancel');
+            let modalResolve = null;
 
 
             // --- Event Listeners ---
 
-            // Print Button
-            if (printButton) {
-                printButton.addEventListener('click', () => {
-                    document.title = `SedationRecord_${timeStamp()}`;
-                    window.print();
-                    setTimeout(() => { document.title = 'Procedural Sedation Checklist & Record'; }, 1000);
-                });
-            }
+            if (printButton) printButton.addEventListener('click', () => {
+                document.title = `SedationRecord_${timeStamp()}`;
+                window.print();
+                setTimeout(() => { document.title = 'Procedural Sedation Checklist & Record'; }, 1000);
+            });
 
-            // Clear Form Button
-            if (clearFormButton) {
-                clearFormButton.addEventListener('click', () => {
-                    if (confirm("Are you sure you want to clear all fields? This action cannot be undone.")) {
-                        document.getElementById('sedation-form').reset();
-                        document.getElementById('dose-output').classList.add('hidden');
-                        document.getElementById('dose-output').innerHTML = '';
-                        // Reset timer
-                        stopSedationTimer();
-                        timerDisplay.textContent = '00:00:00';
-                        secondsElapsed = 0;
-                        // Reset timestamp buttons
-                        procStartButton.disabled = false;
-                        procStartOutput.textContent = '';
-                        procEndButton.disabled = false;
-                        procEndOutput.textContent = '';
-                        patientAwakeButton.disabled = false;
-                        patientAwakeOutput.textContent = '';
-                        // Clear EPR log
-                        eprLogOutput.value = '';
-                        // Hide all guides
-                        if(asaGuideContent) asaGuideContent.classList.add('hidden');
-                        if(mallampatiGuideContent) mallampatiGuideContent.classList.add('hidden');
-                        if(ulbtGuideContent) ulbtGuideContent.classList.add('hidden');
-                        if(complicationsGuideContent) complicationsGuideContent.classList.add('hidden');
-                    }
-                });
-            }
+            if (clearFormButton) clearFormButton.addEventListener('click', () => {
+                if (confirm("Are you sure you want to clear all fields? This action cannot be undone.")) {
+                    $('sedation-form').reset();
+                    $('dose-output').classList.add('hidden');
+                    $('dose-output').innerHTML = '';
+                    stopSedationTimer();
+                    timerDisplay.textContent = '00:00:00';
+                    secondsElapsed = 0;
+                    sedationStartTime = null;
+                    procStartButton.disabled = false;
+                    procStartOutput.textContent = '';
+                    procEndButton.disabled = false;
+                    procEndOutput.textContent = '';
+                    patientAwakeButton.disabled = false;
+                    patientAwakeOutput.textContent = '';
+                    eprLogOutput.value = '';
+                    drugTableBody.innerHTML = ''; // Clear dynamic tables
+                    obsTableBody.innerHTML = ''; // Clear dynamic tables
+                    if(asaGuideContent) asaGuideContent.classList.add('hidden');
+                    if(mallampatiGuideContent) mallampatiGuideContent.classList.add('hidden');
+                    if(ulbtGuideContent) ulbtGuideContent.classList.add('hidden');
+                    if(complicationsGuideContent) complicationsGuideContent.classList.add('hidden');
+                }
+            });
 
-            // Generate Log Button
             if (generateLogButton) generateLogButton.addEventListener('click', generateEprLog);
-
-            // Dose Calculator Button
             if (calculateDosesButton) calculateDosesButton.addEventListener('click', calculateDoses);
             
-            // --- NEW: Expandable Guide Listeners ---
             const toggleGuide = (contentEl) => {
                 if(contentEl) contentEl.classList.toggle('hidden');
             };
@@ -892,7 +943,6 @@
             if (mallampatiGuideButton) mallampatiGuideButton.addEventListener('click', () => toggleGuide(mallampatiGuideContent));
             if (ulbtGuideButton) ulbtGuideButton.addEventListener('click', () => toggleGuide(ulbtGuideContent));
 
-            // Copy Log Button
             if (copyLogButton) {
                 copyLogButton.addEventListener('click', () => {
                     if (!eprLogOutput) return;
@@ -909,12 +959,11 @@
                         }, 2000);
                     } catch (err) {
                         console.error('Failed to copy text: ', err);
-                        alert('Failed to copy. Please select all text and copy manually.');
+                        // Don't use alert()
                     }
                 });
             }
             
-            // --- Timer & Timestamp Listeners ---
             if (sedationTimerButton) sedationTimerButton.addEventListener('click', handleSedationTimerClick);
             if (dismissToastButton) dismissToastButton.addEventListener('click', () => obsToast.classList.add('hidden'));
             
@@ -950,15 +999,13 @@
                 sedationTimerButton.classList.remove('bg-green-600', 'hover:bg-green-700');
                 sedationTimerButton.classList.add('bg-red-600', 'hover:bg-red-700');
                 
+                // Log T0 observation
+                addObsRow();
+                
                 sedationTimerInterval = setInterval(() => {
                     secondsElapsed++;
-                    // Format as HH:MM:SS
-                    const h = Math.floor(secondsElapsed / 3600).toString().padStart(2, '0');
-                    const m = Math.floor((secondsElapsed % 3600) / 60).toString().padStart(2, '0');
-                    const s = (secondsElapsed % 60).toString().padStart(2, '0');
-                    timerDisplay.textContent = `${h}:${m}:${s}`;
+                    timerDisplay.textContent = formatSedationTime(secondsElapsed);
                     
-                    // 5-minute prompt (300 seconds)
                     if (secondsElapsed % 300 === 0 && secondsElapsed > 0) {
                         obsToast.classList.remove('hidden');
                     }
@@ -973,12 +1020,27 @@
                 sedationTimerButton.classList.remove('bg-red-600', 'hover:bg-red-700');
                 obsToast.classList.add('hidden');
             }
+            
+            function getSedationTime() {
+                if (!sedationStartTime) return "T+00:00";
+                return `T+${formatSedationTime(secondsElapsed)}`;
+            }
+            
+            function formatSedationTime(totalSeconds) {
+                const h = Math.floor(totalSeconds / 3600).toString().padStart(2, '0');
+                const m = Math.floor((totalSeconds % 3600) / 60).toString().padStart(2, '0');
+                const s = (totalSeconds % 60).toString().padStart(2, '0');
+                
+                if (h > 0) return `${h}:${m}:${s}`;
+                return `${m}:${s}`; // Only show M:S if less than an hour
+            }
+            
 
             // --- Dose Calculator Function ---
             function calculateDoses() {
                 const weight = parseFloat(val('weight'));
                 const isFrail = isChecked('frail-elderly');
-                const outputDiv = document.getElementById('dose-output');
+                const outputDiv = $('dose-output');
 
                 if (!weight || weight <= 0) {
                     outputDiv.innerHTML = '<span class="text-red-600 font-bold">Please enter a valid patient weight (kg).</span>';
@@ -1048,6 +1110,139 @@
                 outputDiv.innerHTML = output;
                 outputDiv.classList.remove('hidden');
             }
+            
+            
+            // --- NEW: Dynamic Logging Functions ---
+            
+            // Function to handle drug logging
+            async function logDrug(drugName) {
+                let dose;
+                let drug = drugName;
+                
+                if (drugName === 'Other') {
+                    drug = await customPrompt('Enter Drug Name & Route:', 'e.g., Propofol 20mg/hr infusion') || 'Other';
+                    if (drug === 'Other') return; // User cancelled
+                    dose = await customPrompt(`Enter Dose/Rate for ${drug}:`, 'e.g., 20 mg/hr') || '0';
+                } else {
+                    dose = await customPrompt(`Enter Dose for ${drugName} (mg):`, 'e.g., 50') || '0';
+                }
+                
+                if (dose === '0') return; // User cancelled or entered 0
+
+                const newRow = drugTableBody.insertRow();
+                newRow.className = 'dynamic-row';
+                newRow.innerHTML = `
+                    <td><input type="text" value="${getSedationTime()} (${formatTime(new Date())})" data-time="${formatTime(new Date())}"></td>
+                    <td><input type="text" value="${drug}"></td>
+                    <td><input type="text" value="${dose}"></td>
+                    <td><input type="text" value="${val('sedationist')}"></td>
+                    <td class="text-center no-print"><button type="button" class="delete-row-button">X</button></td>
+                `;
+            }
+
+            // Function to add a new observation row
+            function addObsRow() {
+                if (!sedationStartTime) {
+                    // Don't use alert()
+                    console.warn("Please start the sedation timer first.");
+                    return;
+                }
+                const newRow = obsTableBody.insertRow();
+                newRow.className = 'dynamic-row';
+                
+                // Get the select dropdown from template
+                const scoreTemplate = $('obs-score-template');
+                const scoreSelect = scoreTemplate.content.cloneNode(true);
+                
+                newRow.innerHTML = `
+                    <td><input type="text" value="${getSedationTime()} (${formatTime(new Date())})" data-time="${formatTime(new Date())}"></td>
+                    <td><input type="text" class="w-16"></td>
+                    <td><input type="text" class="w-24"></td>
+                    <td><input type="text" class="w-16"></td>
+                    <td><input type="text" class="w-16"></td>
+                    <td><input type="text" class="w-16"></td>
+                    <td><input type="text" class="w-16"></td>
+                    <td class="p-0"></td>
+                    <td class="text-center no-print"><button type="button" class="delete-row-button">X</button></td>
+                `;
+                newRow.cells[7].appendChild(scoreSelect);
+            }
+
+            // Function to delete a row
+            function deleteRow(e) {
+                if (e.target.classList.contains('delete-row-button')) {
+                    const row = e.target.closest('tr');
+                    row.parentNode.removeChild(row);
+                }
+            }
+            
+            // --- NEW: Custom Prompt Function ---
+            function customPrompt(title, label) {
+                return new Promise((resolve) => {
+                    modalTitle.textContent = title;
+                    modalLabel.textContent = label;
+                    modalInput.value = '';
+                    
+                    modalBackdrop.classList.remove('hidden');
+                    setTimeout(() => {
+                        modalBackdrop.classList.remove('opacity-0');
+                        modal.classList.remove('opacity-0', 'scale-95');
+                    }, 10);
+
+                    modalResolve = resolve; // Store the resolve function
+                    
+                    modalInput.focus();
+                });
+            }
+
+            // Modal OK button
+            modalOk.addEventListener('click', () => {
+                if (modalResolve) {
+                    modalResolve(modalInput.value);
+                }
+                closeModal();
+            });
+
+            // Modal Cancel button
+            modalCancel.addEventListener('click', () => {
+                if (modalResolve) {
+                    modalResolve(null); // Resolve with null if cancelled
+                }
+                closeModal();
+            });
+            
+            // Allow pressing Enter in modal
+            modalInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    modalOk.click();
+                } else if (e.key === 'Escape') {
+                    modalCancel.click();
+                }
+            });
+
+            function closeModal() {
+                modalBackdrop.classList.add('opacity-0');
+                modal.classList.add('opacity-0', 'scale-95');
+                setTimeout(() => {
+                    modalBackdrop.classList.add('hidden');
+                    modalResolve = null;
+                }, 200);
+            }
+
+            // --- NEW: Dynamic Logging Event Listeners ---
+            if (drugAdminContainer) {
+                drugAdminContainer.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('action-button')) {
+                        logDrug(e.target.dataset.drug);
+                    }
+                });
+            }
+            
+            if (addObsButton) addObsButton.addEventListener('click', addObsRow);
+            
+            if (drugTableBody) drugTableBody.addEventListener('click', deleteRow);
+            if (obsTableBody) obsTableBody.addEventListener('click', deleteRow);
+
 
             // --- EPR Log Generation Function ---
             function generateEprLog() {
@@ -1096,6 +1291,7 @@
                 if(isChecked('ci-allergy')) log += "  - Allergy to agents\n";
                 if(isChecked('ci-hemo')) log += "  - Haemodynamic instability\n";
                 if(isChecked('ci-gcs')) log += "  - Compromised airway/GCS\n";
+                if(!isChecked('ci-allergy') && !isChecked('ci-hemo') && !isChecked('ci-gcs')) log += "  - None checked\n";
                 log += "\n";
 
                 // --- 3. Sedation Plan & Preparation ---
@@ -1139,28 +1335,26 @@
                 log += `  Patient Awake: ${text('patient-awake-output').replace('Logged at: ', '') || 'N/A'}\n\n`;
                 
                 log += "Drug Administration:\n";
-                log += "Time\tDrug & Route\tDose (mg)\tAdministered By\n";
-                const drugRows = document.getElementById('drug-table-body').rows;
+                log += "Time (T+ / HH:MM)\tDrug & Route\tDose (mg)\tAdministered By\n";
+                const drugRows = drugTableBody.rows;
                 for (let row of drugRows) {
                     const cells = row.getElementsByTagName('input');
-                    if (cells[0].value) { // Only log rows where a time is entered
-                        log += `${cells[0].value}\t${cells[1].value}\t${cells[2].value}\t${cells[3].value}\n`;
-                    }
+                    log += `${cells[0].value}\t${cells[1].value}\t${cells[2].value}\t${cells[3].value}\n`;
+
                 }
 
                 log += "\nMonitoring Log (q5min):\n";
-                log += "Time\tHR\tBP\tSpO2\tRR\tEtCO2\tO₂\tScore\n";
-                const monRows = document.getElementById('monitoring-log-body').rows;
+                log += "Time (T+ / HH:MM)\tHR\tBP\tSpO2\tRR\tEtCO2\tO₂\tScore\n";
+                const monRows = obsTableBody.rows;
                 for (let row of monRows) {
-                    const cells = row.getElementsByTagName('input');
-                    if (cells[0].value) { // Only log rows where a time is entered
-                        log += `${cells[0].value}\t${cells[1].value}\t${cells[2].value}\t${cells[3].value}\t${cells[4].value}\t${cells[5].value}\t${cells[6].value}\t${cells[7].value}\n`;
-                    }
+                    const inputs = row.getElementsByTagName('input');
+                    const select = row.getElementsByTagName('select')[0];
+                    log += `${inputs[0].value}\t${inputs[1].value}\t${inputs[2].value}\t${inputs[3].value}\t${inputs[4].value}\t${inputs[5].value}\t${inputs[6].value}\t${select.value}\n`;
                 }
 
                 log += "\nAdverse Events & Interventions:\n";
                 log += "Time\tEvent\tIntervention\tOutcome\n";
-                const eventRows = document.getElementById('adverse-events-body').rows;
+                const eventRows = $('adverse-events-body').rows;
                 for (let row of eventRows) {
                     const cells = row.getElementsByTagName('input');
                     if (cells[0].value) { // Only log rows where a time is entered
@@ -1178,8 +1372,9 @@
 
                 // --- 5. Post-Sedation ---
                 log += "\n--- 5. POST-SEDATION & OUTCOME ---\n";
-                log += `Procedure Outcome: ${getRadio('outcome-proc')}\n`;
-                log += `Sedation Outcome: ${getRadio('outcome-sed')}\n\n`;
+                // UPDATED: Use getRadioLabel to get full text
+                log += `Procedure Outcome: ${getRadioLabel('outcome-proc')}\n`;
+                log += `Sedation Outcome: ${getRadioLabel('outcome-sed')}\n\n`;
                 
                 log += "Discharge Criteria Met:\n";
                 if(isChecked('dc-aao')) log += "  - Alert & Orientated\n";
@@ -1215,14 +1410,9 @@
                 }
             };
             
-            const originalAlert = window.alert;
+            // Don't use alert()
             window.alert = (message) => {
-                try {
-                    originalAlert(message);
-                } catch (e)
-                {
-                    console.warn("Browser 'alert' was blocked. Message:", message);
-                }
+                console.warn("window.alert() blocked. Message:", message);
             };
 
         });
@@ -1230,6 +1420,4 @@
 
 </body>
 </html>
-
-
 
