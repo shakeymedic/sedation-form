@@ -7,46 +7,238 @@
     <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Custom styles for form elements */
+        /* Custom styles for form elements - NOW RAW CSS */
         label {
-            @apply block text-sm font-medium text-gray-700;
+            display: block;
+            font-size: 0.875rem; /* text-sm */
+            line-height: 1.25rem;
+            font-weight: 500; /* font-medium */
+            color: #374151; /* text-gray-700 */
         }
         
-        /* Styling for "card-in-card" fieldsets */
+        /* Styling for "card-in-card" fieldsets - NOW RAW CSS */
         .section-box fieldset {
-            @apply mt-6 bg-white border border-gray-300 rounded-lg p-4 shadow-sm;
+            margin-top: 1.5rem; /* mt-6 */
+            background-color: #ffffff; /* bg-white */
+            border: 1px solid #d1d5db; /* border border-gray-300 */
+            border-radius: 0.5rem; /* rounded-lg */
+            padding: 1rem; /* p-4 */
+            box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); /* shadow-sm */
         }
         .section-box fieldset:first-child {
-            @apply mt-0; /* No top margin for the first fieldset in a box */
+            margin-top: 0; /* mt-0 */
         }
         .section-box fieldset legend {
-            @apply text-lg font-semibold text-gray-800 px-2;
+            font-size: 1.125rem; /* text-lg */
+            line-height: 1.75rem;
+            font-weight: 600; /* font-semibold */
+            color: #1f2937; /* text-gray-800 */
+            padding-left: 0.5rem; /* px-2 */
+            padding-right: 0.5rem;
         }
-        /* Special style for the critical safety box */
+        /* Special style for the critical safety box - NOW RAW CSS */
         .critical-safety-box {
-            @apply mt-4 bg-blue-50 border border-blue-200 rounded-lg p-4 space-y-3;
+            margin-top: 1rem; /* mt-4 */
+            background-color: #eff6ff; /* bg-blue-50 */
+            border: 1px solid #bfdbfe; /* border border-blue-200 */
+            border-radius: 0.5rem; /* rounded-lg */
+            padding: 1rem; /* p-4 */
+            --tw-space-y-reverse: 0;
+            margin-top: calc(0.75rem * (1 - var(--tw-space-y-reverse))); /* space-y-3 */
+            margin-bottom: calc(0.75rem * var(--tw-space-y-reverse));
         }
         
-        /* Style for expandable guide content */
+        /* Style for expandable guide content - NOW RAW CSS */
         .guide-content {
-            @apply mt-2 p-4 bg-blue-50 border border-blue-200 rounded-lg;
+            margin-top: 0.5rem; /* mt-2 */
+            padding: 1rem; /* p-4 */
+            background-color: #eff6ff; /* bg-blue-50 */
+            border: 1px solid #bfdbfe; /* border border-blue-200 */
+            border-radius: 0.5rem; /* rounded-lg */
         }
 
         /* Keep table input style simple */
         table input[type="text"], table select {
-            @apply border-none focus:ring-0 p-2 w-full bg-transparent;
-        }
-        /* Style for disabled timestamp buttons */
-        button:disabled {
-            @apply bg-gray-300 cursor-not-allowed;
+            border: none !important;
+            box-shadow: none !important; /* focus:ring-0 */
+            padding: 0.5rem; /* p-2 */
+            width: 100%;
+            background-color: transparent;
         }
         
-        /* NEW: Drug/Obs button styles */
-        .action-button {
-            @apply bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg;
+        /* Style for disabled timestamp buttons */
+        button:disabled {
+            background-color: #d1d5db; /* bg-gray-300 */
+            cursor: not-allowed;
+            opacity: 0.7;
         }
+        
+        /* --- ALL BUTTON STYLES CONVERTED TO RAW CSS --- */
+        .btn-solid {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700; /* font-bold */
+            color: #ffffff; /* text-white */
+            padding-top: 0.5rem; /* py-2 */
+            padding-bottom: 0.5rem;
+            padding-left: 1rem; /* px-4 */
+            padding-right: 1rem;
+            border-radius: 0.5rem; /* rounded-lg */
+            box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); /* shadow-sm */
+            transition-property: all;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 150ms;
+        }
+        .btn-solid:focus {
+            outline: 2px solid transparent;
+            outline-offset: 2px;
+            box-shadow: 0 0 0 2px white, 0 0 0 4px var(--focus-ring-color, #9ca3af); /* focus:ring-2 focus:ring-offset-2 */
+        }
+
+        .btn-green {
+            background-color: #16a34a; /* bg-green-600 */
+            --focus-ring-color: #22c55e; /* focus:ring-green-500 */
+        }
+        .btn-green:hover {
+            background-color: #15803d; /* hover:bg-green-700 */
+        }
+        .btn-green:focus {
+             box-shadow: 0 0 0 2px white, 0 0 0 4px #22c55e;
+        }
+
+        .btn-red {
+            background-color: #dc2626; /* bg-red-600 */
+            --focus-ring-color: #ef4444; /* focus:ring-red-500 */
+        }
+        .btn-red:hover {
+            background-color: #b91c1c; /* hover:bg-red-700 */
+        }
+        .btn-red:focus {
+             box-shadow: 0 0 0 2px white, 0 0 0 4px #ef4444;
+        }
+
+        /* --- NEW: Added more colour classes --- */
+        .btn-blue {
+            background-color: #2563eb; /* bg-blue-600 */
+            --focus-ring-color: #3b82f6; /* focus:ring-blue-500 */
+        }
+        .btn-blue:hover {
+            background-color: #1d4ed8; /* hover:bg-blue-700 */
+        }
+        .btn-blue:focus {
+             box-shadow: 0 0 0 2px white, 0 0 0 4px #3b82f6;
+        }
+
+        .btn-orange {
+            background-color: #f97316; /* bg-orange-600 */
+            --focus-ring-color: #fb923c; /* focus:ring-orange-500 */
+        }
+        .btn-orange:hover {
+            background-color: #ea580c; /* hover:bg-orange-700 */
+        }
+        .btn-orange:focus {
+             box-shadow: 0 0 0 2px white, 0 0 0 4px #fb923c;
+        }
+        
+        .btn-indigo {
+            background-color: #4f46e5; /* bg-indigo-600 */
+            --focus-ring-color: #6366f1; /* focus:ring-indigo-500 */
+        }
+        .btn-indigo:hover {
+            background-color: #4338ca; /* hover:bg-indigo-700 */
+        }
+        .btn-indigo:focus {
+             box-shadow: 0 0 0 2px white, 0 0 0 4px #6366f1;
+        }
+
+        .btn-purple {
+            background-color: #9333ea; /* bg-purple-600 */
+            --focus-ring-color: #a855f7; /* focus:ring-purple-500 */
+        }
+        .btn-purple:hover {
+            background-color: #7e22ce; /* hover:bg-purple-700 */
+        }
+        .btn-purple:focus {
+             box-shadow: 0 0 0 2px white, 0 0 0 4px #a855f7;
+        }
+
+        .btn-gray {
+            background-color: #6b7280; /* bg-gray-500 */
+            --focus-ring-color: #9ca3af; /* focus:ring-gray-400 */
+        }
+        .btn-gray:hover {
+            background-color: #4b5563; /* hover:bg-gray-600 */
+        }
+        .btn-gray:focus {
+             box-shadow: 0 0 0 2px white, 0 0 0 4px #9ca3af;
+        }
+        /* ------------------------------------- */
+
+        /* A lighter button for things like 'Procedure Start' */
+        .btn-light {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #e5e7eb; /* bg-gray-200 */
+            color: #374151; /* text-gray-800 */
+            font-weight: 500; /* font-medium */
+            padding-top: 0.5rem; /* py-2 */
+            padding-bottom: 0.5rem;
+            padding-left: 1rem; /* px-4 */
+            padding-right: 1rem;
+            border-radius: 0.5rem; /* rounded-lg */
+            box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); /* shadow-sm */
+            transition-property: all;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 150ms;
+        }
+        .btn-light:hover {
+            background-color: #d1d5db; /* hover:bg-gray-300 */
+        }
+        .btn-light:focus {
+            outline: 2px solid transparent;
+            outline-offset: 2px;
+            box-shadow: 0 0 0 2px white, 0 0 0 4px #60a5fa; /* focus:ring-blue-500 */
+        }
+
+        /* Small help button */
+        .btn-help {
+            margin-left: 0.5rem; /* ml-2 */
+            background-color: #eff6ff; /* bg-blue-100 */
+            color: #1d4ed8; /* text-blue-700 */
+            width: 1.5rem; /* w-6 */
+            height: 1.5rem; /* h-6 */
+            border-radius: 9999px; /* rounded-full */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700; /* font-bold */
+            font-size: 0.875rem; /* text-sm */
+        }
+        .btn-help:hover {
+            background-color: #dbeafe; /* hover:bg-blue-200 */
+        }
+        .btn-help:focus {
+            outline: 2px solid transparent;
+            outline-offset: 2px;
+            box-shadow: 0 0 0 2px white, 0 0 0 4px #60a5fa; /* focus:ring-blue-500 */
+        }
+        
+        /* Delete button in tables */
         .delete-row-button {
-            @apply bg-red-100 hover:bg-red-200 text-red-700 font-bold py-1 px-3 rounded-full text-xs;
+            background-color: #fee2e2; /* bg-red-100 */
+            color: #b91c1c; /* text-red-700 */
+            font-weight: 700; /* font-bold */
+            padding-top: 0.25rem; /* py-1 */
+            padding-bottom: 0.25rem;
+            padding-left: 0.75rem; /* px-3 */
+            padding-right: 0.75rem;
+            border-radius: 9999px; /* rounded-full */
+            font-size: 0.75rem; /* text-xs */
+        }
+        .delete-row-button:hover {
+            background-color: #fecaca; /* hover:bg-red-200 */
         }
         
         /* Styles for printing */
@@ -74,7 +266,7 @@
                  padding: 1rem !important;
             }
              .section-box fieldset {
-                @apply bg-white; /* White cards inside gray box */
+                background-color: #ffffff; /* White cards inside gray box */
              }
             .section-header {
                 background-color: #f3f4f6 !important; /* Slightly darker gray */
@@ -109,35 +301,77 @@
             }
             /* Ensure table inputs are readable */
             table input[type="text"], table select {
-                border: 1px solid #eee;
+                border: 1px solid #eee !important;
             }
         }
         
         /* 5-Minute Obs Prompt Toast */
         #obs-toast {
-            @apply bg-yellow-400 text-black p-3 text-center font-bold shadow-md rounded-lg my-4 flex justify-between items-center no-print;
+            background-color: #facc15; /* bg-yellow-400 */
+            color: #000000; /* text-black */
+            padding: 0.75rem; /* p-3 */
+            text-align: center;
+            font-weight: 700; /* font-bold */
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); /* shadow-md */
+            border-radius: 0.5rem; /* rounded-lg */
+            margin-top: 1rem; /* my-4 */
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         
         /* Complications list styling */
         .complications-list h4 {
-            @apply text-lg font-semibold text-blue-700 mt-4 first:mt-0;
+            font-size: 1.125rem; /* text-lg */
+            font-weight: 600; /* font-semibold */
+            color: #1d4ed8; /* text-blue-700 */
+            margin-top: 1rem; /* mt-4 */
+        }
+        .complications-list h4:first-child {
+            margin-top: 0; /* first:mt-0 */
         }
         .complications-list p {
-            @apply text-sm text-gray-600 mb-2;
+            font-size: 0.875rem; /* text-sm */
+            color: #4b5563; /* text-gray-600 */
+            margin-bottom: 0.5rem; /* mb-2 */
         }
         .complications-list .management-steps {
-            @apply list-decimal list-inside space-y-1 text-sm;
+            list-style-type: decimal;
+            list-style-position: inside;
+            font-size: 0.875rem; /* text-sm */
+            --tw-space-y-reverse: 0;
+            margin-top: calc(0.25rem * (1 - var(--tw-space-y-reverse)));
+            margin-bottom: calc(0.25rem * var(--tw-space-y-reverse));
         }
         .complications-list .management-steps strong {
-            @apply font-semibold text-gray-800;
+            font-weight: 600; /* font-semibold */
+            color: #1f2937; /* text-gray-800 */
         }
         
         /* NEW: Custom Prompt Modal */
         #custom-modal-backdrop {
-            @apply fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50 transition-opacity no-print;
+            position: fixed;
+            inset: 0;
+            background-color: rgb(17 24 39 / 0.75); /* bg-gray-900 bg-opacity-75 */
+            display: none; /* <-- CHANGED FROM 'flex' - THIS IS THE FIX */
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+            transition-property: opacity;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 150ms;
         }
         #custom-modal {
-            @apply bg-white rounded-lg shadow-xl p-6 w-full max-w-sm transform transition-all;
+            background-color: #ffffff; /* bg-white */
+            border-radius: 0.5rem; /* rounded-lg */
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1); /* shadow-xl */
+            padding: 1.5rem; /* p-6 */
+            width: 100%;
+            max-width: 24rem; /* max-w-sm */
+            transition-property: all;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 150ms;
         }
 
     </style>
@@ -181,8 +415,9 @@
                             <label for="weight">Patient Weight (kg) <span class="text-red-500">*</span></label>
                             <div class="flex items-center gap-4">
                                 <input type="number" id="weight" placeholder="e.g., 70" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
-                                <div class="flex items-center gap-2 mt-1">
-                                    <input type="checkbox" id="weight-estimated" class="mt-0 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="weight-estimated">Estimated</label>
+                                <!-- Alignment fix -->
+                                <div class="flex items-start gap-2 mt-1">
+                                    <input type="checkbox" id="weight-estimated" class="mt-1 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="weight-estimated">Estimated</label>
                                 </div>
                             </div>
                         </div>
@@ -222,10 +457,12 @@
                             <legend class="text-lg font-semibold text-blue-700 px-2">Estimated Dose Guide (Adults)</legend>
                             <p class="text-xs text-red-600 font-semibold mb-3">DISCLAIMER: This is a GUIDE only. Doses must be titrated to clinical effect. Clinician judgement is final.</p>
                             <div class="flex flex-col sm:flex-row sm:items-center gap-4">
-                                <div class="flex-shrink-0">
-                                    <input type="checkbox" id="frail-elderly" class="mr-2 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="frail-elderly" class="font-medium">Frail / Elderly (>65)</label>
+                                <!-- Alignment fix -->
+                                <div class="flex-shrink-0 flex items-start gap-2">
+                                    <input type="checkbox" id="frail-elderly" class="mr-2 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"><label for="frail-elderly" class="font-medium">Frail / Elderly (>65)</label>
                                 </div>
-                                <button type="button" id="calculate-doses-button" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg">Calculate Dose Ranges</button>
+                                <!-- Button Style -->
+                                <button type="button" id="calculate-doses-button" class="btn-solid btn-green w-full sm:w-auto">Calculate Dose Ranges</button>
                             </div>
                             <div id="dose-output" class="mt-4 p-4 bg-blue-50 rounded-md hidden font-mono">
                                 <!-- Dose calculator output goes here -->
@@ -247,7 +484,7 @@
                 <div class="p-6">
                     <!-- This section is now a single column -->
                     
-                    <!-- Consent -->
+                    <!-- Consent (This section already uses items-start, which is correct) -->
                     <fieldset>
                         <legend>Consent & Risks Discussed</legend>
                         <div class="mt-2 space-y-2">
@@ -256,13 +493,13 @@
                                 <label for="consent-obtained" class="text-sm font-medium text-gray-700">Informed consent (verbal/written) obtained and documented.</label>
                             </div>
                             <hr class="my-3 pt-1 border-gray-200">
-                            <div class="flex items-start gap-2"><input id="risk-nausea" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="risk-nausea" class="text-sm">Nausea or vomiting (Common, ~1 in 20)</label></div>
-                            <div class="flex items-start gap-2"><input id="risk-bp" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="risk-bp" class="text-sm">Temporary drop in BP / breathing (Common)</label></div>
-                            <div class="flex items-start gap-2"><input id="risk-emergence" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="risk-emergence" class="text-sm">Agitation/dreams (Uncommon, ~1 in 50, esp. Ketamine)</label></div>
-                            <div class="flex items-start gap-2"><input id="risk-severe-breathing" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="risk-severe-breathing" class="text-sm">Significant breathing problems (Uncommon, ~1 in 500)</label></div>
-                            <div class="flex items-start gap-2"><input id="risk-aspiration" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="risk-aspiration" class="text-sm">Aspiration (Rare, ~1 in 2,000)</label></div>
-                            <div class="flex items-start gap-2"><input id="risk-allergy" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="risk-allergy" class="text-sm">Serious allergic reaction (Very Rare, ~1 in 10,000)</label></div>
-                            <div class="flex items-start gap-2"><input id="risk-major" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="risk-major" class="text-sm">Major complication (cardiac arrest, death) (Extremely Rare)</label></div>
+                            <div class="flex items-start gap-2"><input id="risk-nausea" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"><label for="risk-nausea" class="text-sm">Nausea or vomiting (Common, ~1 in 20)</label></div>
+                            <div class="flex items-start gap-2"><input id="risk-bp" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"><label for="risk-bp" class="text-sm">Temporary drop in BP / breathing (Common)</label></div>
+                            <div class="flex items-start gap-2"><input id="risk-emergence" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"><label for="risk-emergence" class="text-sm">Agitation/dreams (Uncommon, ~1 in 50, esp. Ketamine)</label></div>
+                            <div class="flex items-start gap-2"><input id="risk-severe-breathing" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"><label for="risk-severe-breathing" class="text-sm">Significant breathing problems (Uncommon, ~1 in 500)</label></div>
+                            <div class="flex items-start gap-2"><input id="risk-aspiration" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"><label for="risk-aspiration" class="text-sm">Aspiration (Rare, ~1 in 2,000)</label></div>
+                            <div class="flex items-start gap-2"><input id="risk-allergy" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"><label for="risk-allergy" class="text-sm">Serious allergic reaction (Very Rare, ~1 in 10,000)</label></div>
+                            <div class="flex items-start gap-2"><input id="risk-major" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"><label for="risk-major" class="text-sm">Major complication (cardiac arrest, death) (Extremely Rare)</label></div>
                         </div>
                     </fieldset>
 
@@ -278,14 +515,16 @@
                     <fieldset>
                         <legend class="flex items-center">
                             ASA Grade
-                            <button type="button" id="asa-guide-button" class="ml-2 bg-blue-100 text-blue-700 w-5 h-5 rounded-full flex items-center justify-center font-bold text-sm no-print">(?)</button>
+                            <!-- Button Style -->
+                            <button type="button" id="asa-guide-button" class="btn-help no-print font-bold text-sm">(?)</button>
                         </legend>
+                        <!-- Alignment fix -->
                         <div class="mt-2 grid grid-cols-2 sm:grid-cols-5 gap-4">
-                            <div class="flex items-center gap-2"><input id="asa-1" name="asa-grade" type="radio" value="I" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"><label for="asa-1">I</label></div>
-                            <div class="flex items-center gap-2"><input id="asa-2" name="asa-grade" type="radio" value="II" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"><label for="asa-2">II</label></div>
-                            <div class="flex items-center gap-2"><input id="asa-3" name="asa-grade" type="radio" value="III" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"><label for="asa-3">III</label></div>
-                            <div class="flex items-center gap-2"><input id="asa-4" name="asa-grade" type="radio" value="IV" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"><label for="asa-4">IV</label></div>
-                            <div class="flex items-center gap-2"><input id="asa-5" name="asa-grade" type="radio" value="V" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"><label for="asa-5">V</label></div>
+                            <div class="flex items-start gap-2"><input id="asa-1" name="asa-grade" type="radio" value="I" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500 mt-1"><label for="asa-1">I</label></div>
+                            <div class="flex items-start gap-2"><input id="asa-2" name="asa-grade" type="radio" value="II" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500 mt-1"><label for="asa-2">II</label></div>
+                            <div class="flex items-start gap-2"><input id="asa-3" name="asa-grade" type="radio" value="III" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500 mt-1"><label for="asa-3">III</label></div>
+                            <div class="flex items-start gap-2"><input id="asa-4" name="asa-grade" type="radio" value="IV" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500 mt-1"><label for="asa-4">IV</label></div>
+                            <div class="flex items-start gap-2"><input id="asa-5" name="asa-grade" type="radio" value="V" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500 mt-1"><label for="asa-5">V</label></div>
                         </div>
                         <!-- ASA Expandable Content -->
                         <div id="asa-guide-content" class="guide-content hidden">
@@ -303,25 +542,27 @@
                     <!-- Airway Assessment -->
                     <fieldset>
                         <legend>Airway Assessment</legend>
+                        <!-- Alignment fix -->
                         <div class="mt-2 space-y-3">
-                            <div class="flex items-center gap-4">
-                                <span class="font-bold text-blue-600 w-8 text-lg">L</span>
-                                <div class="flex items-center gap-2"><input id="lemon-l-normal" name="lemon-l" type="radio" value="Normal" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"><label for="lemon-l-normal">Look Normal</label></div>
-                                <div class="flex items-center gap-2"><input id="lemon-l-abnormal" name="lemon-l" type="radio" value="Abnormal" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"><label for="lemon-l-abnormal">Abnormal</label></div>
-                                <input type="text" id="lemon-l-specify" class="flex-1 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" placeholder="Specify (e.g., beard, blood)">
+                            <div class="flex items-start gap-4">
+                                <span class="font-bold text-blue-600 w-8 text-lg pt-0.5">L</span>
+                                <div class="flex items-start gap-2"><input id="lemon-l-normal" name="lemon-l" type="radio" value="Normal" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500 mt-1"><label for="lemon-l-normal">Look Normal</label></div>
+                                <div class="flex items-start gap-2"><input id="lemon-l-abnormal" name="lemon-l" type="radio" value="Abnormal" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500 mt-1"><label for="lemon-l-abnormal">Abnormal</label></div>
+                                <input type="text" id="lemon-l-specify" class="flex-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" placeholder="Specify (e.g., beard, blood)">
                             </div>
-                            <div class="flex items-center gap-4">
-                                <span class="font-bold text-blue-600 w-8 text-lg">E</span>
-                                <div class="flex items-center gap-2"><input id="lemon-e-met" name="lemon-e" type="radio" value="Met" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"><label for="lemon-e-met">3-3-2 Met</label></div>
-                                <div class="flex items-center gap-2"><input id="lemon-e-not-met" name="lemon-e" type="radio" value="Not Met" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"><label for="lemon-e-not-met">Not Met</label></div>
+                            <div class="flex items-start gap-4">
+                                <span class="font-bold text-blue-600 w-8 text-lg pt-0.5">E</span>
+                                <div class="flex items-start gap-2"><input id="lemon-e-met" name="lemon-e" type="radio" value="Met" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500 mt-1"><label for="lemon-e-met">3-3-2 Met</label></div>
+                                <div class="flex items-start gap-2"><input id="lemon-e-not-met" name="lemon-e" type="radio" value="Not Met" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500 mt-1"><label for="lemon-e-not-met">Not Met</label></div>
                             </div>
-                            <div class="flex items-center gap-4">
-                                <span class="font-bold text-blue-600 w-8 text-lg">M</span>
-                                <div class="flex items-center gap-2"><input id="lemon-m-1" name="lemon-m" type="radio" value="I" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"><label for="lemon-m-1">Mallampati I</label></div>
-                                <div class="flex items-center gap-2"><input id="lemon-m-2" name="lemon-m" type="radio" value="II" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"><label for="lemon-m-2">II</label></div>
-                                <div class="flex items-center gap-2"><input id="lemon-m-3" name="lemon-m" type="radio" value="III" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"><label for="lemon-m-3">III</label></div>
-                                <div class="flex items-center gap-2"><input id="lemon-m-4" name="lemon-m" type="radio" value="IV" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"><label for="lemon-m-4">IV</label></div>
-                                <button type="button" id="mallampati-guide-button" class="ml-auto bg-blue-100 text-blue-700 w-5 h-5 rounded-full flex items-center justify-center font-bold text-sm no-print">(?)</button>
+                            <div class="flex items-start gap-4">
+                                <span class="font-bold text-blue-600 w-8 text-lg pt-0.5">M</span>
+                                <div class="flex items-start gap-2"><input id="lemon-m-1" name="lemon-m" type="radio" value="I" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500 mt-1"><label for="lemon-m-1">Mallampati I</label></div>
+                                <div class="flex items-start gap-2"><input id="lemon-m-2" name="lemon-m" type="radio" value="II" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500 mt-1"><label for="lemon-m-2">II</label></div>
+                                <div class="flex items-start gap-2"><input id="lemon-m-3" name="lemon-m" type="radio" value="III" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500 mt-1"><label for="lemon-m-3">III</label></div>
+                                <div class="flex items-start gap-2"><input id="lemon-m-4" name="lemon-m" type="radio" value="IV" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500 mt-1"><label for="lemon-m-4">IV</label></div>
+                                <!-- Button Style -->
+                                <button type="button" id="mallampati-guide-button" class="ml-auto btn-help no-print font-bold text-sm">(?)</button>
                             </div>
                             <!-- Mallampati Expandable Content -->
                             <div id="mallampati-guide-content" class="guide-content hidden text-center">
@@ -334,12 +575,13 @@
                                     <li><strong>Class IV:</strong> Soft palate not visible at all. Only hard palate visible.</li>
                                 </ul>
                             </div>
-                            <div class="flex items-center gap-4">
-                                <span class="font-bold text-blue-600 w-8 text-lg">U</span>
-                                <div class="flex items-center gap-2"><input id="ulbt-1" name="ulbt" type="radio" value="Class I" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"><label for="ulbt-1">ULBT Class I</label></div>
-                                <div class="flex items-center gap-2"><input id="ulbt-2" name="ulbt" type="radio" value="Class II" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"><label for="ulbt-2">Class II</label></div>
-                                <div class="flex items-center gap-2"><input id="ulbt-3" name="ulbt" type="radio" value="Class III" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"><label for="ulbt-3">Class III</label></div>
-                                <button type="button" id="ulbt-guide-button" class="ml-auto bg-blue-100 text-blue-700 w-5 h-5 rounded-full flex items-center justify-center font-bold text-sm no-print">(?)</button>
+                            <div class="flex items-start gap-4">
+                                <span class="font-bold text-blue-600 w-8 text-lg pt-0.5">U</span>
+                                <div class="flex items-start gap-2"><input id="ulbt-1" name="ulbt" type="radio" value="Class I" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500 mt-1"><label for="ulbt-1">ULBT Class I</label></div>
+                                <div class="flex items-start gap-2"><input id="ulbt-2" name="ulbt" type="radio" value="Class II" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500 mt-1"><label for="ulbt-2">Class II</label></div>
+                                <div class="flex items-start gap-2"><input id="ulbt-3" name="ulbt" type="radio" value="Class III" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500 mt-1"><label for="ulbt-3">Class III</label></div>
+                                <!-- Button Style -->
+                                <button type="button" id="ulbt-guide-button" class="ml-auto btn-help no-print font-bold text-sm">(?)</button>
                             </div>
                             <!-- ULBT Expandable Content -->
                             <div id="ulbt-guide-content" class="guide-content hidden text-center">
@@ -351,27 +593,27 @@
                                     <li><strong>Class III:</strong> Lower incisors cannot bite the upper lip at all.</li>
                                 </ul>
                             </div>
-                            <div class="flex items-center gap-4">
-                                <span class="font-bold text-blue-600 w-8 text-lg">O</span>
-                                <div class="flex items-center gap-2"><input id="lemon-o-no" name="lemon-o" type="radio" value="No" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"><label for="lemon-o-no">No Obstruction/OSA</label></div>
-                                <div class="flex items-center gap-2"><input id="lemon-o-yes" name="lemon-o" type="radio" value="Yes" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"><label for="lemon-o-yes">Yes</label></div>
-                                <input type="text" id="lemon-o-specify" class="flex-1 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" placeholder="Specify (e.g., OSA)">
+                            <div class="flex items-start gap-4">
+                                <span class="font-bold text-blue-600 w-8 text-lg pt-0.5">O</span>
+                                <div class="flex items-start gap-2"><input id="lemon-o-no" name="lemon-o" type="radio" value="No" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500 mt-1"><label for="lemon-o-no">No Obstruction/OSA</label></div>
+                                <div class="flex items-start gap-2"><input id="lemon-o-yes" name="lemon-o" type="radio" value="Yes" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500 mt-1"><label for="lemon-o-yes">Yes</label></div>
+                                <input type="text" id="lemon-o-specify" class="flex-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" placeholder="Specify (e.g., OSA)">
                             </div>
-                            <div class="flex items-center gap-4">
-                                <span class="font-bold text-blue-600 w-8 text-lg">N</span>
-                                <div class="flex items-center gap-2"><input id="lemon-n-normal" name="lemon-n" type="radio" value="Normal" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"><label for="lemon-n-normal">Normal Neck Mobility</label></div>
-                                <div class="flex items-center gap-2"><input id="lemon-n-restricted" name="lemon-n" type="radio" value="Restricted" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"><label for="lemon-n-restricted">Restricted</label></div>
+                            <div class="flex items-start gap-4">
+                                <span class="font-bold text-blue-600 w-8 text-lg pt-0.5">N</span>
+                                <div class="flex items-start gap-2"><input id="lemon-n-normal" name="lemon-n" type="radio" value="Normal" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500 mt-1"><label for="lemon-n-normal">Normal Neck Mobility</label></div>
+                                <div class="flex items-start gap-2"><input id="lemon-n-restricted" name="lemon-n" type="radio" value="Restricted" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500 mt-1"><label for="lemon-n-restricted">Restricted</label></div>
                             </div>
                         </div>
                     </fieldset>
 
-                    <!-- Contraindications -->
+                    <!-- Contraindications (This section already uses items-start, which is correct) -->
                     <fieldset>
                         <legend>Final Contraindications Check</legend>
                         <div class="mt-2 space-y-2">
-                            <div class="flex items-start gap-2"><input id="ci-allergy" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="ci-allergy">Known allergy to agents considered.</label></div>
-                            <div class="flex items-start gap-2"><input id="ci-hemo" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="ci-hemo">Haemodynamic instability.</label></div>
-                            <div class="flex items-start gap-2"><input id="ci-gcs" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="ci-gcs">Compromised airway or reduced GCS.</label></div>
+                            <div class="flex items-start gap-2"><input id="ci-allergy" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"><label for="ci-allergy">Known allergy to agents considered.</label></div>
+                            <div class="flex items-start gap-2"><input id="ci-hemo" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"><label for="ci-hemo">Haemodynamic instability.</label></div>
+                            <div class="flex items-start gap-2"><input id="ci-gcs" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"><label for="ci-gcs">Compromised airway or reduced GCS.</label></div>
                         </div>
                     </fieldset>
                     
@@ -410,49 +652,51 @@
                         </div>
                     </fieldset>
 
-                    <!-- Equipment Check -->
+                    <!-- Equipment Check (This section already uses items-start, which is correct) -->
                     <fieldset>
                         <legend>Equipment Check (SOAP ME)</legend>
                         <div class="mt-2 space-y-2">
-                            <div class="flex items-start gap-2"><input id="soap-s" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="soap-s"><strong>S</strong>uction: Working, Yankauer available.</label></div>
-                            <div class="flex items-start gap-2"><input id="soap-o" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="soap-o"><strong>O</strong>xygen: Source, nasal cannula, BVM with PEEP.</label></div>
-                            <div class="flex items-start gap-2"><input id="soap-a" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="soap-a"><strong>A</strong>irway: OPA, NPA, LMA, C-MAC/DL.</label></div>
+                            <div class="flex items-start gap-2"><input id="soap-s" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"><label for="soap-s"><strong>S</strong>uction: Working, Yankauer available.</label></div>
+                            <div class="flex items-start gap-2"><input id="soap-o" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"><label for="soap-o"><strong>O</strong>xygen: Source, nasal cannula, BVM with PEEP.</label></div>
+                            <div class="flex items-start gap-2"><input id="soap-a" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"><label for="soap-a"><strong>A</strong>irway: OPA, NPA, LMA, C-MAC/DL.</label></div>
                             
                             <!-- Pharmacology Sub-Fieldset -->
                             <fieldset class="mt-2 !border-gray-300 rounded-lg p-3">
                                 <legend class="text-base font-semibold text-gray-900 px-1"><strong>P</strong>harmacology</legend>
                                 <legend class="text-sm font-medium text-gray-700 mt-1">Sedation Agents Chosen:</legend>
+                                <!-- Alignment fix -->
                                 <div class="grid grid-cols-2 gap-2 mt-1">
-                                    <div class="flex items-center gap-2"><input id="agent-propofol" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="agent-propofol">Propofol</label></div>
-                                    <div class="flex items-center gap-2"><input id="agent-ketamine" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="agent-ketamine">Ketamine</label></div>
-                                    <div class="flex items-center gap-2"><input id="agent-midazolam" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="agent-midazolam">Midazolam</label></div>
-                                    <div class="flex items-center gap-2"><input id="agent-opioid" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="agent-opioid">Opioid (e.g., Fentanyl)</label></div>
-                                    <div class="flex items-center gap-2"><input id="agent-other" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="agent-other">Other</label></div>
+                                    <div class="flex items-start gap-2"><input id="agent-propofol" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"><label for="agent-propofol">Propofol</label></div>
+                                    <div class="flex items-start gap-2"><input id="agent-ketamine" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"><label for="agent-ketamine">Ketamine</label></div>
+                                    <div class="flex items-start gap-2"><input id="agent-midazolam" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"><label for="agent-midazolam">Midazolam</label></div>
+                                    <div class="flex items-start gap-2"><input id="agent-opioid" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"><label for="agent-opioid">Opioid (e.g., Fentanyl)</label></div>
+                                    <div class="flex items-start gap-2"><input id="agent-other" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"><label for="agent-other">Other</label></div>
                                 </div>
                                 <legend class="text-sm font-medium text-gray-700 mt-3">Emergency Drugs Checked & Available:</legend>
+                                <!-- Alignment fix -->
                                 <div class="grid grid-cols-2 gap-2 mt-1">
-                                    <div class="flex items-center gap-2"><input id="em-atropine" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="em-atropine">Atropine</label></div>
-                                    <div class="flex items-center gap-2"><input id="em-metaraminol" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="em-metaraminol">Metaraminol</label></div>
-                                    <div class="flex items-center gap-2"><input id="em-sux" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="em-sux">Suxamethonium</label></div>
-                                    <div class="flex items-center gap-2"><input id="em-adrenaline" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="em-adrenaline">Adrenaline 1:10k</label></div>
-                                    <div class="flex items-center gap-2"><input id="em-flumazenil" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="em-flumazenil">Flumazenil</label></div>
-                                    <div class="flex items-center gap-2"><input id="em-naloxone" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="em-naloxone">Naloxone</label></div>
+                                    <div class="flex items-start gap-2"><input id="em-atropine" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"><label for="em-atropine">Atropine</label></div>
+                                    <div class="flex items-start gap-2"><input id="em-metaraminol" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"><label for="em-metaraminol">Metaraminol</label></div>
+                                    <div class="flex items-start gap-2"><input id="em-sux" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"><label for="em-sux">Suxamethonium</label></div>
+                                    <div class="flex items-start gap-2"><input id="em-adrenaline" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"><label for="em-adrenaline">Adrenaline 1:10k</label></div>
+                                    <div class="flex items-start gap-2"><input id="em-flumazenil" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"><label for="em-flumazenil">Flumazenil</label></div>
+                                    <div class="flex items-start gap-2"><input id="em-naloxone" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"><label for="em-naloxone">Naloxone</label></div>
                                 </div>
                             </fieldset>
-                            <div class="flex items-start gap-2 pt-3"><input id="soap-m" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="soap-m"><strong>M</strong>onitoring: AAGBI Standard (see below).</label></div>
-                            <div class="flex items-start gap-2"><input id="soap-e" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="soap-e"><strong>E</strong>nvironment: Resus area, IV access (x1-2).</label></div>
+                            <div class="flex items-start gap-2 pt-3"><input id="soap-m" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"><label for="soap-m"><strong>M</strong>onitoring: AAGBI Standard (see below).</label></div>
+                            <div class="flex items-start gap-2"><input id="soap-e" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"><label for="soap-e"><strong>E</strong>nvironment: Resus area, IV access (x1-2).</label></div>
                         </div>
                     </fieldset>
 
-                    <!-- Team Brief -->
+                    <!-- Team Brief (This section already uses items-start, which is correct) -->
                     <fieldset>
                         <legend>Team Brief & Final "Time Out"</legend>
                         <div class="mt-2 space-y-2">
-                            <div class="flex items-start gap-2"><input id="plan-roles" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="plan-roles">Roles and responsibilities allocated.</label></div>
-                            <div class="flex items-start gap-2"><input id="plan-difficult" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="plan-difficult">Difficult airway / failed sedation plan discussed.</label></div>
+                            <div class="flex items-start gap-2"><input id="plan-roles" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"><label for="plan-roles">Roles and responsibilities allocated.</label></div>
+                            <div class="flex items-start gap-2"><input id="plan-difficult" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"><label for="plan-difficult">Difficult airway / failed sedation plan discussed.</label></div>
                         </div>
                         
-                        <!-- CRITICAL SAFETY CHECKS BOX -->
+                        <!-- CRITICAL SAFETY CHECKS BOX (This section already uses items-start, which is correct) -->
                         <div class="critical-safety-box">
                             <div class="flex items-start gap-2">
                                 <input id="plan-aagbi" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"><label for="plan-aagbi" class="font-semibold">AAGBI Standard Monitoring Confirmed</label>
@@ -463,11 +707,11 @@
                                 <li class="font-bold text-red-600 mandatory-monitoring-item">NIBP (q3-5m)</li>
                                 <li class="font-bold text-red-600 mandatory-monitoring-item">SpO2 (Continuous)</li>
                                 <li class="font-bold text-red-600 mandatory-monitoring-item">Waveform Capnography (Continuous)</li>
-                                <li class="flex items-center gap-2"><input id="mon-temp" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="mon-temp" class="text-gray-600">Temperature (Optional)</label></li>
+                                <li class="flex items-start gap-2"><input id="mon-temp" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"><label for="mon-temp" class="text-gray-600">Temperature (Optional)</label></li>
                             </ul>
                             <hr class="my-2 border-blue-100">
-                            <div class="flex items-start gap-2"><input id="plan-resus-area" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="plan-resus-area" class="font-medium">Sedation performed in designated Resuscitation / Monitored Area.</label></div>
-                            <div class="flex items-start gap-2"><input id="plan-all-monitoring" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="plan-all-monitoring" class="font-medium">All monitoring attached, visible, and alarms set.</label></div>
+                            <div class="flex items-start gap-2"><input id="plan-resus-area" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"><label for="plan-resus-area" class="font-medium">Sedation performed in designated Resuscitation / Monitored Area.</label></div>
+                            <div class="flex items-start gap-2"><input id="plan-all-monitoring" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"><label for="plan-all-monitoring" class="font-medium">All monitoring attached, visible, and alarms set.</label></div>
                         </div>
                     </fieldset>
                     
@@ -493,7 +737,8 @@
                     </div>
                     <div class="flex-grow flex justify-between items-center ml-4">
                         <h2 class="text-2xl font-semibold text-blue-800">Intra-Sedation Record</h2>
-                        <button type="button" id="complications-guide-button" class="no-print bg-blue-100 text-blue-700 py-2 px-4 rounded-lg font-semibold text-sm h-10">[?] View Complications Guide</button>
+                        <!-- Button Style -->
+                        <button type="button" id="complications-guide-button" class="btn-solid !bg-blue-100 !text-blue-700 hover:!bg-blue-200 focus:!ring-blue-500 no-print !font-semibold" style="--focus-ring-color: #60a5fa;">[?] View Complications Guide</button>
                     </div>
                 </div>
 
@@ -555,21 +800,25 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             
                             <div>
-                                <button type="button" id="sedation-timer-button" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg">Start Sedation Timer</button>
+                                <!-- Button Style -->
+                                <button type="button" id="sedation-timer-button" class="btn-solid btn-green w-full !py-3">Start Sedation Timer</button>
                                 <div id="timer-display" class="text-center text-3xl font-mono font-bold text-gray-800 mt-3">00:00:00</div>
                             </div>
                             
                             <div class="space-y-3">
                                 <div class="flex items-center gap-3">
-                                    <button type="button" id="procedure-start-button" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg w-32">Procedure Start</button>
+                                    <!-- Button Style -->
+                                    <button type="button" id="procedure-start-button" class="btn-light w-32">Procedure Start</button>
                                     <span id="procedure-start-output" class="text-sm font-semibold text-gray-700"></span>
                                 </div>
                                 <div class="flex items-center gap-3">
-                                    <button type="button" id="procedure-end-button" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg w-32">Procedure End</button>
+                                    <!-- Button Style -->
+                                    <button type="button" id="procedure-end-button" class="btn-light w-32">Procedure End</button>
                                     <span id="procedure-end-output" class="text-sm font-semibold text-gray-700"></span>
                                 </div>
                                 <div class="flex items-center gap-3">
-                                    <button type="button" id="patient-awake-button" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg w-32">Patient Awake</button>
+                                    <!-- Button Style -->
+                                    <button type="button" id="patient-awake-button" class="btn-light w-32">Patient Awake</button>
                                     <span id="patient-awake-output" class="text-sm font-semibold text-gray-700"></span>
                                 </div>
                             </div>
@@ -579,13 +828,13 @@
                     <!-- Drug Administration -->
                     <fieldset>
                         <legend>Drug Administration</legend>
-                        <!-- NEW: Drug log buttons -->
+                        <!-- Button Styles UPDATED -->
                         <div id="drug-admin-container" class="flex flex-wrap gap-2 mt-2 no-print">
-                            <button type="button" class="action-button" data-drug="Propofol IV">Log Propofol</button>
-                            <button type="button" class="action-button" data-drug="Ketamine IV">Log Ketamine</button>
-                            <button type="button" class="action-button" data-drug="Midazolam IV">Log Midazolam</button>
-                            <button type="button" class="action-button" data-drug="Fentanyl IV">Log Fentanyl</button>
-                            <button type="button" class="action-button !bg-purple-600 hover:!bg-purple-700" data-drug="Other">Log Other</button>
+                            <button type="button" class="btn-solid btn-blue" data-drug="Propofol IV">Log Propofol</button>
+                            <button type="button" class="btn-solid btn-orange" data-drug="Ketamine IV">Log Ketamine</button>
+                            <button type="button" class="btn-solid btn-indigo" data-drug="Midazolam IV">Log Midazolam</button>
+                            <button type="button" class="btn-solid btn-purple" data-drug="Fentanyl IV">Log Fentanyl</button>
+                            <button type="button" class="btn-solid btn-gray" data-drug="Other">Log Other</button>
                         </div>
                         <div class="overflow-x-auto mt-4 rounded-lg border">
                             <table class="min-w-full divide-y divide-gray-200">
@@ -612,12 +861,13 @@
                         <!-- 5-Minute Toast Location -->
                         <div id="obs-toast" class="hidden">
                             <span>&#9200; <strong>5 Minute Alert:</strong> Please record patient observations.</span>
-                            <button id="dismiss-toast-button" class="bg-white/60 hover:bg-white text-yellow-800 py-1 px-3 rounded-full text-sm font-semibold">Dismiss</button>
+                            <!-- Button Style -->
+                            <button id="dismiss-toast-button" class="btn-light !py-1 !px-3 !text-sm !shadow-none bg-white/60 hover:bg-white text-yellow-800">Dismiss</button>
                         </div>
                         
-                         <!-- NEW: Add Obs button -->
+                         <!-- Button Style -->
                         <div class="mt-2 no-print">
-                            <button type="button" id="add-obs-button" class="action-button !bg-green-600 hover:!bg-green-700 w-full sm:w-auto">
+                            <button type="button" id="add-obs-button" class="btn-solid btn-green w-full sm:w-auto">
                                 Add Observations Now
                             </button>
                         </div>
@@ -693,13 +943,14 @@
                             <!-- Outcome -->
                             <fieldset>
                                 <legend>Procedure & Sedation Outcome</legend>
+                                <!-- Alignment fix -->
                                 <div class="mt-2 space-y-2">
-                                    <div class="flex items-center gap-2"><input id="outcome-proc-yes" name="outcome-proc" type="radio" value="Procedure Successful" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"><label for="outcome-proc-yes">Procedure Successful</label></div>
-                                    <div class="flex items-center gap-2"><input id="outcome-proc-no" name="outcome-proc" type="radio" value="Procedure Unsuccessful" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"><label for="outcome-proc-no">Procedure Unsuccessful</label></div>
-                                    <div class="flex items-center gap-2"><input id="outcome-proc-partial" name="outcome-proc" type="radio" value="Procedure Partially Successful" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"><label for="outcome-proc-partial">Procedure Partially Successful</label></div>
+                                    <div class="flex items-start gap-2"><input id="outcome-proc-yes" name="outcome-proc" type="radio" value="Procedure Successful" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500 mt-1"><label for="outcome-proc-yes">Procedure Successful</label></div>
+                                    <div class="flex items-start gap-2"><input id="outcome-proc-no" name="outcome-proc" type="radio" value="Procedure Unsuccessful" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500 mt-1"><label for="outcome-proc-no">Procedure Unsuccessful</label></div>
+                                    <div class="flex items-start gap-2"><input id="outcome-proc-partial" name="outcome-proc" type="radio" value="Procedure Partially Successful" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500 mt-1"><label for="outcome-proc-partial">Procedure Partially Successful</label></div>
                                     <hr class="my-2 border-gray-200">
-                                    <div class="flex items-center gap-2"><input id="outcome-sed-yes" name="outcome-sed" type="radio" value="Sedation Successful (Amnesia/Comfort)" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"><label for="outcome-sed-yes">Sedation Successful (Amnesia/Comfort)</label></div>
-                                    <div class="flex items-center gap-2"><input id="outcome-sed-no" name="outcome-sed" type="radio" value="Sedation Unsuccessful" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"><label for="outcome-sed-no">Sedation Unsuccessful</label></div>
+                                    <div class="flex items-start gap-2"><input id="outcome-sed-yes" name="outcome-sed" type="radio" value="Sedation Successful (Amnesia/Comfort)" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500 mt-1"><label for="outcome-sed-yes">Sedation Successful (Amnesia/Comfort)</label></div>
+                                    <div class="flex items-start gap-2"><input id="outcome-sed-no" name="outcome-sed" type="radio" value="Sedation Unsuccessful" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500 mt-1"><label for="outcome-sed-no">Sedation Unsuccessful</label></div>
                                 </div>
                             </fieldset>
 
@@ -724,27 +975,27 @@
                         </div>
 
                         <div>
-                            <!-- Discharge Criteria -->
+                            <!-- Discharge Criteria (This section already uses items-start, which is correct) -->
                             <fieldset>
                                 <legend>Discharge Criteria Met (from monitored area)</legend>
                                 <div class="mt-2 space-y-2">
-                                    <div class="flex items-start gap-2"><input id="dc-aao" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="dc-aao">Alert, orientated, returned to baseline GCS.</label></div>
-                                    <div class="flex items-start gap-2"><input id="dc-vitals" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="dc-vitals">Vital signs stable for > 30 mins.</label></div>
-                                    <div class="flex items-start gap-2"><input id="dc-ambulate" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="dc-ambulate">Able to ambulate (if baseline).</label></div>
-                                    <div class="flex items-start gap-2"><input id="dc-pain" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="dc-pain">Pain controlled.</label></div>
-                                    <div class="flex items-start gap-2"><input id="dc-nausea" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="dc-nausea">Nausea / Vomiting controlled.</label></div>
+                                    <div class="flex items-start gap-2"><input id="dc-aao" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"><label for="dc-aao">Alert, orientated, returned to baseline GCS.</label></div>
+                                    <div class="flex items-start gap-2"><input id="dc-vitals" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"><label for="dc-vitals">Vital signs stable for > 30 mins.</label></div>
+                                    <div class="flex items-start gap-2"><input id="dc-ambulate" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"><label for="dc-ambulate">Able to ambulate (if baseline).</label></div>
+                                    <div class="flex items-start gap-2"><input id="dc-pain" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"><label for="dc-pain">Pain controlled.</label></div>
+                                    <div class="flex items-start gap-2"><input id="dc-nausea" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"><label for="dc-nausea">Nausea / Vomiting controlled.</label></div>
                                 </div>
                             </fieldset>
 
-                            <!-- Discharge Advice -->
+                            <!-- Discharge Advice (This section already uses items-start, which is correct) -->
                             <fieldset>
                                 <legend>Discharge Advice Given</legend>
                                 <div class="mt-2 space-y-2">
-                                    <div class="flex items-start gap-2"><input id="advice-escort" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="advice-escort">Responsible adult escort confirmed.</label></div>
-                                    <div class="flex items-start gap-2"><input id="advice-drive" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="advice-drive">No driving or operating machinery (24h).</label></div>
-                                    <div class="flex items-start gap-2"><input id="advice-decisions" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="advice-decisions">No important decisions (24h).</label></div>
-                                    <div class="flex items-start gap-2"><input id="advice-eat" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="advice-eat">Eat and drink lightly.</label></div>
-                                    <div class="flex items-start gap-2"><input id="advice-sheet" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="advice-sheet">Written & verbal post-sedation advice sheet given.</label></div>
+                                    <div class="flex items-start gap-2"><input id="advice-escort" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"><label for="advice-escort">Responsible adult escort confirmed.</label></div>
+                                    <div class="flex items-start gap-2"><input id="advice-drive" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"><label for="advice-drive">No driving or operating machinery (24h).</label></div>
+                                    <div class="flex items-start gap-2"><input id="advice-decisions" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"><label for="advice-decisions">No important decisions (24h).</label></div>
+                                    <div class="flex items-start gap-2"><input id="advice-eat" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"><label for="advice-eat">Eat and drink lightly.</label></div>
+                                    <div class="flex items-start gap-2"><input id="advice-sheet" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"><label for="advice-sheet">Written & verbal post-sedation advice sheet given.</label></div>
                                 </div>
                             </fieldset>
                         </div>
@@ -755,10 +1006,12 @@
             <!-- Footer Buttons (Print/Clear) -->
             <footer class="mt-12 text-center no-print">
                 <div class="flex flex-col sm:flex-row justify-center gap-4">
-                    <button type="button" id="print-button" class="w-full sm:w-auto bg-blue-700 hover:bg-blue-800 text-white font-bold py-3 px-8 rounded-lg transition shadow-lg">
+                    <!-- Button Style -->
+                    <button type="button" id="print-button" class="btn-solid btn-green w-full sm:w-auto !py-3 !px-8">
                         Print / Save as PDF
                     </button>
-                    <button type="button" id="clear-form-button" class="w-full sm:w-auto bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-8 rounded-lg transition shadow-lg">
+                    <!-- Button Style UPDATED -->
+                    <button type="button" id="clear-form-button" class="btn-solid btn-gray w-full sm:w-auto !py-3 !px-8">
                         Clear Form
                     </button>
                 </div>
@@ -778,10 +1031,12 @@
             
             <div class="p-6">
                 <div class="flex flex-col sm:flex-row justify-center gap-4 mb-4">
-                     <button type="button" id="generate-update-log-button" class="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-lg transition shadow-lg">
+                     <!-- Button Style -->
+                     <button type="button" id="generate-update-log-button" class="btn-solid btn-green w-full sm:w-auto !py-3 !px-8">
                         Generate / Update Log
                     </button>
-                    <button type="button" id="copy-log-button-bottom" class="w-full sm:w-auto bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-8 rounded-lg transition shadow-lg">
+                    <!-- Button Style UPDATED -->
+                    <button type="button" id="copy-log-button-bottom" class="btn-solid btn-gray w-full sm:w-auto !py-3 !px-8">
                         Copy to Clipboard
                     </button>
                 </div>
@@ -790,8 +1045,8 @@
         </div>
     </section>
 
-    <!-- NEW: Custom Modal for Dose Input -->
-    <div id="custom-modal-backdrop" class="hidden opacity-0">
+    <!-- NEW: Custom Modal for Dose Input. REMOVED 'hidden' class -->
+    <div id="custom-modal-backdrop" class="opacity-0">
         <div id="custom-modal" class="opacity-0 scale-95">
             <h3 class="text-lg font-medium leading-6 text-gray-900" id="custom-modal-title">Enter Dose</h3>
             <div class="mt-4">
@@ -799,10 +1054,12 @@
                 <input type="text" id="custom-modal-input" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
             </div>
             <div class="mt-5 sm:mt-6 flex gap-3">
-                <button type="button" id="custom-modal-ok" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm">
+                <!-- Button Style -->
+                <button type="button" id="custom-modal-ok" class="btn-solid btn-green w-full">
                     OK
                 </button>
-                <button type="button" id="custom-modal-cancel" class="w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm">
+                <!-- Button Style -->
+                <button type="button" id="custom-modal-cancel" class="btn-light w-full !border !border-gray-300">
                     Cancel
                 </button>
             </div>
@@ -950,12 +1207,18 @@
                         eprLogOutput.select();
                         document.execCommand('copy'); // For iframe compatibility
                         copyLogButton.textContent = 'Copied!';
-                        copyLogButton.classList.remove('bg-gray-500', 'hover:bg-gray-600');
-                        copyLogButton.classList.add('bg-gray-400', 'cursor-not-allowed');
+                        // UPDATED: Class list change
+                        copyLogButton.classList.remove('btn-gray');
+                        copyLogButton.style.backgroundColor = '#9ca3af'; /* bg-gray-400 */
+                        copyLogButton.style.cursor = 'not-allowed';
+                        copyLogButton.disabled = true;
+                        
                         setTimeout(() => {
                             copyLogButton.textContent = 'Copy to Clipboard';
-                            copyLogButton.classList.add('bg-gray-500', 'hover:bg-gray-600');
-                            copyLogButton.classList.remove('bg-gray-400', 'cursor-not-allowed');
+                            copyLogButton.classList.add('btn-gray');
+                            copyLogButton.style.backgroundColor = '';
+                            copyLogButton.style.cursor = '';
+                            copyLogButton.disabled = false;
                         }, 2000);
                     } catch (err) {
                         console.error('Failed to copy text: ', err);
@@ -996,8 +1259,9 @@
             function startSedationTimer() {
                 sedationStartTime = new Date();
                 sedationTimerButton.textContent = 'End Sedation Timer';
-                sedationTimerButton.classList.remove('bg-green-600', 'hover:bg-green-700');
-                sedationTimerButton.classList.add('bg-red-600', 'hover:bg-red-700');
+                // UPDATED: Class list change
+                sedationTimerButton.classList.remove('btn-green');
+                sedationTimerButton.classList.add('btn-red');
                 
                 // Log T0 observation
                 addObsRow();
@@ -1016,14 +1280,18 @@
                 clearInterval(sedationTimerInterval);
                 sedationTimerInterval = null;
                 sedationTimerButton.textContent = 'Start Sedation Timer';
-                sedationTimerButton.classList.add('bg-green-600', 'hover:bg-green-700');
-                sedationTimerButton.classList.remove('bg-red-600', 'hover:bg-red-700');
+                // UPDATED: Class list change
+                sedationTimerButton.classList.remove('btn-red');
+                sedationTimerButton.classList.add('btn-green');
                 obsToast.classList.add('hidden');
             }
             
             function getSedationTime() {
                 if (!sedationStartTime) return "T+00:00";
-                return `T+${formatSedationTime(secondsElapsed)}`;
+                
+                const m = Math.floor(secondsElapsed / 60).toString().padStart(2, '0');
+                const s = (secondsElapsed % 60).toString().padStart(2, '0');
+                return `T+${m}:${s}`;
             }
             
             function formatSedationTime(totalSeconds) {
@@ -1031,8 +1299,8 @@
                 const m = Math.floor((totalSeconds % 3600) / 60).toString().padStart(2, '0');
                 const s = (totalSeconds % 60).toString().padStart(2, '0');
                 
-                if (h > 0) return `${h}:${m}:${s}`;
-                return `${m}:${s}`; // Only show M:S if less than an hour
+                // Always show H:M:S format for consistency
+                return `${h}:${m}:${s}`;
             }
             
 
@@ -1127,7 +1395,7 @@
                     dose = await customPrompt(`Enter Dose for ${drugName} (mg):`, 'e.g., 50') || '0';
                 }
                 
-                if (dose === '0') return; // User cancelled or entered 0
+                if (dose === '0' || dose === null) return; // User cancelled or entered 0
 
                 const newRow = drugTableBody.insertRow();
                 newRow.className = 'dynamic-row';
@@ -1144,7 +1412,9 @@
             function addObsRow() {
                 if (!sedationStartTime) {
                     // Don't use alert()
-                    console.warn("Please start the sedation timer first.");
+                    customPrompt('Timer Not Started', 'Please start the sedation timer before adding observations.').then(val => {
+                        if(val !== null) handleSedationTimerClick(); // Start timer if they click OK
+                    });
                     return;
                 }
                 const newRow = obsTableBody.insertRow();
@@ -1183,7 +1453,7 @@
                     modalLabel.textContent = label;
                     modalInput.value = '';
                     
-                    modalBackdrop.classList.remove('hidden');
+                    modalBackdrop.style.display = 'flex'; // <-- CHANGED from classList.remove('hidden')
                     setTimeout(() => {
                         modalBackdrop.classList.remove('opacity-0');
                         modal.classList.remove('opacity-0', 'scale-95');
@@ -1224,7 +1494,7 @@
                 modalBackdrop.classList.add('opacity-0');
                 modal.classList.add('opacity-0', 'scale-95');
                 setTimeout(() => {
-                    modalBackdrop.classList.add('hidden');
+                    modalBackdrop.style.display = 'none'; // <-- CHANGED from classList.add('hidden')
                     modalResolve = null;
                 }, 200);
             }
@@ -1232,8 +1502,10 @@
             // --- NEW: Dynamic Logging Event Listeners ---
             if (drugAdminContainer) {
                 drugAdminContainer.addEventListener('click', (e) => {
-                    if (e.target.classList.contains('action-button')) {
-                        logDrug(e.target.dataset.drug);
+                    // Use .closest() to ensure we get the button even if user clicks an inner element
+                    const button = e.target.closest('button');
+                    if (button && button.dataset.drug) {
+                        logDrug(button.dataset.drug);
                     }
                 });
             }
@@ -1413,6 +1685,8 @@
             // Don't use alert()
             window.alert = (message) => {
                 console.warn("window.alert() blocked. Message:", message);
+                // Use our custom modal instead if we want to show a message
+                // For now, just log it.
             };
 
         });
@@ -1420,4 +1694,6 @@
 
 </body>
 </html>
+
+
 
