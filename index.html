@@ -228,11 +228,19 @@
 
                         <div class="sub-card mt-0">
                             <label>Risks Discussed</label>
-                            <div class="grid grid-cols-1 gap-2 mt-1">
-                                <label class="flex items-center gap-2 font-normal text-xs"><input id="risk-nausea" type="checkbox" class="rounded"> Nausea/Vomiting</label>
-                                <label class="flex items-center gap-2 font-normal text-xs"><input id="risk-bp" type="checkbox" class="rounded"> Transient BP/Resp drop</label>
-                                <label class="flex items-center gap-2 font-normal text-xs"><input id="risk-emergence" type="checkbox" class="rounded"> Agitation/Dreams</label>
-                                <label class="flex items-center gap-2 font-normal text-xs"><input id="risk-severe-breathing" type="checkbox" class="rounded"> Airway Intervention</label>
+                            <div class="space-y-2 mt-1">
+                                <label class="flex items-start gap-2 font-normal text-sm"><input id="risk-nausea" type="checkbox" class="rounded mt-1"> 
+                                    <span class="block leading-snug">Nausea or Vomiting (Common; up to 10-15%)</span>
+                                </label>
+                                <label class="flex items-start gap-2 font-normal text-sm"><input id="risk-bp" type="checkbox" class="rounded mt-1"> 
+                                    <span class="block leading-snug">Transient low blood pressure or oxygen drop (Common; 5-10%)</span>
+                                </label>
+                                <label class="flex items-start gap-2 font-normal text-sm"><input id="risk-emergence" type="checkbox" class="rounded mt-1"> 
+                                    <span class="block leading-snug">Agitation or Bad Dreams (Emergence Reaction; up to 10%)</span>
+                                </label>
+                                <label class="flex items-start gap-2 font-normal text-sm"><input id="risk-severe-breathing" type="checkbox" class="rounded mt-1"> 
+                                    <span class="block leading-snug">Need for Airway Intervention (Rare; SIVA/TROOPS sentinel event <1%)</span>
+                                </label>
                             </div>
                         </div>
 
@@ -398,8 +406,14 @@
                     </div>
                     
                     <div id="complications-guide-content" class="hidden mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded text-xs">
-                         <strong class="block mb-1">Quick Reference:</strong>
-                         Apnoea → Stimulate/Airway/BVM. Laryngospasm → 100% O2/Larson's/Sux. Hypotension → Fluids/Metaraminol.
+                         <strong class="block mb-1 text-sm text-yellow-900">Quick Reference - Adverse Events & Intervention (TROOPS/SIVA):</strong>
+                         <ul class="list-disc ml-4 space-y-1">
+                            <li><strong>Apnoea:</strong> Stimulate/Airway/BVM. A short uneventful period is acceptable in a well oxygenated patient (e.g., Propofol).</li>
+                            <li><strong>Laryngospasm:</strong> 100% O₂ / Jaw Thrust (Larson's) / Succinylcholine if refractory.</li>
+                            <li><strong>Hypotension:</strong> IV Fluids / Vasoactive drugs (e.g., Metaraminol).</li>
+                            <li><strong>Agitation/Emergence Reaction:</strong> Reassurance / Benzodiazepine (e.g., Midazolam).</li>
+                            <li><strong>Reversal Agents:</strong> Naloxone / Flumazenil should be recorded as a TROOP Intervention and requires 2 hours post-sedation monitoring.</li>
+                         </ul>
                     </div>
 
                     <div class="bg-slate-800 rounded-xl p-4 text-white shadow-md mb-6 no-print">
@@ -484,7 +498,7 @@
                     </div>
                     
                     <div class="mt-4">
-                        <label>Notes / Adverse Events</label>
+                        <label>Notes / Adverse Events <span class="text-xs font-normal text-slate-500">(Consider TROOPS Intermediate/Sentinel reporting)</span></label>
                         <textarea id="general-notes" rows="3" class="w-full p-2 border border-slate-300 rounded text-sm"></textarea>
                     </div>
                 </div>
@@ -591,16 +605,37 @@
                 const w = parseFloat(val('weight'));
                 if(!w) return alert("Enter weight first");
                 const frail = isChecked('frail-elderly');
-                const p_dose = frail ? (0.25*w).toFixed(0)+'-'+(0.5*w).toFixed(0) : (0.5*w).toFixed(0)+'-'+(1.0*w).toFixed(0);
-                const k_dose = (0.5*w).toFixed(0)+'-'+(1.0*w).toFixed(0);
+                
+                const p_std_low = (0.5 * w).toFixed(0);
+                const p_std_high = (1.0 * w).toFixed(0);
+                const p_frail_low = (0.25 * w).toFixed(0); // RCEM: halving the dose of propofol seems both safe and effective
+                const p_frail_high = (0.5 * w).toFixed(0);
+                
+                const k_diss_low = (1.0 * w).toFixed(0);
+                const k_diss_high = (2.0 * w).toFixed(0); // RCEM Ketamine initial dose: 1 mg/kg, repeat 2-2.5 mg/kg. Use standard 1-2 mg/kg range for initial bolus.
+                const k_analgesia_low = (0.3 * w).toFixed(1); // RCEM Ketamine Analgesia dose 0.3mg/kg
+                const k_analgesia_high = (0.5 * w).toFixed(1); 
+                
+                const m_initial_low = 1; // RCEM Midazolam initial dose 1-2 mg
+                const m_initial_high = Math.min(2.0, 0.05 * w).toFixed(1); // RCEM Midazolam max single dose 2.5mg, using 2mg as practical max for initial bolus.
+                
+                const f_initial_max_mcg = (0.5 * w).toFixed(0); // RCEM Fentanyl up to 0.5mcg/kg with other sedatives
+                
+                let p_output = frail 
+                    ? `<strong>Propofol (Frail/Elderly):</strong> ${p_frail_low}-${p_frail_high} mg (0.25-0.5 mg/kg IV)`
+                    : `<strong>Propofol (Adult):</strong> ${p_std_low}-${p_std_high} mg (0.5-1.0 mg/kg IV)`;
+                
                 $('dose-output').innerHTML = `
-                    <strong>Propofol:</strong> ${p_dose} mg <br>
-                    <strong>Ketamine:</strong> ${k_dose} mg <br>
-                    <span class="text-xs text-slate-500">Titrate to effect.</span>
+                    <p class="mb-1">${p_output}</p>
+                    <p class="mb-1"><strong>Ketamine (Dissociative):</strong> ${k_diss_low}-${k_diss_high} mg (1-2 mg/kg IV)</p>
+                    <p class="mb-1"><strong>Ketamine (Analgesia):</strong> ${k_analgesia_low}-${k_analgesia_high} mg (0.3-0.5 mg/kg IV)</p>
+                    <p class="mb-1"><strong>Midazolam (Adjunct):</strong> ${m_initial_low}-${m_initial_high} mg (Initial 1-2 mg; max 2.5 mg single dose)</p>
+                    <p class="mb-1"><strong>Fentanyl (Adjunct):</strong> Up to ${f_initial_max_mcg} mcg (Up to 0.5 mcg/kg IV with sedatives)</p>
+                    <hr class="my-2 border-blue-200">
+                    <span class="text-xs text-slate-600">All doses are initial bolus ranges. Titrate slowly to effect.</span>
                 `;
                 $('dose-output').classList.remove('hidden');
             };
-
             // --- Toggle Guides ---
             const toggle = (btnId, contentId) => {
                 $(btnId).onclick = () => $(contentId).classList.toggle('hidden');
@@ -608,6 +643,7 @@
             toggle('asa-guide-button', 'asa-guide-content');
             toggle('mallampati-guide-button', 'mallampati-guide-content');
             toggle('complications-guide-button', 'complications-guide-content');
+            toggle('ulbt-guide-button', 'ulbt-guide-content');
 
             // --- Timer Logic ---
             const timerBtn = $('sedation-timer-button');
