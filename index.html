@@ -107,13 +107,13 @@
             font-weight: 600;
         }
         
-        /* Rich Text / Log Output Style */
+        /* --- RICH TEXT / LOG OUTPUT STYLE (MATCHING TRAUMA TOOL) --- */
         .rich-output {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             font-size: 0.85rem;
             line-height: 1.4;
             color: #334155;
-            background-color: #ffffff;
+            background-color: #f8fafc; /* Slate-50 background */
             border: 1px solid #cbd5e1;
             border-radius: 0.5rem;
             padding: 1rem;
@@ -121,6 +121,8 @@
             overflow-y: auto;
             white-space: pre-wrap; 
         }
+        .rich-output strong { font-weight: 800; color: #0f172a; } /* Darker bold text */
+        .rich-output u { text-decoration: underline; }
 
         /* --- PRINT --- */
         @media print {
