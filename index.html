@@ -5,30 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Procedural Sedation Record</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         /* --- CORE STYLES --- */
         body { font-family: 'Inter', sans-serif; }
-        textarea::-webkit-scrollbar { width: 8px; }
-        textarea::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
-        textarea::-webkit-scrollbar-thumb { background: #64748b; border-radius: 4px; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: #64748b; border-radius: 4px; }
         html { scroll-behavior: smooth; }
         
+        /* Inputs & Controls */
         input, textarea, select { border-color: #94a3b8; outline: none; transition: all 0.2s; }
-        input:focus, textarea:focus, select:focus { border-color: #2563eb; box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2); }
+        input:focus, textarea:focus, select:focus { border-color: #2563eb; ring: 2px; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2); }
 
         /* --- BUTTONS --- */
         .std-btn { 
             transition: all 0.1s; 
-            border: 1px solid #cbd5e1; 
+            border: 2px solid #cbd5e1; 
             background-color: #f8fafc; 
             color: #334155; 
             border-radius: 0.5rem;
-            font-weight: 600;
+            font-weight: 700;
             padding: 0.5rem 1rem;
             display: inline-flex;
             align-items: center;
             justify-content: center;
+            font-size: 0.75rem;
         }
         .std-btn:hover { background-color: #e2e8f0; }
         .std-btn:active { transform: translateY(1px); }
@@ -36,14 +40,14 @@
         .btn-primary { 
             background-color: #2563eb; 
             color: white; 
-            border: 1px solid #1d4ed8; 
+            border: 2px solid #1d4ed8; 
             box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3);
         }
         .btn-primary:hover { background-color: #1d4ed8; }
 
         .drug-btn {
             background-color: white;
-            border: 2px solid #e2e8f0;
+            border: 2px solid #cbd5e1;
             color: #475569;
             font-weight: 700;
             font-size: 0.75rem;
@@ -51,7 +55,7 @@
             border-radius: 0.5rem;
             transition: all 0.1s;
         }
-        .drug-btn:hover { background-color: #f1f5f9; border-color: #cbd5e1; }
+        .drug-btn:hover { background-color: #f1f5f9; border-color: #94a3b8; }
         .drug-btn:active { transform: scale(0.95); }
 
         /* --- CARDS --- */
@@ -59,14 +63,14 @@
             background-color: white;
             border-radius: 0.75rem;
             box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-            border: 1px solid #94a3b8;
+            border: 2px solid #cbd5e1;
             overflow: hidden;
             margin-bottom: 1.5rem;
             padding: 1.25rem;
         }
 
         .section-title {
-            font-size: 1.25rem;
+            font-size: 1.5rem;
             font-weight: 900;
             color: #0f172a;
             margin-bottom: 1rem;
@@ -87,7 +91,7 @@
         label {
             display: block;
             font-size: 0.75rem;
-            font-weight: 700;
+            font-weight: 800;
             text-transform: uppercase;
             color: #475569;
             margin-bottom: 0.25rem;
@@ -98,8 +102,23 @@
             padding: 0.5rem;
             font-size: 0.875rem;
             border-radius: 0.375rem;
-            border: 1px solid #94a3b8;
-            font-weight: 500;
+            border: 1px solid #94a3b8; /* Match Trauma Tool border */
+            font-weight: 600;
+        }
+        
+        /* Rich Text / Log Output Style */
+        .rich-output {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            color: #334155;
+            background-color: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            min-height: 24rem;
+            overflow-y: auto;
+            white-space: pre-wrap; 
         }
 
         /* --- PRINT --- */
@@ -129,28 +148,28 @@
     <header class="bg-white shadow-sm sticky top-0 z-50 border-b border-slate-300 no-print">
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center gap-4">
-                <img src="https://iili.io/KGQOvkl.md.png" alt="Logo" class="h-12 w-auto object-contain" onerror="this.style.display='none'">
+                <img src="https://iili.io/KGQOvkl.md.png" alt="Logo" class="h-16 md:h-20 w-auto object-contain" onerror="this.style.display='none'">
                 <div>
                     <h1 class="text-xl md:text-2xl font-black text-slate-900 leading-tight">Sedation Record</h1>
-                    <p class="text-xs text-blue-600 font-bold">RCEM Guidelines (2022)</p>
+                    <p class="text-xs text-blue-600 font-bold bg-blue-50 px-2 py-0.5 rounded border border-blue-100 inline-block">RCEM Guidelines (2022)</p>
                 </div>
             </div>
             <div class="flex items-center gap-3">
-                 <a href="https://drive.google.com/file/d/1nI7EvvR_6Pg1l_L7c0Z5PevoseCy7Qia/view?usp=sharing" target="_blank" class="hidden sm:inline-flex items-center gap-2 px-3 py-1 text-xs font-bold text-blue-700 bg-blue-50 rounded border border-blue-200 hover:bg-blue-100">
+                 <a href="https://drive.google.com/file/d/1nI7EvvR_6Pg1l_L7c0Z5PevoseCy7Qia/view?usp=sharing" target="_blank" class="hidden sm:inline-flex items-center gap-2 px-3 py-1 text-xs font-bold text-blue-700 bg-blue-50 rounded border-2 border-blue-200 hover:bg-blue-100 transition">
                     Paper Form
                 </a>
-                <button id="header-print-btn" class="px-3 py-1 bg-slate-800 text-white text-xs font-bold rounded hover:bg-slate-700 transition">
+                <button id="header-print-btn" class="px-4 py-2 bg-slate-800 text-white text-xs font-bold rounded hover:bg-slate-700 transition border-2 border-slate-900">
                     PRINT
                 </button>
             </div>
         </div>
     </header>
 
-    <main class="container mx-auto max-w-5xl px-4 py-6">
+    <main class="container mx-auto max-w-7xl px-4 py-6">
         
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-            <div class="lg:col-span-2">
+            <div class="lg:col-span-8 flex flex-col gap-6">
 
                 <div class="hidden print-header mb-6 text-center border-b-2 border-slate-800 pb-4">
                      <h1 class="text-3xl font-black text-slate-900">Procedural Sedation Record</h1>
@@ -167,40 +186,40 @@
                             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                                 <div>
                                     <label for="age">Age</label>
-                                    <input type="number" id="age" placeholder="Yr" class="font-bold">
+                                    <input type="number" id="age" placeholder="Yr" class="font-bold border-slate-400">
                                 </div>
                                 <div class="md:col-span-2">
                                     <label for="weight">Weight (kg) <span class="text-red-500">*</span></label>
                                     <div class="flex items-center gap-2">
-                                        <input type="number" id="weight" placeholder="kg" class="font-bold">
-                                        <label class="flex items-center gap-1 bg-slate-100 px-2 py-2 rounded border border-slate-300 cursor-pointer h-[42px] mt-[1px]">
-                                            <input type="checkbox" id="weight-estimated" class="w-4 h-4 text-blue-600 rounded">
+                                        <input type="number" id="weight" placeholder="kg" class="font-bold border-slate-400">
+                                        <label class="flex items-center gap-1 bg-slate-100 px-2 py-2 rounded border border-slate-400 cursor-pointer h-[42px] mt-[1px] hover:bg-slate-200">
+                                            <input type="checkbox" id="weight-estimated" class="w-4 h-4 text-blue-600 rounded border-slate-400">
                                             <span class="text-[10px] uppercase font-bold text-slate-600">Est</span>
                                         </label>
                                     </div>
                                 </div>
                                 <div class="md:col-span-4">
                                     <label for="allergies">Allergies</label>
-                                    <input type="text" id="allergies" placeholder="Reaction details..." class="text-red-700 font-bold">
+                                    <input type="text" id="allergies" placeholder="Reaction details..." class="text-red-700 font-bold border-slate-400">
                                 </div>
                                 <div class="md:col-span-4">
                                     <label for="pre-analgesia">Pre-Sedation Analgesia</label>
-                                    <input type="text" id="pre-analgesia" placeholder="e.g. IV Morphine 10mg @ 14:00">
+                                    <input type="text" id="pre-analgesia" placeholder="e.g. IV Morphine 10mg @ 14:00" class="border-slate-400">
                                 </div>
                                 <div class="md:col-span-2">
                                     <label for="procedure">Procedure</label>
-                                    <input type="text" id="procedure">
+                                    <input type="text" id="procedure" class="border-slate-400">
                                 </div>
                                 <div class="md:col-span-2">
                                     <label for="indication">Indication</label>
-                                    <input type="text" id="indication">
+                                    <input type="text" id="indication" class="border-slate-400">
                                 </div>
                                 
                                 <div class="md:col-span-4 mt-2 pt-2 border-t border-slate-200 grid grid-cols-1 md:grid-cols-4 gap-4">
-                                    <div><label>Sedationist</label><input type="text" id="sedationist"></div>
-                                    <div><label>Grade</label><input type="text" id="sedationist-grade" placeholder="e.g. SpR / EM-ACPs"></div>
-                                    <div><label>Procedure Dr</label><input type="text" id="procedure-doctor"></div>
-                                    <div><label>Nurse</label><input type="text" id="nurse"></div>
+                                    <div><label>Sedationist</label><input type="text" id="sedationist" class="border-slate-400"></div>
+                                    <div><label>Grade</label><input type="text" id="sedationist-grade" placeholder="e.g. SpR / EM-ACPs" class="border-slate-400"></div>
+                                    <div><label>Procedure Dr</label><input type="text" id="procedure-doctor" class="border-slate-400"></div>
+                                    <div><label>Nurse</label><input type="text" id="nurse" class="border-slate-400"></div>
                                 </div>
                             </div>
 
@@ -208,8 +227,8 @@
                                 <div class="flex justify-between items-center mb-2">
                                     <label class="text-blue-900 font-black">Estimated Dose Guide (Adults)</label>
                                     <label class="flex items-center gap-2 cursor-pointer">
-                                        <input type="checkbox" id="frail-elderly" class="rounded text-blue-600">
-                                        <span class="text-xs text-blue-800">Frail / >65?</span>
+                                        <input type="checkbox" id="frail-elderly" class="rounded text-blue-600 border-blue-400">
+                                        <span class="text-xs text-blue-800 font-bold">Frail / >65?</span>
                                     </label>
                                 </div>
                                 <button type="button" id="calculate-doses-button" class="w-full std-btn bg-white border-blue-300 text-blue-700 hover:bg-blue-100">
@@ -225,53 +244,53 @@
                             <div class="flex flex-col gap-4">
                                 
                                 <div class="bg-orange-50 p-3 rounded border border-orange-200">
-                                    <label class="flex items-start gap-2 cursor-pointer">
-                                        <input id="consent-obtained" type="checkbox" class="mt-1 w-5 h-5 text-orange-600 rounded">
+                                    <label class="flex items-start gap-2 cursor-pointer mb-0">
+                                        <input id="consent-obtained" type="checkbox" class="mt-1 w-5 h-5 text-orange-600 rounded border-orange-400">
                                         <span class="text-sm font-bold text-orange-900 leading-tight">Informed consent (verbal/written) obtained & documented.</span>
                                     </label>
                                 </div>
 
-                                <div class="sub-card mt-0">
+                                <div class="sub-card mt-0 border-slate-300">
                                     <label>Risks Discussed</label>
                                     <div class="space-y-2 mt-1">
-                                        <label class="flex items-start gap-2 font-normal text-sm"><input id="risk-nausea" type="checkbox" class="rounded mt-1"> 
+                                        <label class="flex items-start gap-2 font-normal text-sm text-slate-700"><input id="risk-nausea" type="checkbox" class="rounded mt-1 border-slate-400"> 
                                             <span class="block leading-snug">Nausea or Vomiting (Common; up to 10-15%)</span>
                                         </label>
-                                        <label class="flex items-start gap-2 font-normal text-sm"><input id="risk-bp" type="checkbox" class="rounded mt-1"> 
+                                        <label class="flex items-start gap-2 font-normal text-sm text-slate-700"><input id="risk-bp" type="checkbox" class="rounded mt-1 border-slate-400"> 
                                             <span class="block leading-snug">Transient low blood pressure or oxygen drop (Common; 5-10%)</span>
                                         </label>
-                                        <label class="flex items-start gap-2 font-normal text-sm"><input id="risk-emergence" type="checkbox" class="rounded mt-1"> 
+                                        <label class="flex items-start gap-2 font-normal text-sm text-slate-700"><input id="risk-emergence" type="checkbox" class="rounded mt-1 border-slate-400"> 
                                             <span class="block leading-snug">Agitation or Bad Dreams (Emergence Reaction; up to 10%)</span>
                                         </label>
-                                        <label class="flex items-start gap-2 font-normal text-sm"><input id="risk-severe-breathing" type="checkbox" class="rounded mt-1"> 
+                                        <label class="flex items-start gap-2 font-normal text-sm text-slate-700"><input id="risk-severe-breathing" type="checkbox" class="rounded mt-1 border-slate-400"> 
                                             <span class="block leading-snug">Need for Airway Intervention (Rare; SIVA/TROOPS sentinel event <1%)</span>
                                         </label>
                                     </div>
                                 </div>
 
-                                <div class="sub-card mt-0">
+                                <div class="sub-card mt-0 border-slate-300">
                                     <label>Fasting Status</label>
                                     <div class="grid grid-cols-2 gap-4">
-                                        <div><span class="text-[10px] uppercase font-bold text-slate-400">Food</span><input type="time" id="last-food"></div>
-                                        <div><span class="text-[10px] uppercase font-bold text-slate-400">Clear Fluid</span><input type="time" id="last-fluid"></div>
+                                        <div><span class="text-[10px] uppercase font-bold text-slate-500">Food</span><input type="time" id="last-food" class="border-slate-400"></div>
+                                        <div><span class="text-[10px] uppercase font-bold text-slate-500">Clear Fluid</span><input type="time" id="last-fluid" class="border-slate-400"></div>
                                     </div>
                                 </div>
 
-                                <div class="sub-card mt-0">
+                                <div class="sub-card mt-0 bg-white border-slate-300">
                                     <div class="flex justify-between items-center mb-2">
                                         <label class="mb-0 text-orange-900 font-black">RCEM Sedation Requirements Guide</label>
                                     </div>
-                                    <div class="overflow-x-auto text-xs">
+                                    <div class="overflow-x-auto text-xs border border-orange-100 rounded">
                                         <table class="w-full text-left table-auto">
-                                            <thead class="bg-orange-100/50">
+                                            <thead class="bg-orange-100">
                                                 <tr>
-                                                    <th class="py-1 px-2 font-bold text-orange-800">Level</th>
-                                                    <th class="py-1 px-2 font-bold text-orange-800">Staffing</th>
-                                                    <th class="py-1 px-2 font-bold text-orange-800">Monitoring</th>
-                                                    <th class="py-1 px-2 font-bold text-orange-800">Competency</th>
+                                                    <th class="py-1 px-2 font-bold text-orange-900">Level</th>
+                                                    <th class="py-1 px-2 font-bold text-orange-900">Staffing</th>
+                                                    <th class="py-1 px-2 font-bold text-orange-900">Monitoring</th>
+                                                    <th class="py-1 px-2 font-bold text-orange-900">Competency</th>
                                                 </tr>
                                             </thead>
-                                            <tbody>
+                                            <tbody class="text-slate-700">
                                                 <tr>
                                                     <td class="py-1 px-2 font-bold">Moderate</td>
                                                     <td class="py-1 px-2">Nurse, Sedationist, Proceduralist</td>
@@ -279,7 +298,7 @@
                                                     <td class="py-1 px-2">ILS/ALS, Level 1 Sign-off</td>
                                                 </tr>
                                                 <tr class="bg-slate-50">
-                                                    <td class="py-1 px-2 font-bold">Deep/Dissociative</td>
+                                                    <td class="py-1 px-2 font-bold">Deep/Dissoc.</td>
                                                     <td class="py-1 px-2">Nurse, Sedationist, Proceduralist</td>
                                                     <td class="py-1 px-2">ECG, NIBP, SpO₂, Capnography</td>
                                                     <td class="py-1 px-2">RCoA Assessment, Level 2 Sign-off</td>
@@ -287,97 +306,95 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                    <p class="text-[10px] text-slate-500 mt-2">Source: RCEM Best Practice Guideline (2022) - Table 1</p>
                                 </div>
 
-
-                                <div class="sub-card mt-0">
+                                <div class="sub-card mt-0 border-slate-300">
                                     <div class="flex justify-between items-center mb-2">
                                         <label class="mb-0">ASA Grade</label>
-                                        <button type="button" id="asa-guide-button" class="text-[10px] bg-slate-200 px-2 rounded no-print">?</button>
+                                        <button type="button" id="asa-guide-button" class="text-[10px] bg-slate-200 px-2 rounded font-bold hover:bg-slate-300 no-print">?</button>
                                     </div>
-                                    <div id="asa-guide-content" class="hidden text-xs text-slate-600 mb-2 p-2 bg-slate-100 rounded">
+                                    <div id="asa-guide-content" class="hidden text-xs text-slate-600 mb-2 p-2 bg-slate-100 rounded border border-slate-300">
                                         I:Healthy, II:Mild, III:Severe, IV:Threat to life
                                     </div>
                                     <div class="flex justify-between gap-1">
-                                        <label class="cursor-pointer text-center flex-1"><input type="radio" name="asa-grade" value="I" class="sr-only peer"><div class="py-1 border border-slate-300 rounded peer-checked:bg-blue-600 peer-checked:text-white peer-checked:border-blue-600 text-xs font-bold transition">I</div></label>
-                                        <label class="cursor-pointer text-center flex-1"><input type="radio" name="asa-grade" value="II" class="sr-only peer"><div class="py-1 border border-slate-300 rounded peer-checked:bg-blue-600 peer-checked:text-white peer-checked:border-blue-600 text-xs font-bold transition">II</div></label>
-                                        <label class="cursor-pointer text-center flex-1"><input type="radio" name="asa-grade" value="III" class="sr-only peer"><div class="py-1 border border-amber-300 bg-amber-50 text-amber-800 rounded peer-checked:bg-amber-600 peer-checked:text-white text-xs font-bold transition">III</div></label>
-                                        <label class="cursor-pointer text-center flex-1"><input type="radio" name="asa-grade" value="IV" class="sr-only peer"><div class="py-1 border border-red-300 bg-red-50 text-red-800 rounded peer-checked:bg-red-600 peer-checked:text-white text-xs font-bold transition">IV</div></label>
-                                        <label class="cursor-pointer text-center flex-1"><input type="radio" name="asa-grade" value="V" class="sr-only peer"><div class="py-1 border border-red-300 bg-red-50 text-red-800 rounded peer-checked:bg-red-600 peer-checked:text-white text-xs font-bold transition">V</div></label>
+                                        <label class="cursor-pointer text-center flex-1"><input type="radio" name="asa-grade" value="I" class="sr-only peer"><div class="py-2 border-2 border-slate-300 rounded peer-checked:bg-blue-600 peer-checked:text-white peer-checked:border-blue-700 text-xs font-bold transition hover:bg-slate-50">I</div></label>
+                                        <label class="cursor-pointer text-center flex-1"><input type="radio" name="asa-grade" value="II" class="sr-only peer"><div class="py-2 border-2 border-slate-300 rounded peer-checked:bg-blue-600 peer-checked:text-white peer-checked:border-blue-700 text-xs font-bold transition hover:bg-slate-50">II</div></label>
+                                        <label class="cursor-pointer text-center flex-1"><input type="radio" name="asa-grade" value="III" class="sr-only peer"><div class="py-2 border-2 border-amber-200 bg-amber-50 text-amber-800 rounded peer-checked:bg-amber-600 peer-checked:text-white peer-checked:border-amber-700 text-xs font-bold transition hover:bg-amber-100">III</div></label>
+                                        <label class="cursor-pointer text-center flex-1"><input type="radio" name="asa-grade" value="IV" class="sr-only peer"><div class="py-2 border-2 border-red-200 bg-red-50 text-red-800 rounded peer-checked:bg-red-600 peer-checked:text-white peer-checked:border-red-700 text-xs font-bold transition hover:bg-red-100">IV</div></label>
+                                        <label class="cursor-pointer text-center flex-1"><input type="radio" name="asa-grade" value="V" class="sr-only peer"><div class="py-2 border-2 border-red-200 bg-red-50 text-red-800 rounded peer-checked:bg-red-600 peer-checked:text-white peer-checked:border-red-700 text-xs font-bold transition hover:bg-red-100">V</div></label>
                                     </div>
                                 </div>
 
                                 <div class="sub-card border-slate-300 mt-0">
-                                    <label class="border-b border-slate-200 pb-1 mb-2">Airway (LEMON)</label>
+                                    <label class="border-b border-slate-200 pb-1 mb-3">Airway (LEMON)</label>
                                     
-                                    <div class="mb-3">
+                                    <div class="mb-4">
                                         <div class="flex items-center gap-2 mb-1">
-                                            <span class="font-black text-blue-600 w-4">L</span>
-                                            <div class="flex gap-4">
-                                                <label class="font-normal text-xs flex items-center gap-1"><input type="radio" name="lemon-l" value="Normal"> Normal</label>
-                                                <label class="font-normal text-xs flex items-center gap-1"><input type="radio" name="lemon-l" value="Abnormal"> Abnormal</label>
+                                            <span class="font-black text-blue-600 w-5">L</span>
+                                            <div class="flex gap-2 w-full">
+                                                 <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-l" value="Normal" class="sr-only peer"><div class="py-1 border border-slate-300 rounded peer-checked:bg-blue-600 peer-checked:text-white peer-checked:font-bold text-xs transition">Normal</div></label>
+                                                 <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-l" value="Abnormal" class="sr-only peer"><div class="py-1 border border-slate-300 rounded peer-checked:bg-amber-500 peer-checked:text-white peer-checked:font-bold text-xs transition">Abnormal</div></label>
                                             </div>
                                         </div>
-                                        <input type="text" id="lemon-l-specify" placeholder="Details..." class="text-xs py-1">
+                                        <input type="text" id="lemon-l-specify" placeholder="Details..." class="text-xs py-1 border-slate-300 rounded">
                                     </div>
 
-                                    <div class="mb-3 flex items-center gap-2">
-                                        <span class="font-black text-blue-600 w-4">E</span>
-                                        <div class="flex gap-4">
-                                            <label class="font-normal text-xs flex items-center gap-1"><input type="radio" name="lemon-e" value="Met"> 3-3-2 Met</label>
-                                            <label class="font-normal text-xs flex items-center gap-1"><input type="radio" name="lemon-e" value="Not Met"> Not Met</label>
+                                    <div class="mb-4 flex items-center gap-2">
+                                        <span class="font-black text-blue-600 w-5">E</span>
+                                        <div class="flex gap-2 w-full">
+                                             <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-e" value="Met" class="sr-only peer"><div class="py-1 border border-slate-300 rounded peer-checked:bg-blue-600 peer-checked:text-white peer-checked:font-bold text-xs transition">3-3-2 Met</div></label>
+                                             <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-e" value="Not Met" class="sr-only peer"><div class="py-1 border border-slate-300 rounded peer-checked:bg-amber-500 peer-checked:text-white peer-checked:font-bold text-xs transition">Not Met</div></label>
                                         </div>
                                     </div>
 
-                                    <div class="mb-3">
+                                    <div class="mb-4">
                                         <div class="flex items-center gap-2 mb-1">
-                                            <span class="font-black text-blue-600 w-4">M</span>
+                                            <span class="font-black text-blue-600 w-5">M</span>
                                             <div class="flex gap-1 flex-1">
-                                                <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-m" value="I" class="sr-only peer"><div class="text-[10px] border rounded peer-checked:bg-blue-600 peer-checked:text-white">I</div></label>
-                                                <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-m" value="II" class="sr-only peer"><div class="text-[10px] border rounded peer-checked:bg-blue-600 peer-checked:text-white">II</div></label>
-                                                <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-m" value="III" class="sr-only peer"><div class="text-[10px] border rounded peer-checked:bg-blue-600 peer-checked:text-white">III</div></label>
-                                                <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-m" value="IV" class="sr-only peer"><div class="text-[10px] border rounded peer-checked:bg-blue-600 peer-checked:text-white">IV</div></label>
-                                                <button type="button" id="mallampati-guide-button" class="text-[10px] bg-slate-200 px-1 rounded no-print">?</button>
+                                                <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-m" value="I" class="sr-only peer"><div class="text-xs py-1 border border-slate-300 rounded peer-checked:bg-blue-600 peer-checked:text-white font-bold transition">I</div></label>
+                                                <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-m" value="II" class="sr-only peer"><div class="text-xs py-1 border border-slate-300 rounded peer-checked:bg-blue-600 peer-checked:text-white font-bold transition">II</div></label>
+                                                <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-m" value="III" class="sr-only peer"><div class="text-xs py-1 border border-slate-300 rounded peer-checked:bg-amber-500 peer-checked:text-white font-bold transition">III</div></label>
+                                                <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-m" value="IV" class="sr-only peer"><div class="text-xs py-1 border border-slate-300 rounded peer-checked:bg-red-500 peer-checked:text-white font-bold transition">IV</div></label>
+                                                <button type="button" id="mallampati-guide-button" class="text-[10px] bg-slate-200 px-2 rounded font-bold hover:bg-slate-300 no-print">?</button>
                                             </div>
                                         </div>
-                                        <div id="mallampati-guide-content" class="hidden">
+                                        <div id="mallampati-guide-content" class="hidden mt-1">
                                             <img src="images/Mallampati.jpg" class="w-full rounded border border-slate-300" alt="Mallampati Score">
                                         </div>
                                     </div>
 
-                                    <div class="mb-3">
+                                    <div class="mb-4">
                                         <div class="flex items-center gap-2 mb-1">
-                                            <span class="font-black text-blue-600 w-4">U</span>
+                                            <span class="font-black text-blue-600 w-5">U</span>
                                             <label class="mb-0">Upper Lip Bite Test</label>
-                                            <button type="button" id="ulbt-guide-button" class="text-[10px] bg-slate-200 px-1 rounded no-print">?</button>
+                                            <button type="button" id="ulbt-guide-button" class="text-[10px] bg-slate-200 px-2 rounded font-bold hover:bg-slate-300 no-print">?</button>
                                         </div>
-                                        <div id="ulbt-guide-content" class="hidden">
+                                        <div id="ulbt-guide-content" class="hidden mt-1 mb-2">
                                             <img src="images/upperlipbitetest.png" class="w-full rounded border border-slate-300" alt="Upper Lip Bite Test Score">
                                         </div>
                                         <div class="flex gap-1 flex-1 mt-1">
-                                            <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-u" value="Class 1" class="sr-only peer"><div class="text-xs border rounded peer-checked:bg-blue-600 peer-checked:text-white py-1">Class 1</div></label>
-                                            <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-u" value="Class 2" class="sr-only peer"><div class="text-xs border rounded peer-checked:bg-blue-600 peer-checked:text-white py-1">Class 2</div></label>
-                                            <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-u" value="Class 3" class="sr-only peer"><div class="text-xs border rounded peer-checked:bg-blue-600 peer-checked:text-white py-1">Class 3</div></label>
+                                            <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-u" value="Class 1" class="sr-only peer"><div class="text-xs border border-slate-300 rounded peer-checked:bg-blue-600 peer-checked:text-white py-1 font-bold transition">Class 1</div></label>
+                                            <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-u" value="Class 2" class="sr-only peer"><div class="text-xs border border-slate-300 rounded peer-checked:bg-blue-600 peer-checked:text-white py-1 font-bold transition">Class 2</div></label>
+                                            <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-u" value="Class 3" class="sr-only peer"><div class="text-xs border border-slate-300 rounded peer-checked:bg-amber-500 peer-checked:text-white py-1 font-bold transition">Class 3</div></label>
                                         </div>
                                     </div>
 
-                                    <div class="mb-3">
+                                    <div class="mb-4">
                                         <div class="flex items-center gap-2 mb-1">
-                                            <span class="font-black text-blue-600 w-4">O</span>
-                                            <div class="flex gap-4">
-                                                <label class="font-normal text-xs flex items-center gap-1"><input type="radio" name="lemon-o" value="No"> No Obstr/OSA</label>
-                                                <label class="font-normal text-xs flex items-center gap-1"><input type="radio" name="lemon-o" value="Yes"> Yes</label>
+                                            <span class="font-black text-blue-600 w-5">O</span>
+                                            <div class="flex gap-2 w-full">
+                                                <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-o" value="No" class="sr-only peer"><div class="py-1 border border-slate-300 rounded peer-checked:bg-blue-600 peer-checked:text-white peer-checked:font-bold text-xs transition">No Obstr/OSA</div></label>
+                                                <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-o" value="Yes" class="sr-only peer"><div class="py-1 border border-slate-300 rounded peer-checked:bg-amber-500 peer-checked:text-white peer-checked:font-bold text-xs transition">Yes</div></label>
                                             </div>
                                         </div>
-                                        <input type="text" id="lemon-o-specify" placeholder="Details..." class="text-xs py-1">
+                                        <input type="text" id="lemon-o-specify" placeholder="Details..." class="text-xs py-1 border-slate-300 rounded">
                                     </div>
 
                                     <div class="flex items-center gap-2">
-                                        <span class="font-black text-blue-600 w-4">N</span>
-                                        <div class="flex gap-4">
-                                            <label class="font-normal text-xs flex items-center gap-1"><input type="radio" name="lemon-n" value="Normal"> Neck Normal</label>
-                                            <label class="font-normal text-xs flex items-center gap-1"><input type="radio" name="lemon-n" value="Restricted"> Restricted</label>
+                                        <span class="font-black text-blue-600 w-5">N</span>
+                                        <div class="flex gap-2 w-full">
+                                            <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-n" value="Normal" class="sr-only peer"><div class="py-1 border border-slate-300 rounded peer-checked:bg-blue-600 peer-checked:text-white peer-checked:font-bold text-xs transition">Neck Normal</div></label>
+                                            <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-n" value="Restricted" class="sr-only peer"><div class="py-1 border border-slate-300 rounded peer-checked:bg-amber-500 peer-checked:text-white peer-checked:font-bold text-xs transition">Restricted</div></label>
                                         </div>
                                     </div>
                                 </div>
@@ -385,9 +402,9 @@
                                 <div class="bg-red-50 border border-red-200 p-3 rounded-lg">
                                     <label class="text-red-800">Contraindications</label>
                                     <div class="space-y-1 mt-1">
-                                        <label class="flex items-center gap-2 font-bold text-xs text-red-700"><input id="ci-allergy" type="checkbox" class="text-red-600 rounded"> Known Allergy</label>
-                                        <label class="flex items-center gap-2 font-bold text-xs text-red-700"><input id="ci-hemo" type="checkbox" class="text-red-600 rounded"> Haemodynamic Instability</label>
-                                        <label class="flex items-center gap-2 font-bold text-xs text-red-700"><input id="ci-gcs" type="checkbox" class="text-red-600 rounded"> Compromised Airway / GCS</label>
+                                        <label class="flex items-center gap-2 font-bold text-xs text-red-700 cursor-pointer"><input id="ci-allergy" type="checkbox" class="text-red-600 rounded border-red-300"> Known Allergy</label>
+                                        <label class="flex items-center gap-2 font-bold text-xs text-red-700 cursor-pointer"><input id="ci-hemo" type="checkbox" class="text-red-600 rounded border-red-300"> Haemodynamic Instability</label>
+                                        <label class="flex items-center gap-2 font-bold text-xs text-red-700 cursor-pointer"><input id="ci-gcs" type="checkbox" class="text-red-600 rounded border-red-300"> Compromised Airway / GCS</label>
                                     </div>
                                 </div>
                             </div>
@@ -399,7 +416,7 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <label>Target Level</label>
-                                    <select id="plan-target">
+                                    <select id="plan-target" class="border-slate-400">
                                         <option>Minimal (Anxiolysis)</option>
                                         <option>Moderate (Conscious)</option>
                                         <option>Deep</option>
@@ -408,48 +425,48 @@
                                 </div>
                                 <div>
                                     <label>Primary Agent(s)</label>
-                                    <input type="text" id="plan-agent" placeholder="e.g. Propofol">
+                                    <input type="text" id="plan-agent" placeholder="e.g. Propofol" class="border-slate-400">
                                 </div>
                             </div>
 
-                            <div class="sub-card mt-4">
+                            <div class="sub-card mt-4 border-slate-300">
                                 <label class="mb-2 block">SOAP-ME Checklist</label>
                                 <div class="flex flex-wrap gap-3">
-                                    <label class="flex items-center gap-2 p-2 bg-white border rounded cursor-pointer"><input id="soap-s" type="checkbox" class="rounded text-green-600"> <span class="font-normal">Suction</span></label>
-                                    <label class="flex items-center gap-2 p-2 bg-white border rounded cursor-pointer"><input id="soap-o" type="checkbox" class="rounded text-green-600"> <span class="font-normal">Oxygen/BVM</span></label>
-                                    <label class="flex items-center gap-2 p-2 bg-white border rounded cursor-pointer"><input id="soap-a" type="checkbox" class="rounded text-green-600"> <span class="font-normal">Airway</span></label>
-                                    <label class="flex items-center gap-2 p-2 bg-white border rounded cursor-pointer"><input id="soap-m" type="checkbox" class="rounded text-green-600"> <span class="font-normal">Monitoring</span></label>
-                                    <label class="flex items-center gap-2 p-2 bg-white border rounded cursor-pointer"><input id="soap-e" type="checkbox" class="rounded text-green-600"> <span class="font-normal">Env/IV</span></label>
+                                    <label class="flex items-center gap-2 p-2 bg-white border border-slate-300 rounded cursor-pointer hover:bg-green-50"><input id="soap-s" type="checkbox" class="rounded text-green-600 border-slate-400"> <span class="font-semibold text-sm">Suction</span></label>
+                                    <label class="flex items-center gap-2 p-2 bg-white border border-slate-300 rounded cursor-pointer hover:bg-green-50"><input id="soap-o" type="checkbox" class="rounded text-green-600 border-slate-400"> <span class="font-semibold text-sm">Oxygen/BVM</span></label>
+                                    <label class="flex items-center gap-2 p-2 bg-white border border-slate-300 rounded cursor-pointer hover:bg-green-50"><input id="soap-a" type="checkbox" class="rounded text-green-600 border-slate-400"> <span class="font-semibold text-sm">Airway</span></label>
+                                    <label class="flex items-center gap-2 p-2 bg-white border border-slate-300 rounded cursor-pointer hover:bg-green-50"><input id="soap-m" type="checkbox" class="rounded text-green-600 border-slate-400"> <span class="font-semibold text-sm">Monitoring</span></label>
+                                    <label class="flex items-center gap-2 p-2 bg-white border border-slate-300 rounded cursor-pointer hover:bg-green-50"><input id="soap-e" type="checkbox" class="rounded text-green-600 border-slate-400"> <span class="font-semibold text-sm">Env/IV</span></label>
                                 </div>
                                 
                                 <div class="mt-3 pt-3 border-t border-slate-200">
                                     <label class="mb-2 block">Emergency Drugs Available</label>
-                                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2">
-                                        <label class="flex items-center gap-1"><input id="em-atropine" type="checkbox" class="rounded"> Atropine</label>
-                                        <label class="flex items-center gap-1"><input id="em-metaraminol" type="checkbox" class="rounded"> Metaraminol</label>
-                                        <label class="flex items-center gap-1"><input id="em-sux" type="checkbox" class="rounded"> Sux</label>
-                                        <label class="flex items-center gap-1"><input id="em-adrenaline" type="checkbox" class="rounded"> Adrenaline</label>
-                                        <label class="flex items-center gap-1"><input id="em-flumazenil" type="checkbox" class="rounded"> Flumazenil</label>
-                                        <label class="flex items-center gap-1"><input id="em-naloxone" type="checkbox" class="rounded"> Naloxone</label>
+                                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 text-sm text-slate-700">
+                                        <label class="flex items-center gap-1 cursor-pointer"><input id="em-atropine" type="checkbox" class="rounded border-slate-400"> Atropine</label>
+                                        <label class="flex items-center gap-1 cursor-pointer"><input id="em-metaraminol" type="checkbox" class="rounded border-slate-400"> Metaraminol</label>
+                                        <label class="flex items-center gap-1 cursor-pointer"><input id="em-sux" type="checkbox" class="rounded border-slate-400"> Sux</label>
+                                        <label class="flex items-center gap-1 cursor-pointer"><input id="em-adrenaline" type="checkbox" class="rounded border-slate-400"> Adrenaline</label>
+                                        <label class="flex items-center gap-1 cursor-pointer"><input id="em-flumazenil" type="checkbox" class="rounded border-slate-400"> Flumazenil</label>
+                                        <label class="flex items-center gap-1 cursor-pointer"><input id="em-naloxone" type="checkbox" class="rounded border-slate-400"> Naloxone</label>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg flex items-start gap-3">
-                                <input id="plan-aagbi" type="checkbox" class="mt-1 w-5 h-5 rounded text-blue-600 focus:ring-blue-500">
+                            <div class="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg flex items-start gap-3">
+                                <input id="plan-aagbi" type="checkbox" class="mt-1 w-5 h-5 rounded text-blue-600 focus:ring-blue-500 border-blue-400">
                                 <div>
-                                    <span class="block text-sm font-bold text-blue-900">AAGBI Standard Monitoring Confirmed</span>
-                                    <span class="text-xs text-blue-700">ECG, NIBP, SpO2 & <strong>Waveform Capnography</strong> (Continuous)</span>
+                                    <span class="block text-sm font-black text-blue-900">AAGBI Standard Monitoring Confirmed</span>
+                                    <span class="text-xs text-blue-700 font-bold">ECG, NIBP, SpO2 & <strong>Waveform Capnography</strong> (Continuous)</span>
                                 </div>
                             </div>
 
                             <div class="mt-4">
                                 <label>Pre-Sedation Vitals</label>
                                 <div class="grid grid-cols-4 gap-2">
-                                    <input type="text" id="pre-vital-hr" placeholder="HR" class="text-center">
-                                    <input type="text" id="pre-vital-bp" placeholder="BP" class="text-center">
-                                    <input type="text" id="pre-vital-spo2" placeholder="SpO2" class="text-center">
-                                    <input type="text" id="pre-vital-rr" placeholder="RR" class="text-center">
+                                    <input type="text" id="pre-vital-hr" placeholder="HR" class="text-center font-mono font-bold border-slate-400">
+                                    <input type="text" id="pre-vital-bp" placeholder="BP" class="text-center font-mono font-bold border-slate-400">
+                                    <input type="text" id="pre-vital-spo2" placeholder="SpO2" class="text-center font-mono font-bold border-slate-400">
+                                    <input type="text" id="pre-vital-rr" placeholder="RR" class="text-center font-mono font-bold border-slate-400">
                                 </div>
                             </div>
                         </div>
@@ -462,20 +479,19 @@
                             
                             <div id="complications-guide-content" class="hidden mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded text-xs">
                                  <strong class="block mb-1 text-sm text-yellow-900">Quick Reference - Adverse Events & Intervention (TROOPS/SIVA):</strong>
-                                 <ul class="list-disc ml-4 space-y-1">
-                                    <li><strong>Apnoea:</strong> Stimulate/Airway/BVM. A short uneventful period is acceptable in a well oxygenated patient (e.g., Propofol).</li>
+                                 <ul class="list-disc ml-4 space-y-1 text-slate-700">
+                                    <li><strong>Apnoea:</strong> Stimulate/Airway/BVM.</li>
                                     <li><strong>Laryngospasm:</strong> 100% O₂ / Jaw Thrust (Larson's) / Succinylcholine if refractory.</li>
                                     <li><strong>Hypotension:</strong> IV Fluids / Vasoactive drugs (e.g., Metaraminol).</li>
-                                    <li><strong>Agitation/Emergence Reaction:</strong> Reassurance / Benzodiazepine (e.g., Midazolam).</li>
-                                    <li><strong>Reversal Agents:</strong> Naloxone / Flumazenil should be recorded as a TROOP Intervention and requires 2 hours post-sedation monitoring.</li>
+                                    <li><strong>Agitation:</strong> Reassurance / Benzodiazepine.</li>
                                  </ul>
                             </div>
 
-                            <div class="bg-slate-800 rounded-xl p-4 text-white shadow-md mb-6 no-print">
+                            <div class="bg-slate-800 rounded-xl p-5 text-white shadow-md mb-6 no-print border-2 border-slate-900">
                                 <div class="flex flex-col md:flex-row items-center justify-between gap-4">
                                     <div class="text-center md:text-left">
                                         <div class="text-xs font-bold text-slate-400 uppercase">Sedation Timer</div>
-                                        <div id="timer-display" class="text-5xl font-mono font-black tracking-widest">00:00:00</div>
+                                        <div id="timer-display" class="text-5xl font-mono font-black tracking-widest text-white">00:00:00</div>
                                     </div>
                                     <button type="button" id="sedation-timer-button" class="std-btn bg-green-600 text-white border-green-700 hover:bg-green-700 w-full md:w-auto text-lg py-3 shadow-lg">
                                         START TIMER
@@ -483,16 +499,16 @@
                                 </div>
                                 <div class="grid grid-cols-3 gap-2 mt-4 pt-4 border-t border-slate-700">
                                     <div class="text-center">
-                                        <button type="button" id="procedure-start-button" class="w-full py-1 text-xs bg-slate-700 hover:bg-slate-600 rounded text-slate-200 font-bold mb-1">Proc Start</button>
-                                        <span id="procedure-start-output" class="text-xs font-mono text-green-400 block h-4"></span>
+                                        <button type="button" id="procedure-start-button" class="w-full py-2 text-xs bg-slate-700 hover:bg-slate-600 rounded text-slate-200 font-bold mb-1 border border-slate-600">Proc Start</button>
+                                        <span id="procedure-start-output" class="text-xs font-mono text-green-400 block h-4 font-bold"></span>
                                     </div>
                                     <div class="text-center">
-                                        <button type="button" id="procedure-end-button" class="w-full py-1 text-xs bg-slate-700 hover:bg-slate-600 rounded text-slate-200 font-bold mb-1">Proc End</button>
-                                        <span id="procedure-end-output" class="text-xs font-mono text-green-400 block h-4"></span>
+                                        <button type="button" id="procedure-end-button" class="w-full py-2 text-xs bg-slate-700 hover:bg-slate-600 rounded text-slate-200 font-bold mb-1 border border-slate-600">Proc End</button>
+                                        <span id="procedure-end-output" class="text-xs font-mono text-green-400 block h-4 font-bold"></span>
                                     </div>
                                     <div class="text-center">
-                                        <button type="button" id="patient-awake-button" class="w-full py-1 text-xs bg-slate-700 hover:bg-slate-600 rounded text-slate-200 font-bold mb-1">Awake</button>
-                                        <span id="patient-awake-output" class="text-xs font-mono text-green-400 block h-4"></span>
+                                        <button type="button" id="patient-awake-button" class="w-full py-2 text-xs bg-slate-700 hover:bg-slate-600 rounded text-slate-200 font-bold mb-1 border border-slate-600">Awake</button>
+                                        <span id="patient-awake-output" class="text-xs font-mono text-green-400 block h-4 font-bold"></span>
                                     </div>
                                 </div>
                             </div>
@@ -506,14 +522,14 @@
                                     <button type="button" class="drug-btn text-purple-700 border-purple-200 bg-purple-50" data-drug="Fentanyl">Fentanyl</button>
                                     <button type="button" class="drug-btn" data-drug="Other">Other</button>
                                 </div>
-                                <div class="overflow-x-auto border border-slate-300 rounded-lg">
+                                <div class="overflow-x-auto border-2 border-slate-300 rounded-lg">
                                     <table class="min-w-full divide-y divide-slate-200">
-                                        <thead class="bg-slate-50">
+                                        <thead class="bg-slate-100">
                                             <tr>
-                                                <th class="px-3 py-2 text-left text-[10px] font-bold text-slate-500 uppercase">Time</th>
-                                                <th class="px-3 py-2 text-left text-[10px] font-bold text-slate-500 uppercase">Drug</th>
-                                                <th class="px-3 py-2 text-left text-[10px] font-bold text-slate-500 uppercase">Dose (mg)</th>
-                                                <th class="px-3 py-2 text-left text-[10px] font-bold text-slate-500 uppercase">Given By</th>
+                                                <th class="px-3 py-2 text-left text-[10px] font-bold text-slate-600 uppercase">Time</th>
+                                                <th class="px-3 py-2 text-left text-[10px] font-bold text-slate-600 uppercase">Drug</th>
+                                                <th class="px-3 py-2 text-left text-[10px] font-bold text-slate-600 uppercase">Dose (mg)</th>
+                                                <th class="px-3 py-2 text-left text-[10px] font-bold text-slate-600 uppercase">Given By</th>
                                                 <th class="px-3 py-2 w-8 no-print"></th>
                                             </tr>
                                         </thead>
@@ -533,17 +549,17 @@
                                     <button id="dismiss-toast-button" class="font-bold underline">OK</button>
                                  </div>
 
-                                 <div class="overflow-x-auto border border-slate-300 rounded-lg">
+                                 <div class="overflow-x-auto border-2 border-slate-300 rounded-lg">
                                     <table class="min-w-full divide-y divide-slate-200">
-                                        <thead class="bg-slate-50">
+                                        <thead class="bg-slate-100">
                                             <tr>
-                                                <th class="px-2 py-2 text-[10px] font-bold text-slate-500 uppercase">Time</th>
-                                                <th class="px-2 py-2 text-[10px] font-bold text-slate-500 uppercase">HR</th>
-                                                <th class="px-2 py-2 text-[10px] font-bold text-slate-500 uppercase">BP</th>
-                                                <th class="px-2 py-2 text-[10px] font-bold text-slate-500 uppercase">SpO2</th>
-                                                <th class="px-2 py-2 text-[10px] font-bold text-slate-500 uppercase">RR</th>
-                                                <th class="px-2 py-2 text-[10px] font-bold text-slate-500 uppercase">EtCO2</th>
-                                                <th class="px-2 py-2 text-[10px] font-bold text-slate-500 uppercase w-24">Score</th>
+                                                <th class="px-2 py-2 text-[10px] font-bold text-slate-600 uppercase">Time</th>
+                                                <th class="px-2 py-2 text-[10px] font-bold text-slate-600 uppercase">HR</th>
+                                                <th class="px-2 py-2 text-[10px] font-bold text-slate-600 uppercase">BP</th>
+                                                <th class="px-2 py-2 text-[10px] font-bold text-slate-600 uppercase">SpO2</th>
+                                                <th class="px-2 py-2 text-[10px] font-bold text-slate-600 uppercase">RR</th>
+                                                <th class="px-2 py-2 text-[10px] font-bold text-slate-600 uppercase">EtCO2</th>
+                                                <th class="px-2 py-2 text-[10px] font-bold text-slate-600 uppercase w-24">Score</th>
                                                 <th class="px-2 py-2 w-8 no-print"></th>
                                             </tr>
                                         </thead>
@@ -554,7 +570,7 @@
                             
                             <div class="mt-4">
                                 <label>Notes / Adverse Events <span class="text-xs font-normal text-slate-500">(Consider TROOPS Intermediate/Sentinel reporting)</span></label>
-                                <textarea id="general-notes" rows="3" class="w-full p-2 border border-slate-300 rounded text-sm"></textarea>
+                                <textarea id="general-notes" rows="3" class="w-full p-2 border border-slate-400 rounded text-sm font-medium"></textarea>
                             </div>
                         </div>
 
@@ -562,47 +578,47 @@
                             <div class="section-title text-purple-800">5. Outcome & Discharge</div>
                             
                             <div class="flex flex-col gap-4">
-                                <div class="sub-card bg-white mt-0">
+                                <div class="sub-card bg-white mt-0 border-slate-300">
                                     <label>Procedure Outcome</label>
                                     <div class="flex gap-4 mt-2">
-                                        <label class="flex items-center gap-2 font-normal"><input type="radio" name="outcome-proc" value="Successful" class="text-blue-600"> Successful</label>
-                                        <label class="flex items-center gap-2 font-normal"><input type="radio" name="outcome-proc" value="Unsuccessful" class="text-blue-600"> Unsuccessful</label>
+                                        <label class="flex items-center gap-2 font-bold text-slate-700 cursor-pointer"><input type="radio" name="outcome-proc" value="Successful" class="text-blue-600 border-slate-400 w-5 h-5"> Successful</label>
+                                        <label class="flex items-center gap-2 font-bold text-slate-700 cursor-pointer"><input type="radio" name="outcome-proc" value="Unsuccessful" class="text-blue-600 border-slate-400 w-5 h-5"> Unsuccessful</label>
                                     </div>
                                 </div>
-                                <div class="sub-card bg-white mt-0">
+                                <div class="sub-card bg-white mt-0 border-slate-300">
                                     <label>Discharge Criteria (RCEM Box 3)</label>
-                                    <div class="space-y-2 mt-2 text-sm">
-                                        <label class="flex items-center gap-2 font-normal"><input type="checkbox" id="dc-vitals" class="rounded text-blue-600"> Vital signs returned to baseline (No supplementary O₂)</label>
-                                        <label class="flex items-center gap-2 font-normal"><input type="checkbox" id="dc-aao" class="rounded text-blue-600"> Alert & Orientated (Baseline GCS)</label>
-                                        <label class="flex items-center gap-2 font-normal"><input type="checkbox" id="dc-oral" class="rounded text-blue-600"> Able to tolerate oral fluids (No vomiting)</label>
-                                        <label class="flex items-center gap-2 font-normal"><input type="checkbox" id="dc-pain" class="rounded text-blue-600"> Adequate analgesia / minimal nausea</label>
-                                        <label class="flex items-center gap-2 font-normal"><input type="checkbox" id="dc-home" class="rounded text-blue-600"> Appropriate care available at home</label>
-                                        <label class="flex items-center gap-2 font-normal"><input type="checkbox" id="dc-reversal-time" class="rounded text-red-600"> 2 hours elapsed since use of reversal agent (Naloxone/Flumazenil)</label>
+                                    <div class="space-y-2 mt-2 text-sm text-slate-700">
+                                        <label class="flex items-center gap-2 font-medium cursor-pointer"><input type="checkbox" id="dc-vitals" class="rounded text-blue-600 border-slate-400"> Vital signs returned to baseline (No supplementary O₂)</label>
+                                        <label class="flex items-center gap-2 font-medium cursor-pointer"><input type="checkbox" id="dc-aao" class="rounded text-blue-600 border-slate-400"> Alert & Orientated (Baseline GCS)</label>
+                                        <label class="flex items-center gap-2 font-medium cursor-pointer"><input type="checkbox" id="dc-oral" class="rounded text-blue-600 border-slate-400"> Able to tolerate oral fluids (No vomiting)</label>
+                                        <label class="flex items-center gap-2 font-medium cursor-pointer"><input type="checkbox" id="dc-pain" class="rounded text-blue-600 border-slate-400"> Adequate analgesia / minimal nausea</label>
+                                        <label class="flex items-center gap-2 font-medium cursor-pointer"><input type="checkbox" id="dc-home" class="rounded text-blue-600 border-slate-400"> Appropriate care available at home</label>
+                                        <label class="flex items-center gap-2 font-medium cursor-pointer"><input type="checkbox" id="dc-reversal-time" class="rounded text-red-600 border-red-400"> 2 hours elapsed since use of reversal agent</label>
                                     </div>
                                     <label class="mt-4 pt-2 border-t border-slate-200 block text-xs font-bold text-slate-500">Post-Discharge Instructions Given (48h)</label>
-                                    <div class="space-y-1 mt-1 text-sm">
-                                        <label class="flex items-center gap-2 font-normal"><input type="checkbox" id="di-drive" class="rounded text-purple-600"> No driving / operating heavy machinery</label>
-                                        <label class="flex items-center gap-2 font-normal"><input type="checkbox" id="di-adult" class="rounded text-purple-600"> Accompanied home by responsible person / 24h care</label>
-                                        <label class="flex items-center gap-2 font-normal"><input type="checkbox" id="di-alcohol" class="rounded text-purple-600"> No alcohol / avoid strenuous exercise</label>
-                                        <label class="flex items-center gap-2 font-normal"><input type="checkbox" id="di-decisions" class="rounded text-purple-600"> No legal decisions or document signing</label>
+                                    <div class="space-y-1 mt-1 text-sm text-slate-700">
+                                        <label class="flex items-center gap-2 font-medium cursor-pointer"><input type="checkbox" id="di-drive" class="rounded text-purple-600 border-slate-400"> No driving / operating heavy machinery</label>
+                                        <label class="flex items-center gap-2 font-medium cursor-pointer"><input type="checkbox" id="di-adult" class="rounded text-purple-600 border-slate-400"> Accompanied home by responsible person / 24h care</label>
+                                        <label class="flex items-center gap-2 font-medium cursor-pointer"><input type="checkbox" id="di-alcohol" class="rounded text-purple-600 border-slate-400"> No alcohol / avoid strenuous exercise</label>
+                                        <label class="flex items-center gap-2 font-medium cursor-pointer"><input type="checkbox" id="di-decisions" class="rounded text-purple-600 border-slate-400"> No legal decisions or document signing</label>
                                     </div>
                                 </div>
                                 
-                                <div class="sub-card bg-slate-50 mt-0">
+                                <div class="sub-card bg-slate-50 mt-0 border-slate-300">
                                     <label class="border-b border-slate-200 pb-1 mb-3">Disposal</label>
                                     <div class="flex gap-4">
-                                        <label class="flex items-center gap-2 font-normal"><input type="radio" name="disposal" value="Home" class="text-purple-600"> Home</label>
-                                        <label class="flex items-center gap-2 font-normal"><input type="radio" name="disposal" value="CDU" class="text-purple-600"> CDU</label>
-                                        <label class="flex items-center gap-2 font-normal"><input type="radio" name="disposal" value="Ward" class="text-purple-600"> Admit to Ward</label>
+                                        <label class="flex items-center gap-2 font-bold text-slate-700 cursor-pointer"><input type="radio" name="disposal" value="Home" class="text-purple-600 border-slate-400 w-5 h-5"> Home</label>
+                                        <label class="flex items-center gap-2 font-bold text-slate-700 cursor-pointer"><input type="radio" name="disposal" value="CDU" class="text-purple-600 border-slate-400 w-5 h-5"> CDU</label>
+                                        <label class="flex items-center gap-2 font-bold text-slate-700 cursor-pointer"><input type="radio" name="disposal" value="Ward" class="text-purple-600 border-slate-400 w-5 h-5"> Admit to Ward</label>
                                     </div>
                                 </div>
 
-                                <div class="sub-card bg-slate-50 mt-0">
+                                <div class="sub-card bg-slate-50 mt-0 border-slate-300">
                                     <label class="border-b border-slate-200 pb-1 mb-3">Sign Off</label>
                                     <div class="space-y-3">
-                                        <div><label>Name</label><input type="text" id="signoff-name"></div>
-                                        <div><label>GMC No</label><input type="text" id="signoff-gmc"></div>
-                                        <div><label>Time</label><input type="time" id="signoff-time"></div>
+                                        <div><label>Name</label><input type="text" id="signoff-name" class="border-slate-400"></div>
+                                        <div><label>GMC No</label><input type="text" id="signoff-gmc" class="border-slate-400"></div>
+                                        <div><label>Time</label><input type="time" id="signoff-time" class="border-slate-400"></div>
                                     </div>
                                 </div>
                             </div>
@@ -611,27 +627,35 @@
                     </div>
 
                 </form>
-            </div> <div class="lg:col-span-1 sticky top-20 h-fit no-print">
-                <div id="epr-log-container" class="section-card border-l-[8px] border-l-gray-500 p-4">
-                    <div class="section-title text-gray-800 mb-2">EPR Quick Log</div>
-                    <button type="button" id="copy-log-button" class="w-full std-btn btn-primary mb-3 no-print">
-                        Copy to EPR
-                    </button>
-                    <div id="epr-log-output" class="p-3 bg-white border border-slate-300 rounded text-sm overflow-auto max-h-[80vh] min-h-[500px] text-black font-serif" contenteditable="true">
-                        <strong>Procedural Sedation Record</strong>
-                        <br>
-                        Log updates automatically...
+            </div> 
+
+            <div class="lg:col-span-4 relative">
+                <div class="sticky top-24 h-fit no-print space-y-4">
+                    <div id="epr-log-container" class="bg-white p-4 rounded-xl shadow-lg border border-slate-300">
+                        <div class="flex justify-between items-center mb-3">
+                            <h2 class="text-sm font-bold text-slate-700 uppercase tracking-wide">EPR Quick Log</h2>
+                            <button type="button" id="copy-log-button" class="px-3 py-1 text-xs font-bold bg-blue-600 text-white rounded hover:bg-blue-700 transition shadow-sm">
+                                Copy Text
+                            </button>
+                        </div>
+                        <div id="epr-log-output" class="rich-output focus:ring-2 ring-blue-500 ring-offset-2" contenteditable="true">
+                            <strong>Procedural Sedation Record</strong>
+                            <br>
+                            Log updates automatically...
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-4">
+                         <button type="button" id="print-button" class="w-full std-btn bg-slate-800 text-white text-sm py-3 shadow-lg hover:bg-slate-900 border-2 border-slate-900">
+                            Print / Save to PDF
+                         </button>
+                         <p class="mt-4 text-xs text-slate-500">
+                             <a href="#" id="clear-form-button" class="text-red-500 underline font-bold">Clear Form</a>
+                         </p>
                     </div>
                 </div>
             </div>
 
-        </div> <div class="text-center no-print mt-8">
-             <button type="button" id="print-button" class="std-btn bg-slate-800 text-white text-lg px-8 py-3 shadow-lg hover:bg-slate-900">
-                Print / Save to PDF
-             </button>
-             <p class="mt-4 text-xs text-slate-500">
-                 <a href="#" id="clear-form-button" class="text-red-500 underline">Clear Form</a>
-             </p>
         </div>
     </main>
 
@@ -640,7 +664,7 @@
             <h3 id="custom-modal-title" class="text-lg font-black text-slate-900 mb-4">Input</h3>
             <div>
                 <label id="custom-modal-label" class="block text-sm font-bold text-slate-600 mb-2">Value:</label>
-                <input type="text" id="custom-modal-input" class="w-full rounded-md border-slate-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 p-3 text-lg">
+                <input type="text" id="custom-modal-input" class="w-full rounded-md border-slate-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 p-3 text-lg font-bold">
             </div>
             <div class="mt-6 flex gap-3">
                 <button id="custom-modal-ok" class="flex-1 btn-primary py-2 rounded-lg font-bold">OK</button>
@@ -649,9 +673,8 @@
         </div>
     </div>
 
-    // 5 lines above where you need to start replacing
     <template id="obs-score-template">
-        <select class="w-full text-xs border-none bg-transparent focus:ring-0 p-0">
+        <select class="w-full text-xs border-none bg-transparent focus:ring-0 p-0 font-medium">
             <option value="">-</option>
             <option value="1">1 (Awake)</option>
             <option value="2">2 (Drowsy)</option>
@@ -912,11 +935,11 @@
                 const time = new Date().toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
                 tr.innerHTML = `
                     <td class="p-1"><input type="text" value="${t} (${time})" readonly class="text-xs bg-slate-50 border-none px-1"></td>
-                    <td class="p-1"><input type="text" class="text-center"></td>
-                    <td class="p-1"><input type="text" class="text-center"></td>
-                    <td class="p-1"><input type="text" class="text-center"></td>
-                    <td class="p-1"><input type="text" class="text-center"></td>
-                    <td class="p-1"><input type="text" class="text-center"></td>
+                    <td class="p-1"><input type="text" class="text-center font-bold"></td>
+                    <td class="p-1"><input type="text" class="text-center font-bold"></td>
+                    <td class="p-1"><input type="text" class="text-center font-bold"></td>
+                    <td class="p-1"><input type="text" class="text-center font-bold"></td>
+                    <td class="p-1"><input type="text" class="text-center font-bold"></td>
                     <td class="p-1">${$('obs-score-template').innerHTML}</td>
                     <td class="p-1 text-center"><button class="text-red-500 font-bold hover:bg-red-50 rounded px-2" onclick="this.closest('tr').remove(); generateEPRLog()">x</button></td>
                 `;
@@ -992,15 +1015,30 @@
                 // Initial generation and copy button setup
                 generateEPRLog();
 
-                $('copy-log-button').onclick = () => {
-                    // Use a temporary textarea for robust copying, including formatting.
-                    const tempTextarea = document.createElement('textarea');
-                    tempTextarea.value = $('epr-log-output').innerText.trim();
-                    document.body.appendChild(tempTextarea);
-                    tempTextarea.select();
-                    document.execCommand('copy');
-                    document.body.removeChild(tempTextarea);
-                    alert("Log copied to clipboard!");
+                $('copy-log-button').onclick = async () => {
+                    try {
+                        const el = $('epr-log-output');
+                        const htmlBlob = new Blob([el.innerHTML], { type: 'text/html' });
+                        const textBlob = new Blob([el.innerText], { type: 'text/plain' });
+                        await navigator.clipboard.write([
+                            new ClipboardItem({ 
+                                'text/html': htmlBlob, 
+                                'text/plain': textBlob 
+                            })
+                        ]);
+                        const btn = $('copy-log-button');
+                        const orig = btn.innerText;
+                        btn.innerText = '✅ Copied!';
+                        btn.classList.add('bg-green-600', 'hover:bg-green-700');
+                        btn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                        setTimeout(() => {
+                            btn.innerText = orig;
+                            btn.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                            btn.classList.remove('bg-green-600', 'hover:bg-green-700');
+                        }, 2000);
+                    } catch (err) {
+                        alert("Copy failed. Please manually select and copy.");
+                    }
                 };
             }
         });
