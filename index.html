@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        /* --- CORE TRAUMA TOOL STYLES --- */
+        /* --- CORE STYLES --- */
         body { font-family: 'Inter', sans-serif; }
         textarea::-webkit-scrollbar { width: 8px; }
         textarea::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
@@ -17,7 +17,7 @@
         input, textarea, select { border-color: #94a3b8; outline: none; transition: all 0.2s; }
         input:focus, textarea:focus, select:focus { border-color: #2563eb; box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2); }
 
-        /* --- BUTTON STYLES --- */
+        /* --- BUTTONS --- */
         .std-btn { 
             transition: all 0.1s; 
             border: 1px solid #cbd5e1; 
@@ -41,22 +41,6 @@
         }
         .btn-primary:hover { background-color: #1d4ed8; }
 
-        .btn-success { 
-            background-color: #16a34a; 
-            color: white; 
-            border: 1px solid #15803d;
-            box-shadow: 0 4px 6px -1px rgba(22, 163, 74, 0.3);
-        }
-        .btn-success:hover { background-color: #15803d; }
-
-        .btn-danger { 
-            background-color: #dc2626; 
-            color: white; 
-            border: 1px solid #b91c1c;
-            box-shadow: 0 4px 6px -1px rgba(220, 38, 38, 0.3);
-        }
-        .btn-danger:hover { background-color: #b91c1c; }
-
         .drug-btn {
             background-color: white;
             border: 2px solid #e2e8f0;
@@ -70,21 +54,21 @@
         .drug-btn:hover { background-color: #f1f5f9; border-color: #cbd5e1; }
         .drug-btn:active { transform: scale(0.95); }
 
-        /* --- SECTION CARDS --- */
+        /* --- CARDS --- */
         .section-card {
             background-color: white;
             border-radius: 0.75rem;
             box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-            border: 1px solid #94a3b8; /* Matching trauma tool border */
+            border: 1px solid #94a3b8;
             overflow: hidden;
             margin-bottom: 1.5rem;
             padding: 1.25rem;
         }
 
         .section-title {
-            font-size: 1.25rem; /* text-xl */
+            font-size: 1.25rem;
             font-weight: 900;
-            color: #0f172a; /* slate-900 */
+            color: #0f172a;
             margin-bottom: 1rem;
             padding-bottom: 0.5rem;
             border-bottom: 2px solid #e2e8f0;
@@ -93,7 +77,7 @@
         }
 
         .sub-card {
-            background-color: #f8fafc; /* slate-50 */
+            background-color: #f8fafc;
             border: 1px solid #cbd5e1;
             border-radius: 0.5rem;
             padding: 1rem;
@@ -102,10 +86,10 @@
 
         label {
             display: block;
-            font-size: 0.75rem; /* text-xs */
+            font-size: 0.75rem;
             font-weight: 700;
             text-transform: uppercase;
-            color: #475569; /* slate-600 */
+            color: #475569;
             margin-bottom: 0.25rem;
         }
 
@@ -118,7 +102,7 @@
             font-weight: 500;
         }
 
-        /* --- PRINT STYLES --- */
+        /* --- PRINT --- */
         @media print {
             body { background: white; }
             .no-print { display: none !important; }
@@ -129,7 +113,6 @@
                 margin-bottom: 1rem;
                 padding: 0.5rem;
             }
-            .sub-card { border: 1px solid #ddd; background: white; }
             header { display: none; }
             .print-header { display: block !important; }
         }
@@ -157,13 +140,13 @@
                     Paper Form
                 </a>
                 <button id="header-print-btn" class="px-3 py-1 bg-slate-800 text-white text-xs font-bold rounded hover:bg-slate-700 transition">
-                    PRINT / PDF
+                    PRINT
                 </button>
             </div>
         </div>
     </header>
 
-    <main class="container mx-auto max-w-5xl px-4 py-6">
+    <main class="container mx-auto max-w-3xl px-4 py-6">
         
         <div class="hidden print-header mb-6 text-center border-b-2 border-slate-800 pb-4">
              <h1 class="text-3xl font-black text-slate-900">Procedural Sedation Record</h1>
@@ -234,118 +217,114 @@
                 <div class="section-card border-l-[8px] border-l-orange-500">
                     <div class="section-title text-orange-800">2. Pre-Sedation Assessment</div>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="flex flex-col gap-4">
                         
-                        <div class="space-y-4">
-                             <div class="bg-orange-50 p-3 rounded border border-orange-200">
-                                <label class="flex items-start gap-2 cursor-pointer">
-                                    <input id="consent-obtained" type="checkbox" class="mt-1 w-5 h-5 text-orange-600 rounded">
-                                    <span class="text-sm font-bold text-orange-900 leading-tight">Informed consent (verbal/written) obtained & documented.</span>
-                                </label>
-                            </div>
+                        <div class="bg-orange-50 p-3 rounded border border-orange-200">
+                            <label class="flex items-start gap-2 cursor-pointer">
+                                <input id="consent-obtained" type="checkbox" class="mt-1 w-5 h-5 text-orange-600 rounded">
+                                <span class="text-sm font-bold text-orange-900 leading-tight">Informed consent (verbal/written) obtained & documented.</span>
+                            </label>
+                        </div>
 
-                            <div class="sub-card mt-0">
-                                <label>Fasting Status</label>
-                                <div class="grid grid-cols-2 gap-2">
-                                    <div><span class="text-[10px] uppercase font-bold text-slate-400">Food</span><input type="time" id="last-food"></div>
-                                    <div><span class="text-[10px] uppercase font-bold text-slate-400">Clear Fluid</span><input type="time" id="last-fluid"></div>
-                                </div>
-                            </div>
-                            
-                            <div class="sub-card">
-                                <label>Risks Discussed</label>
-                                <div class="grid grid-cols-1 gap-1 mt-1">
-                                    <label class="flex items-center gap-2 font-normal text-xs"><input id="risk-nausea" type="checkbox" class="rounded"> Nausea/Vomiting</label>
-                                    <label class="flex items-center gap-2 font-normal text-xs"><input id="risk-bp" type="checkbox" class="rounded"> Transient BP/Resp drop</label>
-                                    <label class="flex items-center gap-2 font-normal text-xs"><input id="risk-emergence" type="checkbox" class="rounded"> Agitation/Dreams</label>
-                                    <label class="flex items-center gap-2 font-normal text-xs"><input id="risk-severe-breathing" type="checkbox" class="rounded"> Airway Intervention</label>
-                                </div>
-                            </div>
-                            
-                            <div class="bg-red-50 border border-red-200 p-3 rounded-lg">
-                                <label class="text-red-800">Contraindications</label>
-                                <div class="space-y-1 mt-1">
-                                    <label class="flex items-center gap-2 font-bold text-xs text-red-700"><input id="ci-allergy" type="checkbox" class="text-red-600 rounded"> Known Allergy</label>
-                                    <label class="flex items-center gap-2 font-bold text-xs text-red-700"><input id="ci-hemo" type="checkbox" class="text-red-600 rounded"> Haemodynamic Instability</label>
-                                    <label class="flex items-center gap-2 font-bold text-xs text-red-700"><input id="ci-gcs" type="checkbox" class="text-red-600 rounded"> Compromised Airway / GCS</label>
-                                </div>
+                        <div class="sub-card mt-0">
+                            <label>Risks Discussed</label>
+                            <div class="grid grid-cols-1 gap-2 mt-1">
+                                <label class="flex items-center gap-2 font-normal text-xs"><input id="risk-nausea" type="checkbox" class="rounded"> Nausea/Vomiting</label>
+                                <label class="flex items-center gap-2 font-normal text-xs"><input id="risk-bp" type="checkbox" class="rounded"> Transient BP/Resp drop</label>
+                                <label class="flex items-center gap-2 font-normal text-xs"><input id="risk-emergence" type="checkbox" class="rounded"> Agitation/Dreams</label>
+                                <label class="flex items-center gap-2 font-normal text-xs"><input id="risk-severe-breathing" type="checkbox" class="rounded"> Airway Intervention</label>
                             </div>
                         </div>
 
-                        <div class="space-y-4">
-                            <div class="sub-card mt-0">
-                                <div class="flex justify-between items-center mb-2">
-                                    <label class="mb-0">ASA Grade</label>
-                                    <button type="button" id="asa-guide-button" class="text-[10px] bg-slate-200 px-2 rounded no-print">?</button>
-                                </div>
-                                <div id="asa-guide-content" class="hidden text-xs text-slate-600 mb-2 p-2 bg-slate-100 rounded">
-                                    I:Healthy, II:Mild, III:Severe, IV:Threat to life
-                                </div>
-                                <div class="flex justify-between gap-1">
-                                    <label class="cursor-pointer text-center flex-1"><input type="radio" name="asa-grade" value="I" class="sr-only peer"><div class="py-1 border border-slate-300 rounded peer-checked:bg-blue-600 peer-checked:text-white peer-checked:border-blue-600 text-xs font-bold transition">I</div></label>
-                                    <label class="cursor-pointer text-center flex-1"><input type="radio" name="asa-grade" value="II" class="sr-only peer"><div class="py-1 border border-slate-300 rounded peer-checked:bg-blue-600 peer-checked:text-white peer-checked:border-blue-600 text-xs font-bold transition">II</div></label>
-                                    <label class="cursor-pointer text-center flex-1"><input type="radio" name="asa-grade" value="III" class="sr-only peer"><div class="py-1 border border-amber-300 bg-amber-50 text-amber-800 rounded peer-checked:bg-amber-600 peer-checked:text-white text-xs font-bold transition">III</div></label>
-                                    <label class="cursor-pointer text-center flex-1"><input type="radio" name="asa-grade" value="IV" class="sr-only peer"><div class="py-1 border border-red-300 bg-red-50 text-red-800 rounded peer-checked:bg-red-600 peer-checked:text-white text-xs font-bold transition">IV</div></label>
-                                    <label class="cursor-pointer text-center flex-1"><input type="radio" name="asa-grade" value="V" class="sr-only peer"><div class="py-1 border border-red-300 bg-red-50 text-red-800 rounded peer-checked:bg-red-600 peer-checked:text-white text-xs font-bold transition">V</div></label>
-                                </div>
+                        <div class="sub-card mt-0">
+                            <label>Fasting Status</label>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div><span class="text-[10px] uppercase font-bold text-slate-400">Food</span><input type="time" id="last-food"></div>
+                                <div><span class="text-[10px] uppercase font-bold text-slate-400">Clear Fluid</span><input type="time" id="last-fluid"></div>
                             </div>
+                        </div>
 
-                            <div class="sub-card border-slate-300">
-                                 <label class="border-b border-slate-200 pb-1 mb-2">Airway (LEMON)</label>
-                                 
-                                 <div class="mb-2">
-                                     <div class="flex items-center gap-2 mb-1">
-                                         <span class="font-black text-blue-600 w-4">L</span>
-                                         <div class="flex gap-2">
-                                            <label class="font-normal text-xs flex items-center gap-1"><input type="radio" name="lemon-l" value="Normal"> Normal</label>
-                                            <label class="font-normal text-xs flex items-center gap-1"><input type="radio" name="lemon-l" value="Abnormal"> Abnormal</label>
-                                         </div>
-                                     </div>
-                                     <input type="text" id="lemon-l-specify" placeholder="Details..." class="text-xs py-1">
-                                 </div>
+                        <div class="sub-card mt-0">
+                            <div class="flex justify-between items-center mb-2">
+                                <label class="mb-0">ASA Grade</label>
+                                <button type="button" id="asa-guide-button" class="text-[10px] bg-slate-200 px-2 rounded no-print">?</button>
+                            </div>
+                            <div id="asa-guide-content" class="hidden text-xs text-slate-600 mb-2 p-2 bg-slate-100 rounded">
+                                I:Healthy, II:Mild, III:Severe, IV:Threat to life
+                            </div>
+                            <div class="flex justify-between gap-1">
+                                <label class="cursor-pointer text-center flex-1"><input type="radio" name="asa-grade" value="I" class="sr-only peer"><div class="py-1 border border-slate-300 rounded peer-checked:bg-blue-600 peer-checked:text-white peer-checked:border-blue-600 text-xs font-bold transition">I</div></label>
+                                <label class="cursor-pointer text-center flex-1"><input type="radio" name="asa-grade" value="II" class="sr-only peer"><div class="py-1 border border-slate-300 rounded peer-checked:bg-blue-600 peer-checked:text-white peer-checked:border-blue-600 text-xs font-bold transition">II</div></label>
+                                <label class="cursor-pointer text-center flex-1"><input type="radio" name="asa-grade" value="III" class="sr-only peer"><div class="py-1 border border-amber-300 bg-amber-50 text-amber-800 rounded peer-checked:bg-amber-600 peer-checked:text-white text-xs font-bold transition">III</div></label>
+                                <label class="cursor-pointer text-center flex-1"><input type="radio" name="asa-grade" value="IV" class="sr-only peer"><div class="py-1 border border-red-300 bg-red-50 text-red-800 rounded peer-checked:bg-red-600 peer-checked:text-white text-xs font-bold transition">IV</div></label>
+                                <label class="cursor-pointer text-center flex-1"><input type="radio" name="asa-grade" value="V" class="sr-only peer"><div class="py-1 border border-red-300 bg-red-50 text-red-800 rounded peer-checked:bg-red-600 peer-checked:text-white text-xs font-bold transition">V</div></label>
+                            </div>
+                        </div>
 
-                                 <div class="mb-2 flex items-center gap-2">
-                                     <span class="font-black text-blue-600 w-4">E</span>
-                                     <div class="flex gap-2">
-                                        <label class="font-normal text-xs flex items-center gap-1"><input type="radio" name="lemon-e" value="Met"> 3-3-2 Met</label>
-                                        <label class="font-normal text-xs flex items-center gap-1"><input type="radio" name="lemon-e" value="Not Met"> Not Met</label>
-                                     </div>
-                                 </div>
-
-                                 <div class="mb-2">
-                                     <div class="flex items-center gap-2 mb-1">
-                                         <span class="font-black text-blue-600 w-4">M</span>
-                                         <div class="flex gap-1 flex-1">
-                                            <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-m" value="I" class="sr-only peer"><div class="text-[10px] border rounded peer-checked:bg-blue-600 peer-checked:text-white">I</div></label>
-                                            <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-m" value="II" class="sr-only peer"><div class="text-[10px] border rounded peer-checked:bg-blue-600 peer-checked:text-white">II</div></label>
-                                            <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-m" value="III" class="sr-only peer"><div class="text-[10px] border rounded peer-checked:bg-blue-600 peer-checked:text-white">III</div></label>
-                                            <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-m" value="IV" class="sr-only peer"><div class="text-[10px] border rounded peer-checked:bg-blue-600 peer-checked:text-white">IV</div></label>
-                                            <button type="button" id="mallampati-guide-button" class="text-[10px] bg-slate-200 px-1 rounded no-print">?</button>
-                                         </div>
-                                     </div>
-                                     <div id="mallampati-guide-content" class="hidden">
-                                         <img src="shakeymedic/sedation-form/sedation-form-acbf321e90c300a371dd0baf7b4a16c1505232a3/images/Mallampati.jpg" class="w-full rounded border border-slate-300">
+                        <div class="sub-card border-slate-300 mt-0">
+                             <label class="border-b border-slate-200 pb-1 mb-2">Airway (LEMON)</label>
+                             
+                             <div class="mb-3">
+                                 <div class="flex items-center gap-2 mb-1">
+                                     <span class="font-black text-blue-600 w-4">L</span>
+                                     <div class="flex gap-4">
+                                        <label class="font-normal text-xs flex items-center gap-1"><input type="radio" name="lemon-l" value="Normal"> Normal</label>
+                                        <label class="font-normal text-xs flex items-center gap-1"><input type="radio" name="lemon-l" value="Abnormal"> Abnormal</label>
                                      </div>
                                  </div>
+                                 <input type="text" id="lemon-l-specify" placeholder="Details..." class="text-xs py-1">
+                             </div>
 
-                                 <div class="mb-2">
-                                     <div class="flex items-center gap-2 mb-1">
-                                         <span class="font-black text-blue-600 w-4">O</span>
-                                         <div class="flex gap-2">
-                                            <label class="font-normal text-xs flex items-center gap-1"><input type="radio" name="lemon-o" value="No"> No Obstr/OSA</label>
-                                            <label class="font-normal text-xs flex items-center gap-1"><input type="radio" name="lemon-o" value="Yes"> Yes</label>
-                                         </div>
-                                     </div>
-                                     <input type="text" id="lemon-o-specify" placeholder="Details..." class="text-xs py-1">
+                             <div class="mb-3 flex items-center gap-2">
+                                 <span class="font-black text-blue-600 w-4">E</span>
+                                 <div class="flex gap-4">
+                                    <label class="font-normal text-xs flex items-center gap-1"><input type="radio" name="lemon-e" value="Met"> 3-3-2 Met</label>
+                                    <label class="font-normal text-xs flex items-center gap-1"><input type="radio" name="lemon-e" value="Not Met"> Not Met</label>
                                  </div>
+                             </div>
 
-                                 <div class="flex items-center gap-2">
-                                     <span class="font-black text-blue-600 w-4">N</span>
-                                     <div class="flex gap-2">
-                                        <label class="font-normal text-xs flex items-center gap-1"><input type="radio" name="lemon-n" value="Normal"> Neck Normal</label>
-                                        <label class="font-normal text-xs flex items-center gap-1"><input type="radio" name="lemon-n" value="Restricted"> Restricted</label>
+                             <div class="mb-3">
+                                 <div class="flex items-center gap-2 mb-1">
+                                     <span class="font-black text-blue-600 w-4">M</span>
+                                     <div class="flex gap-1 flex-1">
+                                        <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-m" value="I" class="sr-only peer"><div class="text-[10px] border rounded peer-checked:bg-blue-600 peer-checked:text-white">I</div></label>
+                                        <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-m" value="II" class="sr-only peer"><div class="text-[10px] border rounded peer-checked:bg-blue-600 peer-checked:text-white">II</div></label>
+                                        <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-m" value="III" class="sr-only peer"><div class="text-[10px] border rounded peer-checked:bg-blue-600 peer-checked:text-white">III</div></label>
+                                        <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-m" value="IV" class="sr-only peer"><div class="text-[10px] border rounded peer-checked:bg-blue-600 peer-checked:text-white">IV</div></label>
+                                        <button type="button" id="mallampati-guide-button" class="text-[10px] bg-slate-200 px-1 rounded no-print">?</button>
                                      </div>
                                  </div>
+                                 <div id="mallampati-guide-content" class="hidden">
+                                     <img src="images/Mallampati.jpg" class="w-full rounded border border-slate-300" alt="Mallampati Score">
+                                 </div>
+                             </div>
+
+                             <div class="mb-3">
+                                 <div class="flex items-center gap-2 mb-1">
+                                     <span class="font-black text-blue-600 w-4">O</span>
+                                     <div class="flex gap-4">
+                                        <label class="font-normal text-xs flex items-center gap-1"><input type="radio" name="lemon-o" value="No"> No Obstr/OSA</label>
+                                        <label class="font-normal text-xs flex items-center gap-1"><input type="radio" name="lemon-o" value="Yes"> Yes</label>
+                                     </div>
+                                 </div>
+                                 <input type="text" id="lemon-o-specify" placeholder="Details..." class="text-xs py-1">
+                             </div>
+
+                             <div class="flex items-center gap-2">
+                                 <span class="font-black text-blue-600 w-4">N</span>
+                                 <div class="flex gap-4">
+                                    <label class="font-normal text-xs flex items-center gap-1"><input type="radio" name="lemon-n" value="Normal"> Neck Normal</label>
+                                    <label class="font-normal text-xs flex items-center gap-1"><input type="radio" name="lemon-n" value="Restricted"> Restricted</label>
+                                 </div>
+                             </div>
+                        </div>
+
+                        <div class="bg-red-50 border border-red-200 p-3 rounded-lg">
+                            <label class="text-red-800">Contraindications</label>
+                            <div class="space-y-1 mt-1">
+                                <label class="flex items-center gap-2 font-bold text-xs text-red-700"><input id="ci-allergy" type="checkbox" class="text-red-600 rounded"> Known Allergy</label>
+                                <label class="flex items-center gap-2 font-bold text-xs text-red-700"><input id="ci-hemo" type="checkbox" class="text-red-600 rounded"> Haemodynamic Instability</label>
+                                <label class="flex items-center gap-2 font-bold text-xs text-red-700"><input id="ci-gcs" type="checkbox" class="text-red-600 rounded"> Compromised Airway / GCS</label>
                             </div>
                         </div>
                     </div>
@@ -513,23 +492,21 @@
                 <div class="section-card border-l-[8px] border-l-purple-600">
                     <div class="section-title text-purple-800">5. Outcome & Discharge</div>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <div class="sub-card bg-white mt-0">
-                                <label>Procedure Outcome</label>
-                                <div class="flex gap-4 mt-2">
-                                    <label class="flex items-center gap-2 font-normal"><input type="radio" name="outcome-proc" value="Successful" class="text-blue-600"> Successful</label>
-                                    <label class="flex items-center gap-2 font-normal"><input type="radio" name="outcome-proc" value="Unsuccessful" class="text-blue-600"> Unsuccessful</label>
-                                </div>
+                    <div class="flex flex-col gap-4">
+                        <div class="sub-card bg-white mt-0">
+                            <label>Procedure Outcome</label>
+                            <div class="flex gap-4 mt-2">
+                                <label class="flex items-center gap-2 font-normal"><input type="radio" name="outcome-proc" value="Successful" class="text-blue-600"> Successful</label>
+                                <label class="flex items-center gap-2 font-normal"><input type="radio" name="outcome-proc" value="Unsuccessful" class="text-blue-600"> Unsuccessful</label>
                             </div>
-                            <div class="sub-card bg-white">
-                                <label>Discharge Criteria</label>
-                                <div class="space-y-2 mt-2">
-                                    <label class="flex items-center gap-2 font-normal"><input type="checkbox" id="dc-aao" class="rounded text-blue-600"> Alert, orientated, baseline GCS</label>
-                                    <label class="flex items-center gap-2 font-normal"><input type="checkbox" id="dc-vitals" class="rounded text-blue-600"> Vitals stable > 30m</label>
-                                    <label class="flex items-center gap-2 font-normal"><input type="checkbox" id="dc-ambulate" class="rounded text-blue-600"> Ambulating safely</label>
-                                    <label class="flex items-center gap-2 font-normal"><input type="checkbox" id="dc-pain" class="rounded text-blue-600"> Pain controlled</label>
-                                </div>
+                        </div>
+                        <div class="sub-card bg-white mt-0">
+                            <label>Discharge Criteria</label>
+                            <div class="space-y-2 mt-2">
+                                <label class="flex items-center gap-2 font-normal"><input type="checkbox" id="dc-aao" class="rounded text-blue-600"> Alert, orientated, baseline GCS</label>
+                                <label class="flex items-center gap-2 font-normal"><input type="checkbox" id="dc-vitals" class="rounded text-blue-600"> Vitals stable > 30m</label>
+                                <label class="flex items-center gap-2 font-normal"><input type="checkbox" id="dc-ambulate" class="rounded text-blue-600"> Ambulating safely</label>
+                                <label class="flex items-center gap-2 font-normal"><input type="checkbox" id="dc-pain" class="rounded text-blue-600"> Pain controlled</label>
                             </div>
                         </div>
                         <div class="sub-card bg-slate-50 mt-0">
