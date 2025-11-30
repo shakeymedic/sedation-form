@@ -9,13 +9,13 @@
     <style>
         /* --- CORE STYLES --- */
         body { font-family: 'Inter', sans-serif; }
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb { background: #64748b; border-radius: 4px; }
+        textarea::-webkit-scrollbar { width: 8px; }
+        textarea::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+        textarea::-webkit-scrollbar-thumb { background: #64748b; border-radius: 4px; }
         html { scroll-behavior: smooth; }
         
         input, textarea, select { border-color: #94a3b8; outline: none; transition: all 0.2s; }
-        input:focus, textarea:focus, select:focus { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2); }
+        input:focus, textarea:focus, select:focus { border-color: #2563eb; box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2); }
 
         /* --- BUTTONS --- */
         .std-btn { 
@@ -38,7 +38,6 @@
             color: white; 
             border: 1px solid #1d4ed8; 
             box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3);
-            font-weight: 800;
         }
         .btn-primary:hover { background-color: #1d4ed8; }
 
@@ -55,12 +54,12 @@
         .drug-btn:hover { background-color: #f1f5f9; border-color: #cbd5e1; }
         .drug-btn:active { transform: scale(0.95); }
 
-        /* --- CARDS & SECTIONS (Trauma App Style) --- */
+        /* --- CARDS --- */
         .section-card {
             background-color: white;
             border-radius: 0.75rem;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.06); /* Shadow-lg */
-            border: 2px solid #e5e7eb; /* border-2 border-slate-200 */
+            box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            border: 1px solid #94a3b8;
             overflow: hidden;
             margin-bottom: 1.5rem;
             padding: 1.25rem;
@@ -72,7 +71,7 @@
             color: #0f172a;
             margin-bottom: 1rem;
             padding-bottom: 0.5rem;
-            border-bottom: 4px solid; /* Trauma app style thick separator */
+            border-bottom: 2px solid #e2e8f0;
             display: flex;
             align-items: center;
         }
@@ -84,14 +83,7 @@
             padding: 1rem;
             margin-top: 1rem;
         }
-        
-        /* Match Trauma App Header Styling */
-        .section-card-blue .section-title { border-bottom-color: #dbeafe; } /* blue-100 */
-        .section-card-orange .section-title { border-bottom-color: #ffedd5; } /* orange-100 */
-        .section-card-green .section-title { border-bottom-color: #dcfce7; } /* green-100 */
-        .section-card-purple .section-title { border-bottom-color: #f3e8ff; } /* purple-100 */
-        .section-card-slate .section-title { border-bottom-color: #e2e8f0; } /* slate-200 */
-        
+
         label {
             display: block;
             font-size: 0.75rem;
@@ -109,16 +101,6 @@
             border: 1px solid #94a3b8;
             font-weight: 500;
         }
-
-        /* EPR Log Styling */
-        .rich-output {
-            font-family: 'Georgia', 'serif';
-            line-height: 1.4;
-            color: #334155;
-            min-height: 500px;
-            white-space: pre-wrap;
-        }
-        .rich-output strong { font-weight: 800; color: #0f172a; }
 
         /* --- PRINT --- */
         @media print {
@@ -147,9 +129,9 @@
     <header class="bg-white shadow-sm sticky top-0 z-50 border-b border-slate-300 no-print">
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center gap-4">
-                <img src="https://iili.io/KGQOvkl.md.png" alt="Logo" class="h-16 md:h-20 w-auto object-contain" onerror="this.style.display='none'">
+                <img src="https://iili.io/KGQOvkl.md.png" alt="Logo" class="h-12 w-auto object-contain" onerror="this.style.display='none'">
                 <div>
-                    <h1 class="text-xl md:text-2xl font-black text-slate-900 leading-tight">Procedural Sedation Record</h1>
+                    <h1 class="text-xl md:text-2xl font-black text-slate-900 leading-tight">Sedation Record</h1>
                     <p class="text-xs text-blue-600 font-bold">RCEM Guidelines (2022)</p>
                 </div>
             </div>
@@ -164,187 +146,11 @@
         </div>
     </header>
 
-    <main class="container mx-auto max-w-full px-4 py-6">
-        
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-
-            <div class="lg:col-span-8">
-
-                <div class="hidden print-header mb-6 text-center border-b-2 border-slate-800 pb-4">
-                     <h1 class="text-3xl font-black text-slate-900">Procedural Sedation Record</h1>
-                     <p class="text-sm text-slate-500 font-bold">RCEM Best Practice Guidelines (2022)</p>
-                </div>
-
-                <form id="sedation-form" onsubmit="return false;">
-                    
-                    <div class="flex flex-col gap-6">
-
-                        <div class="section-card section-card-blue border-l-[8px] border-l-blue-600">
-                            <h2 class="section-title text-blue-800">1. Patient & Procedure</h2>
-                            
-                            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                                <div>
-                                    <label for="age">Age</label>
-                                    <input type="number" id="age" placeholder="Yr" class="font-bold">
-                                </div>
-                                <div class="md:col-span-2">
-                                    <label for="weight">Weight (kg) <span class="text-red-500">*</span></label>
-                                    <div class="flex items-center gap-2">
-                                        <input type="number" id="weight" placeholder="kg" class="font-bold">
-                                        <label class="flex items-center gap-1 bg-slate-100 px-2 py-2 rounded border border-slate-300 cursor-pointer h-[42px] mt-[1px]">
-                                            <input type="checkbox" id="weight-estimated" class="w-4 h-4 text-blue-600 rounded">
-                                            <span class="text-[10px] uppercase font-bold text-slate-600">Est</span>
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="md:col-span-4">
-                                    <label for="allergies">Allergies</label>
-                                    <input type="text" id="allergies" placeholder="Reaction details..." class="text-red-700 font-bold">
-                                </div>
-                                <div class="md:col-span-4">
-                                    <label for="pre-analgesia">Pre-Sedation Analgesia</label>
-                                    <input type="text" id="pre-analgesia" placeholder="e.g. IV Morphine 10mg @ 14:00">
-                                </div>
-                                <div class="md:col-span-2">
-                                    <label for="procedure">Procedure</label>
-                                    <input type="text" id="procedure">
-                                </div>
-                                <div class="md:col-span-2">
-                                    <label for="indication">Indication</label>
-                                    <input type="text" id="indication">
-                                </div>
-                                
-                                <div class="md:col-span-4 mt-2 pt-2 border-t border-slate-200 grid grid-cols-1 md:grid-cols-4 gap-4">
-    1. **Structural Correction (Critical):** The closing column/grid tags are still misplaced, which breaks the layout on deployment.
-    * Find the end of the form content: `</div></form></div>`
-    * Find the start of the EPR log column: `</div> <div class="lg:col-span-1 sticky top-20 h-fit no-print">`
-    * The structure is incorrect and needs to be fixed to close the form, close the inner column, then proceed with the EPR column.
-
-2. **Full Width / Trauma App Match:** The app still uses a responsive grid that limits the overall width (`max-w-5xl` is missing, but the narrow column layout remains). The columns should be `lg:col-span-8` (Form) and `lg:col-span-4` (Log).
-
-3. **Styling Inconsistencies:** The section headers (`<div class="section-title text-blue-800">1. Patient & Procedure</div>`) are still using the generic, thinner `border-bottom: 2px solid #e2e8f0;` from the original code (since you pasted the old CSS back). The Trauma App uses a **thicker, colored border** via dynamic CSS classes.
-
-### Final Required Code Changes
-
-Here are the two blocks you must replace to finalize the application:
-
-#### 1. HTML Layout, Styling & Structure Correction
-
-This replaces the main body of the app, correcting the structural break, implementing the full width (`max-w-full`), setting the correct 8-column/4-column split, and applying the Trauma App's styling classes.
-
-**REPLACE THE ENTIRE BLOCK STARTING FROM** `<main class="container mx-auto max-w-full px-4 py-6">` **down to the line just before** `<template id="obs-score-template">`.
-
-```html
-    <main class="container mx-auto max-w-full px-4 py-6">
-        
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-
-            <div class="lg:col-span-8">
-
-                <div class="hidden print-header mb-6 text-center border-b-2 border-slate-800 pb-4">
-                     <h1 class="text-3xl font-black text-slate-900">Procedural Sedation Record</h1>
-                     <p class="text-sm text-slate-500 font-bold">RCEM Best Practice Guidelines (2022)</p>
-                </div>
-
-                <form id="sedation-form" onsubmit="return false;">
-                    
-                    <div class="flex flex-col gap-6">
-
-                        <div class="section-card section-card-blue border-l-[8px] border-l-blue-600">
-                            <h2 class="section-title text-blue-800">1. Patient & Procedure</h2>
-                            
-                            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                                <div>
-                                    <label for="age">Age</label>
-                                    <input type="number" id="age" placeholder="Yr" class="font-bold">
-                                </div>
-                                <div class="md:col-span-2">
-                                    <label for="weight">Weight (kg) <span class="text-red-500">*</span></label>
-                                    <div class="flex items-center gap-2">
-                                        <input type="number" id="weight" placeholder="kg" class="font-bold">
-                                        <label class="flex items-center gap-1 bg-slate-100 px-2 py-2 rounded border border-slate-300 cursor-pointer h-[42px] mt-[1px]">
-                                            <input type="checkbox" id="weight-estimated" class="w-4 h-4 text-blue-600 rounded">
-                                            <span class="text-[10px] uppercase font-bold text-slate-600">Est</span>
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="md:col-span-4">
-                                    <label for="allergies">Allergies</label>
-                                    <input type="text" id="allergies" placeholder="Reaction details..." class="text-red-700 font-bold">
-                                </div>
-                                <div class="md:col-span-4">
-                                    <label for="pre-analgesia">Pre-Sedation Analgesia</label>
-                                    <input type="text" id="pre-analgesia" placeholder="e.g. IV Morphine 10mg @ 14:00">
-                                </div>
-                                <div class="md:col-span-2">
-                                    <label for="procedure">Procedure</label>
-                                    <input type="text" id="procedure">
-                                </div>
-                                <div class="md:col-span-2">
-                                    <label for="indication">Indication</label>
-                                    <input type="text" id="indication">
-                                </div>
-                                
-                                <div class="md:col-span-4 mt-2 pt-2 border-t border-slate-200 grid grid-cols-1 md:grid-cols-4 gap-4">
-                                    <div><label>Sedationist</label><input type="text" id="sedationist"></div>
-                                    <div><label>Grade</label><input type="text" id="sedationist-grade" placeholder="e.g. SpR / EM-ACPs"></div>
-                                    <div><label>Procedure Dr</label><input type="text" id="procedure-doctor"></div>
-                                    <div><label>Nurse</label><input type="text" id="nurse"></div>
-                                </div>
-                            </div>
-
-                            <div class="sub-card bg-blue-50 border-blue-200 mt-4 no-print">
-                                <div class="flex justify-between items-center mb-2">
-                                    <label class="text-blue-900 font-black">Estimated Dose Guide (Adults)</label>
-                                    <label class="flex items-center gap-2 cursor-pointer">
-                                        <input type="checkbox" id="frail-elderly" class="rounded text-blue-600">
-                                        <span class="text-xs text-blue-800">Frail / >65?</span>
-                                    </label>
-                                </div>
-                                <button type="button" id="calculate-doses-button" class="w-full std-btn bg-white border-blue-300 text-blue-700 hover:bg-blue-100">
-                                    Calculate Ranges
-                                </button>
-                                <div id="dose-output" class="mt-2 p-2 bg-white rounded border border-blue-200 text-sm font-mono hidden text-blue-900"></div>
-                            </div>
-                        </div>
-
-                        <div class="section-card section-card-orange border-l-[8px] border-l-orange-500">
-                            <h2 class="section-title text-orange-800">2. Pre-Sedation Assessment</h2>
-                            
-                            <div class="flex flex-col gap-4">
-                                
-                                <div class="bg-orange-50 p-3 rounded border border-orange-200">
-                                    <label class="flex items-start gap-2 cursor-pointer">
-                                        <input id="consent-obtained" type="checkbox" class="mt-1 w-5 h-5 text-orange-600 rounded">
-                                        <span class="text-sm font-bold text-orange-900 leading-tight">Informed consent (verbal/written) obtained & documented.</span>
-                                    </label>
-                                </div>
-
-                                <div class="sub-card mt-0">
-                                    <label>Risks Discussed</label>
-                                    <div class="space-y-2 mt-1">
-                                        <label class="flex items-start gap-2 font-normal text-sm"><input id="risk-nausea" type="checkbox" class="rounded mt-1"> 
-                                            <span class="block leading-snug">Nausea or Vomiting (Common; up to 10-15%)</span>
-    1. **Structural Fix (Critical):** The main column and form closure tags are completely incorrect, causing the EPR log to float incorrectly.
-2. **Width/Layout:** The app is restricted to `max-w-5xl`. It needs to be `max-w-full` with an 8/4 column split (`lg:col-span-8` and `lg:col-span-4`) to maximize screen use and match your Trauma App's layout.
-3. **Styling:** The sections are missing the necessary visual classes (`section-card-color`) to inherit the bold, colored header style from the Trauma App.
-
-### Final Required Code Changes
-
-Here are the two blocks you must replace to finalize the application:
-
-#### 1. Full HTML Body Structure Replacement (Layout, Width, & Content)
-
-This implements the **full width**, the **correct 8/4 column structure**, and applies the necessary styling classes to the section headers.
-
-**REPLACE THE ENTIRE BLOCK STARTING FROM** `<main class="container mx-auto max-w-full px-4 py-6">` **down to the line just before** `<template id="obs-score-template">`.
-
-```html
-<main class="container mx-auto max-w-full px-4 py-6">
+    <main class="container mx-auto max-w-5xl px-4 py-6">
         
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-            <div class="lg:col-span-8">
+            <div class="lg:col-span-2">
 
                 <div class="hidden print-header mb-6 text-center border-b-2 border-slate-800 pb-4">
                      <h1 class="text-3xl font-black text-slate-900">Procedural Sedation Record</h1>
@@ -355,8 +161,8 @@ This implements the **full width**, the **correct 8/4 column structure**, and ap
                     
                     <div class="flex flex-col gap-6">
 
-                        <div class="section-card section-card-blue border-l-[8px] border-l-blue-600">
-                            <h2 class="section-title text-blue-800">1. Patient & Procedure</h2>
+                        <div class="section-card border-l-[8px] border-l-blue-600">
+                            <div class="section-title text-blue-800">1. Patient & Procedure</div>
                             
                             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                                 <div>
@@ -413,8 +219,8 @@ This implements the **full width**, the **correct 8/4 column structure**, and ap
                             </div>
                         </div>
 
-                        <div class="section-card section-card-orange border-l-[8px] border-l-orange-500">
-                            <h2 class="section-title text-orange-800">2. Pre-Sedation Assessment</h2>
+                        <div class="section-card border-l-[8px] border-l-orange-500">
+                            <div class="section-title text-orange-800">2. Pre-Sedation Assessment</div>
                             
                             <div class="flex flex-col gap-4">
                                 
@@ -495,10 +301,10 @@ This implements the **full width**, the **correct 8/4 column structure**, and ap
                                     </div>
                                     <div class="flex justify-between gap-1">
                                         <label class="cursor-pointer text-center flex-1"><input type="radio" name="asa-grade" value="I" class="sr-only peer"><div class="py-1 border border-slate-300 rounded peer-checked:bg-blue-600 peer-checked:text-white peer-checked:border-blue-600 text-xs font-bold transition">I</div></label>
-                                        <label class="cursor-pointer flex-1 text-center"><input type="radio" name="asa-grade" value="II" class="sr-only peer"><div class="py-1 border border-slate-300 rounded peer-checked:bg-blue-600 peer-checked:text-white peer-checked:border-blue-600 text-xs font-bold transition">II</div></label>
-                                        <label class="cursor-pointer flex-1 text-center"><input type="radio" name="asa-grade" value="III" class="sr-only peer"><div class="py-1 border border-amber-300 bg-amber-50 text-amber-800 rounded peer-checked:bg-amber-600 peer-checked:text-white text-xs font-bold transition">III</div></label>
-                                        <label class="cursor-pointer flex-1 text-center"><input type="radio" name="asa-grade" value="IV" class="sr-only peer"><div class="py-1 border border-red-300 bg-red-50 text-red-800 rounded peer-checked:bg-red-600 peer-checked:text-white text-xs font-bold transition">IV</div></label>
-                                        <label class="cursor-pointer flex-1 text-center"><input type="radio" name="asa-grade" value="V" class="sr-only peer"><div class="py-1 border border-red-300 bg-red-50 text-red-800 rounded peer-checked:bg-red-600 peer-checked:text-white text-xs font-bold transition">V</div></label>
+                                        <label class="cursor-pointer text-center flex-1"><input type="radio" name="asa-grade" value="II" class="sr-only peer"><div class="py-1 border border-slate-300 rounded peer-checked:bg-blue-600 peer-checked:text-white peer-checked:border-blue-600 text-xs font-bold transition">II</div></label>
+                                        <label class="cursor-pointer text-center flex-1"><input type="radio" name="asa-grade" value="III" class="sr-only peer"><div class="py-1 border border-amber-300 bg-amber-50 text-amber-800 rounded peer-checked:bg-amber-600 peer-checked:text-white text-xs font-bold transition">III</div></label>
+                                        <label class="cursor-pointer text-center flex-1"><input type="radio" name="asa-grade" value="IV" class="sr-only peer"><div class="py-1 border border-red-300 bg-red-50 text-red-800 rounded peer-checked:bg-red-600 peer-checked:text-white text-xs font-bold transition">IV</div></label>
+                                        <label class="cursor-pointer text-center flex-1"><input type="radio" name="asa-grade" value="V" class="sr-only peer"><div class="py-1 border border-red-300 bg-red-50 text-red-800 rounded peer-checked:bg-red-600 peer-checked:text-white text-xs font-bold transition">V</div></label>
                                     </div>
                                 </div>
 
@@ -587,8 +393,8 @@ This implements the **full width**, the **correct 8/4 column structure**, and ap
                             </div>
                         </div>
 
-                        <div class="section-card section-card-green border-l-[8px] border-l-green-500">
-                            <h2 class="section-title text-green-800">3. Plan & Preparation</h2>
+                        <div class="section-card border-l-[8px] border-l-green-500">
+                            <div class="section-title text-green-800">3. Plan & Preparation</div>
                             
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
@@ -648,9 +454,9 @@ This implements the **full width**, the **correct 8/4 column structure**, and ap
                             </div>
                         </div>
 
-                        <div class="section-card section-card-slate border-l-[8px] border-l-slate-800 page-break">
-                            <div class="flex justify-between items-center mb-4 border-b-4 border-slate-200 pb-2">
-                                <h2 class="text-2xl font-black text-slate-800">4. Intra-Sedation Record</h2>
+                        <div class="section-card border-l-[8px] border-l-slate-800 page-break">
+                            <div class="section-title text-slate-800 justify-between">
+                                4. Intra-Sedation Record
                                 <button type="button" id="complications-guide-button" class="text-[10px] bg-slate-200 px-2 py-1 rounded hover:bg-slate-300 no-print">Guide</button>
                             </div>
                             
@@ -752,8 +558,8 @@ This implements the **full width**, the **correct 8/4 column structure**, and ap
                             </div>
                         </div>
 
-                        <div class="section-card section-card-purple border-l-[8px] border-l-purple-600">
-                            <h2 class="section-title text-purple-800">5. Outcome & Discharge</h2>
+                        <div class="section-card border-l-[8px] border-l-purple-600">
+                            <div class="section-title text-purple-800">5. Outcome & Discharge</div>
                             
                             <div class="flex flex-col gap-4">
                                 <div class="sub-card bg-white mt-0">
@@ -805,15 +611,13 @@ This implements the **full width**, the **correct 8/4 column structure**, and ap
                     </div>
 
                 </form>
-            </div> 
-
-            <div class="lg:col-span-4 sticky top-6 h-fit no-print">
-                <div id="epr-log-container" class="section-card section-card-slate border-l-[8px] border-l-gray-500">
-                    <h2 class="text-xl font-black text-slate-800 mb-4 border-b-4 border-slate-200 pb-2">EPR Quick Log</h2>
-                    <button type="button" id="copy-log-button" class="w-full std-btn btn-primary mb-3">
+            </div> <div class="lg:col-span-1 sticky top-20 h-fit no-print">
+                <div id="epr-log-container" class="section-card border-l-[8px] border-l-gray-500 p-4">
+                    <div class="section-title text-gray-800 mb-2">EPR Quick Log</div>
+                    <button type="button" id="copy-log-button" class="w-full std-btn btn-primary mb-3 no-print">
                         Copy to EPR
                     </button>
-                    <div id="epr-log-output" class="rich-output p-3 bg-white border border-slate-300 rounded text-sm overflow-auto max-h-[80vh] min-h-[500px] text-black font-serif" contenteditable="true">
+                    <div id="epr-log-output" class="p-3 bg-white border border-slate-300 rounded text-sm overflow-auto max-h-[80vh] min-h-[500px] text-black font-serif" contenteditable="true">
                         <strong>Procedural Sedation Record</strong>
                         <br>
                         Log updates automatically...
@@ -821,9 +625,7 @@ This implements the **full width**, the **correct 8/4 column structure**, and ap
                 </div>
             </div>
 
-        </div> 
-        
-        <div class="text-center no-print mt-8">
+        </div> <div class="text-center no-print mt-8">
              <button type="button" id="print-button" class="std-btn bg-slate-800 text-white text-lg px-8 py-3 shadow-lg hover:bg-slate-900">
                 Print / Save to PDF
              </button>
@@ -847,6 +649,7 @@ This implements the **full width**, the **correct 8/4 column structure**, and ap
         </div>
     </div>
 
+    // 5 lines above where you need to start replacing
     <template id="obs-score-template">
         <select class="w-full text-xs border-none bg-transparent focus:ring-0 p-0">
             <option value="">-</option>
@@ -859,19 +662,7 @@ This implements the **full width**, the **correct 8/4 column structure**, and ap
         </select>
     </template>
 
-    <template id="obs-score-template">
-        <select class="w-full text-xs border-none bg-transparent focus:ring-0 p-0">
-            <option value="">-</option>
-            <option value="1">1 (Awake)</option>
-            <option value="2">2 (Drowsy)</option>
-            <option value="3">3 (Eyes clsd/Voice)</option>
-            <option value="4">4 (Eyes clsd/Shake)</option>
-            <option value="5">5 (Pain only)</option>
-            <option value="6">6 (Unresp)</option>
-        </select>
-    </template>
-
-    <script>
+    <script>
         document.addEventListener('DOMContentLoaded', () => {
             const $ = (id) => document.getElementById(id);
             const val = (id) => $(id)?.value || '';
@@ -891,43 +682,6 @@ This implements the **full width**, the **correct 8/4 column structure**, and ap
                 }
                 return '';
             }
-            
-            // --- EPR Log Copy Function ---
-            async function copyEPRLog() {
-                const htmlContent = $('epr-log-output').innerHTML;
-                // Use innerText for cleaner text content generation
-                const textContent = $('epr-log-output').innerText.trim();
-
-                try {
-                    const htmlBlob = new Blob([htmlContent], { type: 'text/html' });
-                    const textBlob = new Blob([textContent], { type: 'text/plain' });
-                    
-                    await navigator.clipboard.write([
-                        new ClipboardItem({ 
-                            'text/html': htmlBlob, 
-                            'text/plain': textBlob 
-                        })
-                    ]);
-                    
-                    // Visual feedback
-                    const btn = $('copy-log-button');
-                    const origHtml = btn.innerHTML;
-                    btn.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Copied!';
-                    btn.classList.add('bg-green-600', 'hover:bg-green-700', 'border-green-700');
-                    btn.classList.remove('btn-primary');
-                    
-                    setTimeout(() => {
-                        btn.innerHTML = origHtml;
-                        btn.classList.add('btn-primary');
-                        btn.classList.remove('bg-green-600', 'hover:bg-green-700', 'border-green-700');
-                    }, 2000);
-
-                } catch (err) {
-                    console.error("Copy failed", err);
-                    alert("Copy failed. Please manually select and copy the text in the log box.");
-                }
-            }
-
 
             // --- EPR LOG GENERATOR ---
             function generateEPRLog() {
@@ -1036,8 +790,7 @@ This implements the **full width**, the **correct 8/4 column structure**, and ap
                 log += ` - Discharge Instructions Given: ${diComplete ? 'Yes (Full 48h restrictions given)' : 'No/Incomplete'}<br>`;
                 log += ` - Signed Off By: ${val('signoff-name')} (GMC: ${val('signoff-gmc')}) @ ${val('signoff-time') || 'N/A'}<br>`;
                 
-                // Final output uses HTML for bolding to match requested "rich text" format
-                $('epr-log-output').innerHTML = log.replace(/\n/g, '<br>');
+                $('epr-log-output').innerHTML = log;
             }
 
             // --- Event Listeners ---
@@ -1239,7 +992,16 @@ This implements the **full width**, the **correct 8/4 column structure**, and ap
                 // Initial generation and copy button setup
                 generateEPRLog();
 
-                $('copy-log-button').onclick = copyEPRLog;
+                $('copy-log-button').onclick = () => {
+                    // Use a temporary textarea for robust copying, including formatting.
+                    const tempTextarea = document.createElement('textarea');
+                    tempTextarea.value = $('epr-log-output').innerText.trim();
+                    document.body.appendChild(tempTextarea);
+                    tempTextarea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(tempTextarea);
+                    alert("Log copied to clipboard!");
+                };
             }
         });
     </script>
