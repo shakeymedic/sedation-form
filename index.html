@@ -102,7 +102,7 @@
             padding: 0.5rem;
             font-size: 0.875rem;
             border-radius: 0.375rem;
-            border: 1px solid #94a3b8; /* Match Trauma Tool border */
+            border: 1px solid #94a3b8; 
             font-weight: 600;
         }
         
@@ -243,28 +243,53 @@
                             
                             <div class="flex flex-col gap-4">
                                 
-                                <div class="bg-orange-50 p-3 rounded border border-orange-200">
-                                    <label class="flex items-start gap-2 cursor-pointer mb-0">
-                                        <input id="consent-obtained" type="checkbox" class="mt-1 w-5 h-5 text-orange-600 rounded border-orange-400">
-                                        <span class="text-sm font-bold text-orange-900 leading-tight">Informed consent (verbal/written) obtained & documented.</span>
-                                    </label>
+                                <div class="sub-card mt-0 border-orange-200 bg-orange-50/50">
+                                    <label class="border-b border-orange-200 pb-1 mb-3 text-orange-900">Consent & Capacity</label>
+                                    <div class="flex flex-col gap-3">
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-sm font-bold text-slate-700">Does patient have capacity?</span>
+                                            <div class="flex bg-white rounded p-1 border border-slate-300">
+                                                <label class="cursor-pointer px-3 py-1"><input type="radio" name="capacity" value="Yes" checked class="hidden peer"><span class="text-xs font-bold text-slate-400 peer-checked:text-blue-600 peer-checked:underline">Yes</span></label>
+                                                <label class="cursor-pointer px-3 py-1"><input type="radio" name="capacity" value="No" class="hidden peer"><span class="text-xs font-bold text-slate-400 peer-checked:text-red-600 peer-checked:underline">No</span></label>
+                                            </div>
+                                        </div>
+                                        
+                                        <div id="capacity-no-options" class="hidden pl-4 border-l-4 border-red-300 ml-1 bg-red-50 p-2 rounded-r">
+                                             <label class="flex items-center gap-2 font-bold cursor-pointer text-xs mb-1"><input type="radio" name="consent-type" value="Best Interests" class="rounded text-red-600 border-red-400"> Best Interests Form Completed</label>
+                                             <label class="flex items-center gap-2 font-bold cursor-pointer text-xs"><input type="radio" name="consent-type" value="Emergency" class="rounded text-red-600 border-red-400"> Emergency Doctrine</label>
+                                        </div>
+
+                                        <div id="capacity-yes-options" class="pl-0">
+                                             <div class="flex gap-4 mb-3">
+                                                <label class="flex items-center gap-2 font-bold text-slate-700 cursor-pointer text-xs"><input type="radio" name="consent-type" value="Written" class="text-blue-600 border-slate-400 focus:ring-blue-500 w-4 h-4"> Written Consent</label>
+                                                <label class="flex items-center gap-2 font-bold text-slate-700 cursor-pointer text-xs"><input type="radio" name="consent-type" value="Verbal" class="text-blue-600 border-slate-400 focus:ring-blue-500 w-4 h-4"> Verbal Consent</label>
+                                             </div>
+                                             <div class="grid grid-cols-2 gap-2 border-t border-slate-200 pt-2">
+                                                <label class="flex items-center gap-2 font-medium cursor-pointer text-xs text-slate-600"><input type="checkbox" id="consent-leaflet" class="rounded text-green-600 border-slate-400"> Information Leaflet Given</label>
+                                                <label class="flex items-center gap-2 font-medium cursor-pointer text-xs text-slate-600"><input type="checkbox" id="consent-questions" class="rounded text-green-600 border-slate-400"> Questions Answered</label>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div class="sub-card mt-0 border-slate-300">
-                                    <label>Risks Discussed</label>
-                                    <div class="space-y-2 mt-1">
-                                        <label class="flex items-start gap-2 font-normal text-sm text-slate-700"><input id="risk-nausea" type="checkbox" class="rounded mt-1 border-slate-400"> 
-                                            <span class="block leading-snug">Nausea or Vomiting (Common; up to 10-15%)</span>
-                                        </label>
-                                        <label class="flex items-start gap-2 font-normal text-sm text-slate-700"><input id="risk-bp" type="checkbox" class="rounded mt-1 border-slate-400"> 
-                                            <span class="block leading-snug">Transient low blood pressure or oxygen drop (Common; 5-10%)</span>
-                                        </label>
-                                        <label class="flex items-start gap-2 font-normal text-sm text-slate-700"><input id="risk-emergence" type="checkbox" class="rounded mt-1 border-slate-400"> 
-                                            <span class="block leading-snug">Agitation or Bad Dreams (Emergence Reaction; up to 10%)</span>
-                                        </label>
-                                        <label class="flex items-start gap-2 font-normal text-sm text-slate-700"><input id="risk-severe-breathing" type="checkbox" class="rounded mt-1 border-slate-400"> 
-                                            <span class="block leading-snug">Need for Airway Intervention (Rare; SIVA/TROOPS sentinel event <1%)</span>
-                                        </label>
+                                    <label class="border-b border-slate-200 pb-1 mb-2">Risk Discussion</label>
+                                    
+                                    <span class="text-[10px] font-black text-slate-500 uppercase mb-2 block bg-slate-100 p-1 rounded">Common / Minor Side Effects</span>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-y-2 gap-x-4 mb-4 px-2">
+                                         <label class="flex items-center gap-2 font-medium text-xs text-slate-700"><input id="risk-nausea" type="checkbox" class="rounded border-slate-400"> Nausea / Vomiting</label>
+                                         <label class="flex items-center gap-2 font-medium text-xs text-slate-700"><input id="risk-drowsy" type="checkbox" class="rounded border-slate-400"> Drowsiness / Ataxia</label>
+                                         <label class="flex items-center gap-2 font-medium text-xs text-slate-700"><input id="risk-hypotension" type="checkbox" class="rounded border-slate-400"> Hypotension (Transient)</label>
+                                         <label class="flex items-center gap-2 font-medium text-xs text-slate-700"><input id="risk-failure" type="checkbox" class="rounded border-slate-400"> Procedure Failure</label>
+                                    </div>
+
+                                    <span class="text-[10px] font-black text-red-700 uppercase mb-2 block bg-red-100 p-1 rounded border border-red-200">Rare / Severe Complications</span>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-y-2 gap-x-4 px-2">
+                                         <label class="flex items-center gap-2 font-bold text-xs text-red-900"><input id="risk-laryngospasm" type="checkbox" class="rounded border-red-300"> Laryngospasm</label>
+                                         <label class="flex items-center gap-2 font-bold text-xs text-red-900"><input id="risk-aspiration" type="checkbox" class="rounded border-red-300"> Aspiration</label>
+                                         <label class="flex items-center gap-2 font-bold text-xs text-red-900"><input id="risk-resp-depress" type="checkbox" class="rounded border-red-300"> Resp. Depression (Apnoea)</label>
+                                         <label class="flex items-center gap-2 font-bold text-xs text-red-900"><input id="risk-allergy" type="checkbox" class="rounded border-red-300"> Anaphylaxis</label>
+                                         <label class="flex items-center gap-2 font-bold text-xs text-red-900"><input id="risk-emergence" type="checkbox" class="rounded border-red-300"> Emergence Reaction</label>
                                     </div>
                                 </div>
 
@@ -276,39 +301,7 @@
                                     </div>
                                 </div>
 
-                                <div class="sub-card mt-0 bg-white border-slate-300">
-                                    <div class="flex justify-between items-center mb-2">
-                                        <label class="mb-0 text-orange-900 font-black">RCEM Sedation Requirements Guide</label>
-                                    </div>
-                                    <div class="overflow-x-auto text-xs border border-orange-100 rounded">
-                                        <table class="w-full text-left table-auto">
-                                            <thead class="bg-orange-100">
-                                                <tr>
-                                                    <th class="py-1 px-2 font-bold text-orange-900">Level</th>
-                                                    <th class="py-1 px-2 font-bold text-orange-900">Staffing</th>
-                                                    <th class="py-1 px-2 font-bold text-orange-900">Monitoring</th>
-                                                    <th class="py-1 px-2 font-bold text-orange-900">Competency</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody class="text-slate-700">
-                                                <tr>
-                                                    <td class="py-1 px-2 font-bold">Moderate</td>
-                                                    <td class="py-1 px-2">Nurse, Sedationist, Proceduralist</td>
-                                                    <td class="py-1 px-2">ECG, NIBP, SpO₂, Capnography</td>
-                                                    <td class="py-1 px-2">ILS/ALS, Level 1 Sign-off</td>
-                                                </tr>
-                                                <tr class="bg-slate-50">
-                                                    <td class="py-1 px-2 font-bold">Deep/Dissoc.</td>
-                                                    <td class="py-1 px-2">Nurse, Sedationist, Proceduralist</td>
-                                                    <td class="py-1 px-2">ECG, NIBP, SpO₂, Capnography</td>
-                                                    <td class="py-1 px-2">RCoA Assessment, Level 2 Sign-off</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-
-                                <div class="sub-card mt-0 border-slate-300">
+                                <div class="sub-card border-slate-300 mt-0">
                                     <div class="flex justify-between items-center mb-2">
                                         <label class="mb-0">ASA Grade</label>
                                         <button type="button" id="asa-guide-button" class="text-[10px] bg-slate-200 px-2 rounded font-bold hover:bg-slate-300 no-print">?</button>
@@ -324,81 +317,7 @@
                                         <label class="cursor-pointer text-center flex-1"><input type="radio" name="asa-grade" value="V" class="sr-only peer"><div class="py-2 border-2 border-red-200 bg-red-50 text-red-800 rounded peer-checked:bg-red-600 peer-checked:text-white peer-checked:border-red-700 text-xs font-bold transition hover:bg-red-100">V</div></label>
                                     </div>
                                 </div>
-
-                                <div class="sub-card border-slate-300 mt-0">
-                                    <label class="border-b border-slate-200 pb-1 mb-3">Airway (LEMON)</label>
-                                    
-                                    <div class="mb-4">
-                                        <div class="flex items-center gap-2 mb-1">
-                                            <span class="font-black text-blue-600 w-5">L</span>
-                                            <div class="flex gap-2 w-full">
-                                                 <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-l" value="Normal" class="sr-only peer"><div class="py-1 border border-slate-300 rounded peer-checked:bg-blue-600 peer-checked:text-white peer-checked:font-bold text-xs transition">Normal</div></label>
-                                                 <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-l" value="Abnormal" class="sr-only peer"><div class="py-1 border border-slate-300 rounded peer-checked:bg-amber-500 peer-checked:text-white peer-checked:font-bold text-xs transition">Abnormal</div></label>
-                                            </div>
-                                        </div>
-                                        <input type="text" id="lemon-l-specify" placeholder="Details..." class="text-xs py-1 border-slate-300 rounded">
-                                    </div>
-
-                                    <div class="mb-4 flex items-center gap-2">
-                                        <span class="font-black text-blue-600 w-5">E</span>
-                                        <div class="flex gap-2 w-full">
-                                             <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-e" value="Met" class="sr-only peer"><div class="py-1 border border-slate-300 rounded peer-checked:bg-blue-600 peer-checked:text-white peer-checked:font-bold text-xs transition">3-3-2 Met</div></label>
-                                             <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-e" value="Not Met" class="sr-only peer"><div class="py-1 border border-slate-300 rounded peer-checked:bg-amber-500 peer-checked:text-white peer-checked:font-bold text-xs transition">Not Met</div></label>
-                                        </div>
-                                    </div>
-
-                                    <div class="mb-4">
-                                        <div class="flex items-center gap-2 mb-1">
-                                            <span class="font-black text-blue-600 w-5">M</span>
-                                            <div class="flex gap-1 flex-1">
-                                                <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-m" value="I" class="sr-only peer"><div class="text-xs py-1 border border-slate-300 rounded peer-checked:bg-blue-600 peer-checked:text-white font-bold transition">I</div></label>
-                                                <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-m" value="II" class="sr-only peer"><div class="text-xs py-1 border border-slate-300 rounded peer-checked:bg-blue-600 peer-checked:text-white font-bold transition">II</div></label>
-                                                <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-m" value="III" class="sr-only peer"><div class="text-xs py-1 border border-slate-300 rounded peer-checked:bg-amber-500 peer-checked:text-white font-bold transition">III</div></label>
-                                                <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-m" value="IV" class="sr-only peer"><div class="text-xs py-1 border border-slate-300 rounded peer-checked:bg-red-500 peer-checked:text-white font-bold transition">IV</div></label>
-                                                <button type="button" id="mallampati-guide-button" class="text-[10px] bg-slate-200 px-2 rounded font-bold hover:bg-slate-300 no-print">?</button>
-                                            </div>
-                                        </div>
-                                        <div id="mallampati-guide-content" class="hidden mt-1">
-                                            <img src="images/Mallampati.jpg" class="w-full rounded border border-slate-300" alt="Mallampati Score">
-                                        </div>
-                                    </div>
-
-                                    <div class="mb-4">
-                                        <div class="flex items-center gap-2 mb-1">
-                                            <span class="font-black text-blue-600 w-5">U</span>
-                                            <label class="mb-0">Upper Lip Bite Test</label>
-                                            <button type="button" id="ulbt-guide-button" class="text-[10px] bg-slate-200 px-2 rounded font-bold hover:bg-slate-300 no-print">?</button>
-                                        </div>
-                                        <div id="ulbt-guide-content" class="hidden mt-1 mb-2">
-                                            <img src="images/upperlipbitetest.png" class="w-full rounded border border-slate-300" alt="Upper Lip Bite Test Score">
-                                        </div>
-                                        <div class="flex gap-1 flex-1 mt-1">
-                                            <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-u" value="Class 1" class="sr-only peer"><div class="text-xs border border-slate-300 rounded peer-checked:bg-blue-600 peer-checked:text-white py-1 font-bold transition">Class 1</div></label>
-                                            <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-u" value="Class 2" class="sr-only peer"><div class="text-xs border border-slate-300 rounded peer-checked:bg-blue-600 peer-checked:text-white py-1 font-bold transition">Class 2</div></label>
-                                            <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-u" value="Class 3" class="sr-only peer"><div class="text-xs border border-slate-300 rounded peer-checked:bg-amber-500 peer-checked:text-white py-1 font-bold transition">Class 3</div></label>
-                                        </div>
-                                    </div>
-
-                                    <div class="mb-4">
-                                        <div class="flex items-center gap-2 mb-1">
-                                            <span class="font-black text-blue-600 w-5">O</span>
-                                            <div class="flex gap-2 w-full">
-                                                <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-o" value="No" class="sr-only peer"><div class="py-1 border border-slate-300 rounded peer-checked:bg-blue-600 peer-checked:text-white peer-checked:font-bold text-xs transition">No Obstr/OSA</div></label>
-                                                <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-o" value="Yes" class="sr-only peer"><div class="py-1 border border-slate-300 rounded peer-checked:bg-amber-500 peer-checked:text-white peer-checked:font-bold text-xs transition">Yes</div></label>
-                                            </div>
-                                        </div>
-                                        <input type="text" id="lemon-o-specify" placeholder="Details..." class="text-xs py-1 border-slate-300 rounded">
-                                    </div>
-
-                                    <div class="flex items-center gap-2">
-                                        <span class="font-black text-blue-600 w-5">N</span>
-                                        <div class="flex gap-2 w-full">
-                                            <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-n" value="Normal" class="sr-only peer"><div class="py-1 border border-slate-300 rounded peer-checked:bg-blue-600 peer-checked:text-white peer-checked:font-bold text-xs transition">Neck Normal</div></label>
-                                            <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-n" value="Restricted" class="sr-only peer"><div class="py-1 border border-slate-300 rounded peer-checked:bg-amber-500 peer-checked:text-white peer-checked:font-bold text-xs transition">Restricted</div></label>
-                                        </div>
-                                    </div>
-                                </div>
-
+                                
                                 <div class="bg-red-50 border border-red-200 p-3 rounded-lg">
                                     <label class="text-red-800">Contraindications</label>
                                     <div class="space-y-1 mt-1">
@@ -438,18 +357,6 @@
                                     <label class="flex items-center gap-2 p-2 bg-white border border-slate-300 rounded cursor-pointer hover:bg-green-50"><input id="soap-m" type="checkbox" class="rounded text-green-600 border-slate-400"> <span class="font-semibold text-sm">Monitoring</span></label>
                                     <label class="flex items-center gap-2 p-2 bg-white border border-slate-300 rounded cursor-pointer hover:bg-green-50"><input id="soap-e" type="checkbox" class="rounded text-green-600 border-slate-400"> <span class="font-semibold text-sm">Env/IV</span></label>
                                 </div>
-                                
-                                <div class="mt-3 pt-3 border-t border-slate-200">
-                                    <label class="mb-2 block">Emergency Drugs Available</label>
-                                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 text-sm text-slate-700">
-                                        <label class="flex items-center gap-1 cursor-pointer"><input id="em-atropine" type="checkbox" class="rounded border-slate-400"> Atropine</label>
-                                        <label class="flex items-center gap-1 cursor-pointer"><input id="em-metaraminol" type="checkbox" class="rounded border-slate-400"> Metaraminol</label>
-                                        <label class="flex items-center gap-1 cursor-pointer"><input id="em-sux" type="checkbox" class="rounded border-slate-400"> Sux</label>
-                                        <label class="flex items-center gap-1 cursor-pointer"><input id="em-adrenaline" type="checkbox" class="rounded border-slate-400"> Adrenaline</label>
-                                        <label class="flex items-center gap-1 cursor-pointer"><input id="em-flumazenil" type="checkbox" class="rounded border-slate-400"> Flumazenil</label>
-                                        <label class="flex items-center gap-1 cursor-pointer"><input id="em-naloxone" type="checkbox" class="rounded border-slate-400"> Naloxone</label>
-                                    </div>
-                                </div>
                             </div>
 
                             <div class="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg flex items-start gap-3">
@@ -468,6 +375,18 @@
                                     <input type="text" id="pre-vital-spo2" placeholder="SpO2" class="text-center font-mono font-bold border-slate-400">
                                     <input type="text" id="pre-vital-rr" placeholder="RR" class="text-center font-mono font-bold border-slate-400">
                                 </div>
+                            </div>
+                        </div>
+
+                        <div class="section-card border-l-[8px] border-l-yellow-400 bg-yellow-50/50">
+                            <div class="section-title text-yellow-800 border-yellow-200 flex items-center gap-2">
+                                <span>🛑 Safety Time Out</span>
+                            </div>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                 <label class="flex items-center gap-2 font-bold text-slate-800 cursor-pointer border border-yellow-200 bg-white p-3 rounded shadow-sm hover:bg-yellow-50 transition"><input id="to-identity" type="checkbox" class="w-5 h-5 text-yellow-600 rounded border-yellow-400 focus:ring-yellow-500"> Patient ID Confirmed</label>
+                                 <label class="flex items-center gap-2 font-bold text-slate-800 cursor-pointer border border-yellow-200 bg-white p-3 rounded shadow-sm hover:bg-yellow-50 transition"><input id="to-role" type="checkbox" class="w-5 h-5 text-yellow-600 rounded border-yellow-400 focus:ring-yellow-500"> Roles Assigned</label>
+                                 <label class="flex items-center gap-2 font-bold text-slate-800 cursor-pointer border border-yellow-200 bg-white p-3 rounded shadow-sm hover:bg-yellow-50 transition"><input id="to-site" type="checkbox" class="w-5 h-5 text-yellow-600 rounded border-yellow-400 focus:ring-yellow-500"> Site/Proc Confirmed</label>
+                                 <label class="flex items-center gap-2 font-bold text-slate-800 cursor-pointer border border-yellow-200 bg-white p-3 rounded shadow-sm hover:bg-yellow-50 transition"><input id="to-monitoring" type="checkbox" class="w-5 h-5 text-yellow-600 rounded border-yellow-400 focus:ring-yellow-500"> Monitoring Active</label>
                             </div>
                         </div>
 
@@ -706,6 +625,23 @@
                 return '';
             }
 
+            // --- CAPACITY TOGGLE LOGIC ---
+            const toggleCapacity = () => {
+                const cap = findCheckedRadio('capacity');
+                const yesDiv = $('capacity-yes-options');
+                const noDiv = $('capacity-no-options');
+                
+                if(cap === 'No') {
+                    yesDiv.classList.add('hidden');
+                    noDiv.classList.remove('hidden');
+                } else {
+                    yesDiv.classList.remove('hidden');
+                    noDiv.classList.add('hidden');
+                }
+                generateEPRLog();
+            };
+            document.getElementsByName('capacity').forEach(r => r.addEventListener('change', toggleCapacity));
+
             // --- EPR LOG GENERATOR ---
             function generateEPRLog() {
                 if (!$('epr-log-output')) return; 
@@ -728,14 +664,43 @@
                 log += ` - Fasting (Food/Fluid): ${val('last-food') || 'N/A'} / ${val('last-fluid') || 'N/A'}<br>`;
                 log += ` - Pre-Analgesia: ${val('pre-analgesia') || 'None'}<br>`;
 
-                // --- 2. Airway Assessment (LEMON) ---
+                // --- 2. Capacity & Consent (Enhanced) ---
+                log += `<strong>2. Consent & Risks:</strong><br>`;
+                const cap = findCheckedRadio('capacity');
+                log += ` - Capacity: ${cap}<br>`;
+                
+                let consentType = findCheckedRadio('consent-type');
+                if (consentType) log += ` - Consent Type: <strong>${consentType}</strong><br>`;
+                
+                if(cap === 'Yes') {
+                     log += ` - Leaflet Given: ${isChecked('consent-leaflet') ? 'Yes' : 'No'}<br>`;
+                     log += ` - Questions Answered: ${isChecked('consent-questions') ? 'Yes' : 'No'}<br>`;
+                }
+                
+                let risks = [];
+                // Common
+                if(isChecked('risk-nausea')) risks.push('Nausea/Vomiting');
+                if(isChecked('risk-drowsy')) risks.push('Drowsiness');
+                if(isChecked('risk-hypotension')) risks.push('Hypotension');
+                if(isChecked('risk-failure')) risks.push('Proc. Failure');
+                // Rare
+                if(isChecked('risk-laryngospasm')) risks.push('Laryngospasm');
+                if(isChecked('risk-aspiration')) risks.push('Aspiration');
+                if(isChecked('risk-resp-depress')) risks.push('Apnoea');
+                if(isChecked('risk-allergy')) risks.push('Anaphylaxis');
+                if(isChecked('risk-emergence')) risks.push('Emergence Rxn');
+                
+                log += ` - Risks Discussed: ${risks.length > 0 ? risks.join(', ') : 'None documented'}<br>`;
+
+
+                // --- 3. Airway Assessment (LEMON) ---
                 const L = val('lemon-l-specify') || findCheckedRadio('lemon-l');
                 const M = findCheckedRadio('lemon-m');
                 const U = findCheckedRadio('lemon-u');
                 const O = val('lemon-o-specify') || findCheckedRadio('lemon-o');
                 const N = findCheckedRadio('lemon-n');
 
-                log += `<strong>2. Airway (LEMON) Assessment:</strong><br>`;
+                log += `<strong>3. Airway (LEMON) Assessment:</strong><br>`;
                 log += ` - Look (L): ${L}<br>`;
                 log += ` - Eval (E - 332): ${findCheckedRadio('lemon-e') || 'N/A'}<br>`;
                 log += ` - Mallampati (M): ${M || 'N/A'}<br>`;
@@ -745,17 +710,20 @@
                 log += ` - Contraindications: Allergy(${isChecked('ci-allergy') ? 'Y' : 'N'}), Hemo Instab(${isChecked('ci-hemo') ? 'Y' : 'N'}), Airway Comp(${isChecked('ci-gcs') ? 'Y' : 'N'})<br>`;
 
 
-                // --- 3. Plan, Consent & Risks ---
-                log += `<strong>3. Plan & Preparation:</strong><br>`;
+                // --- 4. Plan & Safety ---
+                log += `<strong>4. Plan & Preparation:</strong><br>`;
                 log += ` - Target Level: ${val('plan-target')}. Primary Agent: ${val('plan-agent')}<br>`;
-                log += ` - Consent: <strong>${isChecked('consent-obtained') ? 'VERBAL/WRITTEN OBTAINED' : 'PENDING'}</strong><br>`;
                 log += ` - Monitoring: ${isChecked('plan-aagbi') ? 'AAGBI Standard (ECG, NIBP, SpO₂, EtCO₂)' : 'Basic Monitor'}<br>`;
                 log += ` - Pre-Vitals: HR ${val('pre-vital-hr')}, BP ${val('pre-vital-bp')}, SpO₂ ${val('pre-vital-spo2')}%, RR ${val('pre-vital-rr')}<br>`;
+                
+                const toComplete = isChecked('to-identity') && isChecked('to-role') && isChecked('to-site') && isChecked('to-monitoring');
+                log += ` - Safety Time Out: <strong>${toComplete ? 'COMPLETED' : 'INCOMPLETE'}</strong> (ID, Roles, Site, Monitoring)<br>`;
+                
                 log += `----------------------------------------------------------<br>`;
 
 
-                // --- 4. Intra-Procedure & Log ---
-                log += `<strong>4. Intra-Procedure Log (Timer: ${startTime}):</strong><br>`;
+                // --- 5. Intra-Procedure & Log ---
+                log += `<strong>5. Intra-Procedure Log (Timer: ${startTime}):</strong><br>`;
                 log += ` - Proc Start: ${$('procedure-start-output')?.textContent || 'N/A'}<br>`;
                 log += ` - Proc End: ${$('procedure-end-output')?.textContent || 'N/A'}<br>`;
 
@@ -800,8 +768,8 @@
                 log += `----------------------------------------------------------<br>`;
 
 
-                // --- 5. Outcome & Discharge ---
-                log += `<strong>5. Outcome & Sign Off:</strong><br>`;
+                // --- 6. Outcome & Discharge ---
+                log += `<strong>6. Outcome & Sign Off:</strong><br>`;
                 log += ` - Procedure Outcome: <strong>${findCheckedRadio('outcome-proc') || 'N/A'}</strong><br>`;
                 log += ` - Disposal: <strong>${findCheckedRadio('disposal') || 'N/A'}</strong><br>`;
                 
@@ -830,7 +798,9 @@
                     $('monitoring-log-body').innerHTML = '';
                     $('dose-output').innerHTML = '';
                     $('dose-output').classList.add('hidden');
-                    generateEPRLog(); // Refresh log after clearing
+                    // Reset toggles manually if needed
+                    toggleCapacity();
+                    generateEPRLog(); 
                 }
             };
             
@@ -841,18 +811,18 @@
                 
                 const p_std_low = (0.5 * w).toFixed(0);
                 const p_std_high = (1.0 * w).toFixed(0);
-                const p_frail_low = (0.25 * w).toFixed(0); // RCEM: halving the dose of propofol seems both safe and effective
+                const p_frail_low = (0.25 * w).toFixed(0); 
                 const p_frail_high = (0.5 * w).toFixed(0);
                 
                 const k_diss_low = (1.0 * w).toFixed(0);
-                const k_diss_high = (2.0 * w).toFixed(0); // RCEM Ketamine initial dose: 1 mg/kg, repeat 2-2.5 mg/kg. Use standard 1-2 mg/kg range for initial bolus.
-                const k_analgesia_low = (0.3 * w).toFixed(1); // RCEM Ketamine Analgesia dose 0.3mg/kg
+                const k_diss_high = (2.0 * w).toFixed(0); 
+                const k_analgesia_low = (0.3 * w).toFixed(1); 
                 const k_analgesia_high = (0.5 * w).toFixed(1); 
                 
-                const m_initial_low = 1; // RCEM Midazolam initial dose 1-2 mg
-                const m_initial_high = Math.min(2.0, 0.05 * w).toFixed(1); // RCEM Midazolam max single dose 2.5mg, using 2mg as practical max for initial bolus.
+                const m_initial_low = 1; 
+                const m_initial_high = Math.min(2.0, 0.05 * w).toFixed(1); 
                 
-                const f_initial_max_mcg = (0.5 * w).toFixed(0); // RCEM Fentanyl up to 0.5mcg/kg with other sedatives
+                const f_initial_max_mcg = (0.5 * w).toFixed(0); 
                 
                 let p_output = frail 
                     ? `<strong>Propofol (Frail/Elderly):</strong> ${p_frail_low}-${p_frail_high} mg (0.25-0.5 mg/kg IV)`
@@ -885,7 +855,16 @@
             
             timerBtn.onclick = () => {
                 if(sedationInterval) stopTimer();
-                else startTimer();
+                else {
+                    // Safety Check before starting
+                    const safetyChecks = isChecked('to-identity') && isChecked('to-role') && isChecked('to-site') && isChecked('to-monitoring');
+                    if(!safetyChecks) {
+                        if(!confirm("⚠️ SAFETY WARNING: 'Time Out' checks are not fully completed.\n\nAre you sure you want to start sedation?")) {
+                            return;
+                        }
+                    }
+                    startTimer();
+                }
             };
 
             function startTimer() {
