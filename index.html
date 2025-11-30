@@ -165,6 +165,182 @@
     </header>
 
     <main class="container mx-auto max-w-full px-4 py-6">
+        
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+            <div class="lg:col-span-8">
+
+                <div class="hidden print-header mb-6 text-center border-b-2 border-slate-800 pb-4">
+                     <h1 class="text-3xl font-black text-slate-900">Procedural Sedation Record</h1>
+                     <p class="text-sm text-slate-500 font-bold">RCEM Best Practice Guidelines (2022)</p>
+                </div>
+
+                <form id="sedation-form" onsubmit="return false;">
+                    
+                    <div class="flex flex-col gap-6">
+
+                        <div class="section-card section-card-blue border-l-[8px] border-l-blue-600">
+                            <h2 class="section-title text-blue-800">1. Patient & Procedure</h2>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                <div>
+                                    <label for="age">Age</label>
+                                    <input type="number" id="age" placeholder="Yr" class="font-bold">
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label for="weight">Weight (kg) <span class="text-red-500">*</span></label>
+                                    <div class="flex items-center gap-2">
+                                        <input type="number" id="weight" placeholder="kg" class="font-bold">
+                                        <label class="flex items-center gap-1 bg-slate-100 px-2 py-2 rounded border border-slate-300 cursor-pointer h-[42px] mt-[1px]">
+                                            <input type="checkbox" id="weight-estimated" class="w-4 h-4 text-blue-600 rounded">
+                                            <span class="text-[10px] uppercase font-bold text-slate-600">Est</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="md:col-span-4">
+                                    <label for="allergies">Allergies</label>
+                                    <input type="text" id="allergies" placeholder="Reaction details..." class="text-red-700 font-bold">
+                                </div>
+                                <div class="md:col-span-4">
+                                    <label for="pre-analgesia">Pre-Sedation Analgesia</label>
+                                    <input type="text" id="pre-analgesia" placeholder="e.g. IV Morphine 10mg @ 14:00">
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label for="procedure">Procedure</label>
+                                    <input type="text" id="procedure">
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label for="indication">Indication</label>
+                                    <input type="text" id="indication">
+                                </div>
+                                
+                                <div class="md:col-span-4 mt-2 pt-2 border-t border-slate-200 grid grid-cols-1 md:grid-cols-4 gap-4">
+    1. **Structural Correction (Critical):** The closing column/grid tags are still misplaced, which breaks the layout on deployment.
+    * Find the end of the form content: `</div></form></div>`
+    * Find the start of the EPR log column: `</div> <div class="lg:col-span-1 sticky top-20 h-fit no-print">`
+    * The structure is incorrect and needs to be fixed to close the form, close the inner column, then proceed with the EPR column.
+
+2. **Full Width / Trauma App Match:** The app still uses a responsive grid that limits the overall width (`max-w-5xl` is missing, but the narrow column layout remains). The columns should be `lg:col-span-8` (Form) and `lg:col-span-4` (Log).
+
+3. **Styling Inconsistencies:** The section headers (`<div class="section-title text-blue-800">1. Patient & Procedure</div>`) are still using the generic, thinner `border-bottom: 2px solid #e2e8f0;` from the original code (since you pasted the old CSS back). The Trauma App uses a **thicker, colored border** via dynamic CSS classes.
+
+### Final Required Code Changes
+
+Here are the two blocks you must replace to finalize the application:
+
+#### 1. HTML Layout, Styling & Structure Correction
+
+This replaces the main body of the app, correcting the structural break, implementing the full width (`max-w-full`), setting the correct 8-column/4-column split, and applying the Trauma App's styling classes.
+
+**REPLACE THE ENTIRE BLOCK STARTING FROM** `<main class="container mx-auto max-w-full px-4 py-6">` **down to the line just before** `<template id="obs-score-template">`.
+
+```html
+    <main class="container mx-auto max-w-full px-4 py-6">
+        
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+            <div class="lg:col-span-8">
+
+                <div class="hidden print-header mb-6 text-center border-b-2 border-slate-800 pb-4">
+                     <h1 class="text-3xl font-black text-slate-900">Procedural Sedation Record</h1>
+                     <p class="text-sm text-slate-500 font-bold">RCEM Best Practice Guidelines (2022)</p>
+                </div>
+
+                <form id="sedation-form" onsubmit="return false;">
+                    
+                    <div class="flex flex-col gap-6">
+
+                        <div class="section-card section-card-blue border-l-[8px] border-l-blue-600">
+                            <h2 class="section-title text-blue-800">1. Patient & Procedure</h2>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                <div>
+                                    <label for="age">Age</label>
+                                    <input type="number" id="age" placeholder="Yr" class="font-bold">
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label for="weight">Weight (kg) <span class="text-red-500">*</span></label>
+                                    <div class="flex items-center gap-2">
+                                        <input type="number" id="weight" placeholder="kg" class="font-bold">
+                                        <label class="flex items-center gap-1 bg-slate-100 px-2 py-2 rounded border border-slate-300 cursor-pointer h-[42px] mt-[1px]">
+                                            <input type="checkbox" id="weight-estimated" class="w-4 h-4 text-blue-600 rounded">
+                                            <span class="text-[10px] uppercase font-bold text-slate-600">Est</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="md:col-span-4">
+                                    <label for="allergies">Allergies</label>
+                                    <input type="text" id="allergies" placeholder="Reaction details..." class="text-red-700 font-bold">
+                                </div>
+                                <div class="md:col-span-4">
+                                    <label for="pre-analgesia">Pre-Sedation Analgesia</label>
+                                    <input type="text" id="pre-analgesia" placeholder="e.g. IV Morphine 10mg @ 14:00">
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label for="procedure">Procedure</label>
+                                    <input type="text" id="procedure">
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label for="indication">Indication</label>
+                                    <input type="text" id="indication">
+                                </div>
+                                
+                                <div class="md:col-span-4 mt-2 pt-2 border-t border-slate-200 grid grid-cols-1 md:grid-cols-4 gap-4">
+                                    <div><label>Sedationist</label><input type="text" id="sedationist"></div>
+                                    <div><label>Grade</label><input type="text" id="sedationist-grade" placeholder="e.g. SpR / EM-ACPs"></div>
+                                    <div><label>Procedure Dr</label><input type="text" id="procedure-doctor"></div>
+                                    <div><label>Nurse</label><input type="text" id="nurse"></div>
+                                </div>
+                            </div>
+
+                            <div class="sub-card bg-blue-50 border-blue-200 mt-4 no-print">
+                                <div class="flex justify-between items-center mb-2">
+                                    <label class="text-blue-900 font-black">Estimated Dose Guide (Adults)</label>
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" id="frail-elderly" class="rounded text-blue-600">
+                                        <span class="text-xs text-blue-800">Frail / >65?</span>
+                                    </label>
+                                </div>
+                                <button type="button" id="calculate-doses-button" class="w-full std-btn bg-white border-blue-300 text-blue-700 hover:bg-blue-100">
+                                    Calculate Ranges
+                                </button>
+                                <div id="dose-output" class="mt-2 p-2 bg-white rounded border border-blue-200 text-sm font-mono hidden text-blue-900"></div>
+                            </div>
+                        </div>
+
+                        <div class="section-card section-card-orange border-l-[8px] border-l-orange-500">
+                            <h2 class="section-title text-orange-800">2. Pre-Sedation Assessment</h2>
+                            
+                            <div class="flex flex-col gap-4">
+                                
+                                <div class="bg-orange-50 p-3 rounded border border-orange-200">
+                                    <label class="flex items-start gap-2 cursor-pointer">
+                                        <input id="consent-obtained" type="checkbox" class="mt-1 w-5 h-5 text-orange-600 rounded">
+                                        <span class="text-sm font-bold text-orange-900 leading-tight">Informed consent (verbal/written) obtained & documented.</span>
+                                    </label>
+                                </div>
+
+                                <div class="sub-card mt-0">
+                                    <label>Risks Discussed</label>
+                                    <div class="space-y-2 mt-1">
+                                        <label class="flex items-start gap-2 font-normal text-sm"><input id="risk-nausea" type="checkbox" class="rounded mt-1"> 
+                                            <span class="block leading-snug">Nausea or Vomiting (Common; up to 10-15%)</span>
+    1. **Structural Fix (Critical):** The main column and form closure tags are completely incorrect, causing the EPR log to float incorrectly.
+2. **Width/Layout:** The app is restricted to `max-w-5xl`. It needs to be `max-w-full` with an 8/4 column split (`lg:col-span-8` and `lg:col-span-4`) to maximize screen use and match your Trauma App's layout.
+3. **Styling:** The sections are missing the necessary visual classes (`section-card-color`) to inherit the bold, colored header style from the Trauma App.
+
+### Final Required Code Changes
+
+Here are the two blocks you must replace to finalize the application:
+
+#### 1. Full HTML Body Structure Replacement (Layout, Width, & Content)
+
+This implements the **full width**, the **correct 8/4 column structure**, and applies the necessary styling classes to the section headers.
+
+**REPLACE THE ENTIRE BLOCK STARTING FROM** `<main class="container mx-auto max-w-full px-4 py-6">` **down to the line just before** `<template id="obs-score-template">`.
+
+```html
+<main class="container mx-auto max-w-full px-4 py-6">
         
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
@@ -319,10 +495,10 @@
                                     </div>
                                     <div class="flex justify-between gap-1">
                                         <label class="cursor-pointer text-center flex-1"><input type="radio" name="asa-grade" value="I" class="sr-only peer"><div class="py-1 border border-slate-300 rounded peer-checked:bg-blue-600 peer-checked:text-white peer-checked:border-blue-600 text-xs font-bold transition">I</div></label>
-                                        <label class="cursor-pointer text-center flex-1"><input type="radio" name="asa-grade" value="II" class="sr-only peer"><div class="py-1 border border-slate-300 rounded peer-checked:bg-blue-600 peer-checked:text-white peer-checked:border-blue-600 text-xs font-bold transition">II</div></label>
-                                        <label class="cursor-pointer text-center flex-1"><input type="radio" name="asa-grade" value="III" class="sr-only peer"><div class="py-1 border border-amber-300 bg-amber-50 text-amber-800 rounded peer-checked:bg-amber-600 peer-checked:text-white text-xs font-bold transition">III</div></label>
-                                        <label class="cursor-pointer text-center flex-1"><input type="radio" name="asa-grade" value="IV" class="sr-only peer"><div class="py-1 border border-red-300 bg-red-50 text-red-800 rounded peer-checked:bg-red-600 peer-checked:text-white text-xs font-bold transition">IV</div></label>
-                                        <label class="cursor-pointer text-center flex-1"><input type="radio" name="asa-grade" value="V" class="sr-only peer"><div class="py-1 border border-red-300 bg-red-50 text-red-800 rounded peer-checked:bg-red-600 peer-checked:text-white text-xs font-bold transition">V</div></label>
+                                        <label class="cursor-pointer flex-1 text-center"><input type="radio" name="asa-grade" value="II" class="sr-only peer"><div class="py-1 border border-slate-300 rounded peer-checked:bg-blue-600 peer-checked:text-white peer-checked:border-blue-600 text-xs font-bold transition">II</div></label>
+                                        <label class="cursor-pointer flex-1 text-center"><input type="radio" name="asa-grade" value="III" class="sr-only peer"><div class="py-1 border border-amber-300 bg-amber-50 text-amber-800 rounded peer-checked:bg-amber-600 peer-checked:text-white text-xs font-bold transition">III</div></label>
+                                        <label class="cursor-pointer flex-1 text-center"><input type="radio" name="asa-grade" value="IV" class="sr-only peer"><div class="py-1 border border-red-300 bg-red-50 text-red-800 rounded peer-checked:bg-red-600 peer-checked:text-white text-xs font-bold transition">IV</div></label>
+                                        <label class="cursor-pointer flex-1 text-center"><input type="radio" name="asa-grade" value="V" class="sr-only peer"><div class="py-1 border border-red-300 bg-red-50 text-red-800 rounded peer-checked:bg-red-600 peer-checked:text-white text-xs font-bold transition">V</div></label>
                                     </div>
                                 </div>
 
@@ -411,8 +587,8 @@
                             </div>
                         </div>
 
-                        <div class="section-card border-l-[8px] border-l-green-500">
-                            <div class="section-title text-green-800">3. Plan & Preparation</div>
+                        <div class="section-card section-card-green border-l-[8px] border-l-green-500">
+                            <h2 class="section-title text-green-800">3. Plan & Preparation</h2>
                             
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
@@ -472,9 +648,9 @@
                             </div>
                         </div>
 
-                        <div class="section-card border-l-[8px] border-l-slate-800 page-break">
-                            <div class="section-title text-slate-800 justify-between">
-                                4. Intra-Sedation Record
+                        <div class="section-card section-card-slate border-l-[8px] border-l-slate-800 page-break">
+                            <div class="flex justify-between items-center mb-4 border-b-4 border-slate-200 pb-2">
+                                <h2 class="text-2xl font-black text-slate-800">4. Intra-Sedation Record</h2>
                                 <button type="button" id="complications-guide-button" class="text-[10px] bg-slate-200 px-2 py-1 rounded hover:bg-slate-300 no-print">Guide</button>
                             </div>
                             
@@ -576,8 +752,8 @@
                             </div>
                         </div>
 
-                        <div class="section-card border-l-[8px] border-l-purple-600">
-                            <div class="section-title text-purple-800">5. Outcome & Discharge</div>
+                        <div class="section-card section-card-purple border-l-[8px] border-l-purple-600">
+                            <h2 class="section-title text-purple-800">5. Outcome & Discharge</h2>
                             
                             <div class="flex flex-col gap-4">
                                 <div class="sub-card bg-white mt-0">
@@ -629,43 +805,59 @@
                     </div>
 
                 </form>
-            </div> <div class="lg:col-span-1 sticky top-20 h-fit no-print">
-                <div id="epr-log-container" class="section-card border-l-[8px] border-l-gray-500 p-4">
-                    <div class="section-title text-gray-800 mb-2">EPR Quick Log</div>
-                    <button type="button" id="copy-log-button" class="w-full std-btn btn-primary mb-3 no-print">
-                        Copy to EPR
-                    </button>
-                    <div id="epr-log-output" class="p-3 bg-white border border-slate-300 rounded text-sm overflow-auto max-h-[80vh] min-h-[500px] text-black font-serif" contenteditable="true">
-                        <strong>Procedural Sedation Record</strong>
-                        <br>
-                        Log updates automatically...
-                    </div>
-                </div>
-            </div>
+            </div> 
 
-        </div> <div class="text-center no-print mt-8">
-             <button type="button" id="print-button" class="std-btn bg-slate-800 text-white text-lg px-8 py-3 shadow-lg hover:bg-slate-900">
-                Print / Save to PDF
-             </button>
-             <p class="mt-4 text-xs text-slate-500">
-                 <a href="#" id="clear-form-button" class="text-red-500 underline">Clear Form</a>
-             </p>
-        </div>
-    </main>
+            <div class="lg:col-span-4 sticky top-6 h-fit no-print">
+                <div id="epr-log-container" class="section-card section-card-slate border-l-[8px] border-l-gray-500">
+                    <h2 class="text-xl font-black text-slate-800 mb-4 border-b-4 border-slate-200 pb-2">EPR Quick Log</h2>
+                    <button type="button" id="copy-log-button" class="w-full std-btn btn-primary mb-3">
+                        Copy to EPR
+                    </button>
+                    <div id="epr-log-output" class="rich-output p-3 bg-white border border-slate-300 rounded text-sm overflow-auto max-h-[80vh] min-h-[500px] text-black font-serif" contenteditable="true">
+                        <strong>Procedural Sedation Record</strong>
+                        <br>
+                        Log updates automatically...
+                    </div>
+                </div>
+            </div>
 
-    <div id="custom-modal-backdrop" class="fixed inset-0 hidden items-center justify-center z-50">
-        <div id="custom-modal" class="bg-white rounded-xl shadow-2xl p-6 w-full max-w-sm mx-4 transform transition-all scale-95 opacity-0 border border-slate-200">
-            <h3 id="custom-modal-title" class="text-lg font-black text-slate-900 mb-4">Input</h3>
-            <div>
-                <label id="custom-modal-label" class="block text-sm font-bold text-slate-600 mb-2">Value:</label>
-                <input type="text" id="custom-modal-input" class="w-full rounded-md border-slate-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 p-3 text-lg">
-            </div>
-            <div class="mt-6 flex gap-3">
-                <button id="custom-modal-ok" class="flex-1 btn-primary py-2 rounded-lg font-bold">OK</button>
-                <button id="custom-modal-cancel" class="flex-1 std-btn py-2 rounded-lg">Cancel</button>
-            </div>
-        </div>
-    </div>
+        </div> 
+        
+        <div class="text-center no-print mt-8">
+             <button type="button" id="print-button" class="std-btn bg-slate-800 text-white text-lg px-8 py-3 shadow-lg hover:bg-slate-900">
+                Print / Save to PDF
+             </button>
+             <p class="mt-4 text-xs text-slate-500">
+                 <a href="#" id="clear-form-button" class="text-red-500 underline">Clear Form</a>
+             </p>
+        </div>
+    </main>
+
+    <div id="custom-modal-backdrop" class="fixed inset-0 hidden items-center justify-center z-50">
+        <div id="custom-modal" class="bg-white rounded-xl shadow-2xl p-6 w-full max-w-sm mx-4 transform transition-all scale-95 opacity-0 border border-slate-200">
+            <h3 id="custom-modal-title" class="text-lg font-black text-slate-900 mb-4">Input</h3>
+            <div>
+                <label id="custom-modal-label" class="block text-sm font-bold text-slate-600 mb-2">Value:</label>
+                <input type="text" id="custom-modal-input" class="w-full rounded-md border-slate-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 p-3 text-lg">
+            </div>
+            <div class="mt-6 flex gap-3">
+                <button id="custom-modal-ok" class="flex-1 btn-primary py-2 rounded-lg font-bold">OK</button>
+                <button id="custom-modal-cancel" class="flex-1 std-btn py-2 rounded-lg">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <template id="obs-score-template">
+        <select class="w-full text-xs border-none bg-transparent focus:ring-0 p-0">
+            <option value="">-</option>
+            <option value="1">1 (Awake)</option>
+            <option value="2">2 (Drowsy)</option>
+            <option value="3">3 (Eyes clsd/Voice)</option>
+            <option value="4">4 (Eyes clsd/Shake)</option>
+            <option value="5">5 (Pain only)</option>
+            <option value="6">6 (Unresp)</option>
+        </select>
+    </template>
 
     <template id="obs-score-template">
         <select class="w-full text-xs border-none bg-transparent focus:ring-0 p-0">
@@ -680,347 +872,376 @@
     </template>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const $ = (id) => document.getElementById(id);
-            const val = (id) => $(id)?.value || '';
-            const isChecked = (id) => $(id)?.checked;
-            
-            // --- State ---
-            let sedationInterval = null;
-            let secondsElapsed = 0;
-            
-            // --- Utility Functions ---
-            function findCheckedRadio(name) {
-                const radios = document.getElementsByName(name);
-                for (let i = 0; i < radios.length; i++) {
-                    if (radios[i].checked) {
-                        return radios[i].value;
-                    }
-                }
-                return '';
-            }
+        document.addEventListener('DOMContentLoaded', () => {
+            const $ = (id) => document.getElementById(id);
+            const val = (id) => $(id)?.value || '';
+            const isChecked = (id) => $(id)?.checked;
+            
+            // --- State ---
+            let sedationInterval = null;
+            let secondsElapsed = 0;
+            
+            // --- Utility Functions ---
+            function findCheckedRadio(name) {
+                const radios = document.getElementsByName(name);
+                for (let i = 0; i < radios.length; i++) {
+                    if (radios[i].checked) {
+                        return radios[i].value;
+                    }
+                }
+                return '';
+            }
+            
+            // --- EPR Log Copy Function ---
+            async function copyEPRLog() {
+                const htmlContent = $('epr-log-output').innerHTML;
+                // Use innerText for cleaner text content generation
+                const textContent = $('epr-log-output').innerText.trim();
 
-            // --- EPR LOG GENERATOR ---
-            function generateEPRLog() {
-                if (!$('epr-log-output')) return; 
+                try {
+                    const htmlBlob = new Blob([htmlContent], { type: 'text/html' });
+                    const textBlob = new Blob([textContent], { type: 'text/plain' });
+                    
+                    await navigator.clipboard.write([
+                        new ClipboardItem({ 
+                            'text/html': htmlBlob, 
+                            'text/plain': textBlob 
+                        })
+                    ]);
+                    
+                    // Visual feedback
+                    const btn = $('copy-log-button');
+                    const origHtml = btn.innerHTML;
+                    btn.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Copied!';
+                    btn.classList.add('bg-green-600', 'hover:bg-green-700', 'border-green-700');
+                    btn.classList.remove('btn-primary');
+                    
+                    setTimeout(() => {
+                        btn.innerHTML = origHtml;
+                        btn.classList.add('btn-primary');
+                        btn.classList.remove('bg-green-600', 'hover:bg-green-700', 'border-green-700');
+                    }, 2000);
 
-                let log = '';
-                const date = new Date().toLocaleDateString('en-GB', {year:'numeric', month:'short', day:'2-digit'});
-                const startTime = $('timer-display')?.textContent.split(' ')[0] || '00:00:00';
-                
-                // --- 1. Header and Patient Details ---
-                log += `<strong>PROCEDURAL SEDATION RECORD (${date})</strong><br>`;
-                log += `----------------------------------------------------------<br>`;
-                log += `<strong>1. Patient & Pre-Sedation Assessment:</strong><br>`;
-                log += ` - Sedationist: ${val('sedationist')} (${val('sedationist-grade')})<br>`;
-                log += ` - Procedure Dr: ${val('procedure-doctor')}<br>`;
-                log += ` - Nurse: ${val('nurse')}<br>`;
-                log += ` - Weight: ${val('weight')} kg (Est: ${isChecked('weight-estimated') ? 'Yes' : 'No'})<br>`;
-                log += ` - Allergies: <strong>${val('allergies') || 'None Known'}</strong><br>`;
-                log += ` - Frail/Elderly: ${isChecked('frail-elderly') ? 'Yes' : 'No'}<br>`;
-                log += ` - ASA Grade: ${findCheckedRadio('asa-grade') || 'N/A'}<br>`;
-                log += ` - Fasting (Food/Fluid): ${val('last-food') || 'N/A'} / ${val('last-fluid') || 'N/A'}<br>`;
-                log += ` - Pre-Analgesia: ${val('pre-analgesia') || 'None'}<br>`;
-
-                // --- 2. Airway Assessment (LEMON) ---
-                const L = val('lemon-l-specify') || findCheckedRadio('lemon-l');
-                const M = findCheckedRadio('lemon-m');
-                const U = findCheckedRadio('lemon-u');
-                const O = val('lemon-o-specify') || findCheckedRadio('lemon-o');
-                const N = findCheckedRadio('lemon-n');
-
-                log += `<strong>2. Airway (LEMON) Assessment:</strong><br>`;
-                log += ` - Look (L): ${L}<br>`;
-                log += ` - Eval (E - 332): ${findCheckedRadio('lemon-e') || 'N/A'}<br>`;
-                log += ` - Mallampati (M): ${M || 'N/A'}<br>`;
-                log += ` - ULBT (U): ${U || 'N/A'}<br>`;
-                log += ` - Obstr (O): ${O}<br>`;
-                log += ` - Neck (N): ${N || 'N/A'}<br>`;
-                log += ` - Contraindications: Allergy(${isChecked('ci-allergy') ? 'Y' : 'N'}), Hemo Instab(${isChecked('ci-hemo') ? 'Y' : 'N'}), Airway Comp(${isChecked('ci-gcs') ? 'Y' : 'N'})<br>`;
+                } catch (err) {
+                    console.error("Copy failed", err);
+                    alert("Copy failed. Please manually select and copy the text in the log box.");
+                }
+            }
 
 
-                // --- 3. Plan, Consent & Risks ---
-                log += `<strong>3. Plan & Preparation:</strong><br>`;
-                log += ` - Target Level: ${val('plan-target')}. Primary Agent: ${val('plan-agent')}<br>`;
-                log += ` - Consent: <strong>${isChecked('consent-obtained') ? 'VERBAL/WRITTEN OBTAINED' : 'PENDING'}</strong><br>`;
-                log += ` - Monitoring: ${isChecked('plan-aagbi') ? 'AAGBI Standard (ECG, NIBP, SpO₂, EtCO₂)' : 'Basic Monitor'}<br>`;
-                log += ` - Pre-Vitals: HR ${val('pre-vital-hr')}, BP ${val('pre-vital-bp')}, SpO₂ ${val('pre-vital-spo2')}%, RR ${val('pre-vital-rr')}<br>`;
-                log += `----------------------------------------------------------<br>`;
+            // --- EPR LOG GENERATOR ---
+            function generateEPRLog() {
+                if (!$('epr-log-output')) return; 
+
+                let log = '';
+                const date = new Date().toLocaleDateString('en-GB', {year:'numeric', month:'short', day:'2-digit'});
+                const startTime = $('timer-display')?.textContent.split(' ')[0] || '00:00:00';
+                
+                // --- 1. Header and Patient Details ---
+                log += `<strong>PROCEDURAL SEDATION RECORD (${date})</strong><br>`;
+                log += `----------------------------------------------------------<br>`;
+                log += `<strong>1. Patient & Pre-Sedation Assessment:</strong><br>`;
+                log += ` - Sedationist: ${val('sedationist')} (${val('sedationist-grade')})<br>`;
+                log += ` - Procedure Dr: ${val('procedure-doctor')}<br>`;
+                log += ` - Nurse: ${val('nurse')}<br>`;
+                log += ` - Weight: ${val('weight')} kg (Est: ${isChecked('weight-estimated') ? 'Yes' : 'No'})<br>`;
+                log += ` - Allergies: <strong>${val('allergies') || 'None Known'}</strong><br>`;
+                log += ` - Frail/Elderly: ${isChecked('frail-elderly') ? 'Yes' : 'No'}<br>`;
+                log += ` - ASA Grade: ${findCheckedRadio('asa-grade') || 'N/A'}<br>`;
+                log += ` - Fasting (Food/Fluid): ${val('last-food') || 'N/A'} / ${val('last-fluid') || 'N/A'}<br>`;
+                log += ` - Pre-Analgesia: ${val('pre-analgesia') || 'None'}<br>`;
+
+                // --- 2. Airway Assessment (LEMON) ---
+                const L = val('lemon-l-specify') || findCheckedRadio('lemon-l');
+                const M = findCheckedRadio('lemon-m');
+                const U = findCheckedRadio('lemon-u');
+                const O = val('lemon-o-specify') || findCheckedRadio('lemon-o');
+                const N = findCheckedRadio('lemon-n');
+
+                log += `<strong>2. Airway (LEMON) Assessment:</strong><br>`;
+                log += ` - Look (L): ${L}<br>`;
+                log += ` - Eval (E - 332): ${findCheckedRadio('lemon-e') || 'N/A'}<br>`;
+                log += ` - Mallampati (M): ${M || 'N/A'}<br>`;
+                log += ` - ULBT (U): ${U || 'N/A'}<br>`;
+                log += ` - Obstr (O): ${O}<br>`;
+                log += ` - Neck (N): ${N || 'N/A'}<br>`;
+                log += ` - Contraindications: Allergy(${isChecked('ci-allergy') ? 'Y' : 'N'}), Hemo Instab(${isChecked('ci-hemo') ? 'Y' : 'N'}), Airway Comp(${isChecked('ci-gcs') ? 'Y' : 'N'})<br>`;
 
 
-                // --- 4. Intra-Procedure & Log ---
-                log += `<strong>4. Intra-Procedure Log (Timer: ${startTime}):</strong><br>`;
-                log += ` - Proc Start: ${$('procedure-start-output')?.textContent || 'N/A'}<br>`;
-                log += ` - Proc End: ${$('procedure-end-output')?.textContent || 'N/A'}<br>`;
-
-                // Drug Log
-                const drugRows = $('drug-table-body').querySelectorAll('tr');
-                if (drugRows.length > 0) {
-                    log += `<strong>Drugs Administered:</strong><br>`;
-                    drugRows.forEach(row => {
-                        const cells = row.querySelectorAll('td');
-                        const dTime = cells[0].querySelector('input').value.match(/\((.*?)\)/)?.[1]?.trim() || cells[0].querySelector('input').value.trim();
-                        const drugName = cells[1].textContent;
-                        const drugDose = cells[2].textContent;
-                        const giver = cells[3].textContent;
-                        log += ` - ${dTime}: <strong>${drugName} ${drugDose} mg</strong> (Given by ${giver})<br>`;
-                    });
-                }
-
-                // Monitoring Log
-                const obsRows = $('monitoring-log-body').querySelectorAll('tr');
-                if (obsRows.length > 0) {
-                    log += `<strong>Observations:</strong><br>`;
-                    obsRows.forEach(row => {
-                        const cells = row.querySelectorAll('td');
-                        const oTime = cells[0].querySelector('input').value;
-                        const hr = cells[1].querySelector('input').value;
-                        const bp = cells[2].querySelector('input').value;
-                        const spo2 = cells[3].querySelector('input').value;
-                        const rr = cells[4].querySelector('input').value;
-                        const etco2 = cells[5].querySelector('input').value;
-                        const scoreEl = cells[6].querySelector('select');
-                        const scoreText = scoreEl.value ? scoreEl.selectedOptions[0].textContent : '';
-                        
-                        // Only log if data is present
-                        if(hr || bp || spo2 || rr || etco2 || scoreText) {
-                            log += ` - ${oTime}: HR ${hr}, BP ${bp}, SpO₂ ${spo2}%, RR ${rr}, EtCO₂ ${etco2}, Score: ${scoreText}<br>`;
-                        }
-                    });
-                }
-
-                // Notes
-                log += `<strong>Notes/Adverse Events:</strong> ${val('general-notes') || 'No additional notes or adverse events.'}<br>`;
-                log += `----------------------------------------------------------<br>`;
+                // --- 3. Plan, Consent & Risks ---
+                log += `<strong>3. Plan & Preparation:</strong><br>`;
+                log += ` - Target Level: ${val('plan-target')}. Primary Agent: ${val('plan-agent')}<br>`;
+                log += ` - Consent: <strong>${isChecked('consent-obtained') ? 'VERBAL/WRITTEN OBTAINED' : 'PENDING'}</strong><br>`;
+                log += ` - Monitoring: ${isChecked('plan-aagbi') ? 'AAGBI Standard (ECG, NIBP, SpO₂, EtCO₂)' : 'Basic Monitor'}<br>`;
+                log += ` - Pre-Vitals: HR ${val('pre-vital-hr')}, BP ${val('pre-vital-bp')}, SpO₂ ${val('pre-vital-spo2')}%, RR ${val('pre-vital-rr')}<br>`;
+                log += `----------------------------------------------------------<br>`;
 
 
-                // --- 5. Outcome & Discharge ---
-                log += `<strong>5. Outcome & Sign Off:</strong><br>`;
-                log += ` - Procedure Outcome: <strong>${findCheckedRadio('outcome-proc') || 'N/A'}</strong><br>`;
-                log += ` - Disposal: <strong>${findCheckedRadio('disposal') || 'N/A'}</strong><br>`;
-                
-                const dcComplete = isChecked('dc-vitals') && isChecked('dc-aao') && isChecked('dc-oral') && isChecked('dc-pain') && isChecked('dc-home');
-                log += ` - Discharge Criteria Met: <strong>${dcComplete ? 'YES' : 'PENDING'}</strong><br>`;
-                log += ` - Reversal Agent Check (2hr): ${isChecked('dc-reversal-time') ? 'Passed' : 'Pending/N/A'}<br>`;
-                
-                const diComplete = isChecked('di-drive') && isChecked('di-adult') && isChecked('di-alcohol') && isChecked('di-decisions');
-                log += ` - Discharge Instructions Given: ${diComplete ? 'Yes (Full 48h restrictions given)' : 'No/Incomplete'}<br>`;
-                log += ` - Signed Off By: ${val('signoff-name')} (GMC: ${val('signoff-gmc')}) @ ${val('signoff-time') || 'N/A'}<br>`;
-                
-                $('epr-log-output').innerHTML = log.replace(/\n/g, '<br>');
-            }
+                // --- 4. Intra-Procedure & Log ---
+                log += `<strong>4. Intra-Procedure Log (Timer: ${startTime}):</strong><br>`;
+                log += ` - Proc Start: ${$('procedure-start-output')?.textContent || 'N/A'}<br>`;
+                log += ` - Proc End: ${$('procedure-end-output')?.textContent || 'N/A'}<br>`;
 
-            // --- Event Listeners ---
-            $('print-button').onclick = () => window.print();
-            $('header-print-btn').onclick = () => window.print();
-            
-            $('clear-form-button').onclick = () => {
-                if(confirm("Clear entire form?")) {
-                    $('sedation-form').reset();
-                    stopTimer();
-                    $('timer-display').textContent = "00:00:00";
-                    secondsElapsed = 0;
-                    $('drug-table-body').innerHTML = '';
-                    $('monitoring-log-body').innerHTML = '';
-                    $('dose-output').innerHTML = '';
-                    $('dose-output').classList.add('hidden');
-                    generateEPRLog(); // Refresh log after clearing
-                }
-            };
-            
-            $('calculate-doses-button').onclick = () => {
-                const w = parseFloat(val('weight'));
-                if(!w) return alert("Enter weight first");
-                const frail = isChecked('frail-elderly');
-                
-                const p_std_low = (0.5 * w).toFixed(0);
-                const p_std_high = (1.0 * w).toFixed(0);
-                const p_frail_low = (0.25 * w).toFixed(0); // RCEM: halving the dose of propofol seems both safe and effective
-                const p_frail_high = (0.5 * w).toFixed(0);
-                
-                const k_diss_low = (1.0 * w).toFixed(0);
-                const k_diss_high = (2.0 * w).toFixed(0); // RCEM Ketamine initial dose: 1 mg/kg, repeat 2-2.5 mg/kg. Use standard 1-2 mg/kg range for initial bolus.
-                const k_analgesia_low = (0.3 * w).toFixed(1); // RCEM Ketamine Analgesia dose 0.3mg/kg
-                const k_analgesia_high = (0.5 * w).toFixed(1); 
-                
-                const m_initial_low = 1; // RCEM Midazolam initial dose 1-2 mg
-                const m_initial_high = Math.min(2.0, 0.05 * w).toFixed(1); // RCEM Midazolam max single dose 2.5mg, using 2mg as practical max for initial bolus.
-                
-                const f_initial_max_mcg = (0.5 * w).toFixed(0); // RCEM Fentanyl up to 0.5mcg/kg with other sedatives
-                
-                let p_output = frail 
-                    ? `<strong>Propofol (Frail/Elderly):</strong> ${p_frail_low}-${p_frail_high} mg (0.25-0.5 mg/kg IV)`
-                    : `<strong>Propofol (Adult):</strong> ${p_std_low}-${p_std_high} mg (0.5-1.0 mg/kg IV)`;
-                
-                $('dose-output').innerHTML = `
-                    <p class="mb-1">${p_output}</p>
-                    <p class="mb-1"><strong>Ketamine (Dissociative):</strong> ${k_diss_low}-${k_diss_high} mg (1-2 mg/kg IV)</p>
-                    <p class="mb-1"><strong>Ketamine (Analgesia):</strong> ${k_analgesia_low}-${k_analgesia_high} mg (0.3-0.5 mg/kg IV)</p>
-                    <p class="mb-1"><strong>Midazolam (Adjunct):</strong> ${m_initial_low}-${m_initial_high} mg (Initial 1-2 mg; max 2.5 mg single dose)</p>
-                    <p class="mb-1"><strong>Fentanyl (Adjunct):</strong> Up to ${f_initial_max_mcg} mcg (Up to 0.5 mcg/kg IV with sedatives)</p>
-                    <hr class="my-2 border-blue-200">
-                    <span class="text-xs text-slate-600">All doses are initial bolus ranges. Titrate slowly to effect.</span>
-                `;
-                $('dose-output').classList.remove('hidden');
-                generateEPRLog(); // Refresh log after calculating doses
-            };
+                // Drug Log
+                const drugRows = $('drug-table-body').querySelectorAll('tr');
+                if (drugRows.length > 0) {
+                    log += `<strong>Drugs Administered:</strong><br>`;
+                    drugRows.forEach(row => {
+                        const cells = row.querySelectorAll('td');
+                        const dTime = cells[0].querySelector('input').value.match(/\((.*?)\)/)?.[1]?.trim() || cells[0].querySelector('input').value.trim();
+                        const drugName = cells[1].textContent;
+                        const drugDose = cells[2].textContent;
+                        const giver = cells[3].textContent;
+                        log += ` - ${dTime}: <strong>${drugName} ${drugDose} mg</strong> (Given by ${giver})<br>`;
+                    });
+                }
 
-            // --- Toggle Guides ---
-            const toggle = (btnId, contentId) => {
-                $(btnId).onclick = () => $(contentId).classList.toggle('hidden');
-            };
-            toggle('asa-guide-button', 'asa-guide-content');
-            toggle('mallampati-guide-button', 'mallampati-guide-content');
-            toggle('complications-guide-button', 'complications-guide-content');
-            toggle('ulbt-guide-button', 'ulbt-guide-content');
+                // Monitoring Log
+                const obsRows = $('monitoring-log-body').querySelectorAll('tr');
+                if (obsRows.length > 0) {
+                    log += `<strong>Observations:</strong><br>`;
+                    obsRows.forEach(row => {
+                        const cells = row.querySelectorAll('td');
+                        const oTime = cells[0].querySelector('input').value;
+                        const hr = cells[1].querySelector('input').value;
+                        const bp = cells[2].querySelector('input').value;
+                        const spo2 = cells[3].querySelector('input').value;
+                        const rr = cells[4].querySelector('input').value;
+                        const etco2 = cells[5].querySelector('input').value;
+                        const scoreEl = cells[6].querySelector('select');
+                        const scoreText = scoreEl.value ? scoreEl.selectedOptions[0].textContent : '';
+                        
+                        // Only log if data is present
+                        if(hr || bp || spo2 || rr || etco2 || scoreText) {
+                            log += ` - ${oTime}: HR ${hr}, BP ${bp}, SpO₂ ${spo2}%, RR ${rr}, EtCO₂ ${etco2}, Score: ${scoreText}<br>`;
+                        }
+                    });
+                }
 
-            // --- Timer Logic ---
-            const timerBtn = $('sedation-timer-button');
-            
-            timerBtn.onclick = () => {
-                if(sedationInterval) stopTimer();
-                else startTimer();
-            };
-
-            function startTimer() {
-                timerBtn.textContent = "STOP TIMER";
-                timerBtn.classList.remove('bg-green-600', 'hover:bg-green-700', 'border-green-700');
-                timerBtn.classList.add('bg-red-600', 'hover:bg-red-700', 'border-red-700');
-                
-                addObsRow(); // Log T=0
-                generateEPRLog(); // Refresh log after starting timer
-                sedationInterval = setInterval(() => {
-                    secondsElapsed++;
-                    const h = new Date(secondsElapsed * 1000).toISOString().substr(11, 8);
-                    $('timer-display').textContent = h;
-                    if(secondsElapsed % 300 === 0) $('obs-toast').classList.remove('hidden');
-                }, 1000);
-            }
-
-            function stopTimer() {
-                clearInterval(sedationInterval);
-                sedationInterval = null;
-                timerBtn.textContent = "START TIMER";
-                timerBtn.classList.add('bg-green-600', 'hover:bg-green-700', 'border-green-700');
-                timerBtn.classList.remove('bg-red-600', 'hover:bg-red-700', 'border-red-700');
-                $('obs-toast').classList.add('hidden');
-                generateEPRLog(); // Refresh log after stopping timer
-            }
-            
-            $('dismiss-toast-button').onclick = () => $('obs-toast').classList.add('hidden');
-
-            // --- Timestamps ---
-            ['procedure-start', 'procedure-end', 'patient-awake'].forEach(key => {
-                $(`${key}-button`).onclick = function() {
-                    const time = new Date().toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
-                    $(`${key}-output`).textContent = time;
-                    this.disabled = true;
-                    this.classList.add('opacity-50', 'cursor-not-allowed');
-                    generateEPRLog(); // Refresh log after stamping time
-                }
-            });
-
-            // --- Dynamic Tables ---
-            $('add-obs-button').onclick = addObsRow;
-            
-            function addObsRow() {
-                const tr = document.createElement('tr');
-                const t = secondsElapsed > 0 ? `T+${Math.floor(secondsElapsed/60)}m` : 'Pre';
-                const time = new Date().toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
-                tr.innerHTML = `
-                    <td class="p-1"><input type="text" value="${t} (${time})" readonly class="text-xs bg-slate-50 border-none px-1"></td>
-                    <td class="p-1"><input type="text" class="text-center"></td>
-                    <td class="p-1"><input type="text" class="text-center"></td>
-                    <td class="p-1"><input type="text" class="text-center"></td>
-                    <td class="p-1"><input type="text" class="text-center"></td>
-                    <td class="p-1"><input type="text" class="text-center"></td>
-                    <td class="p-1">${$('obs-score-template').innerHTML}</td>
-                    <td class="p-1 text-center"><button class="text-red-500 font-bold hover:bg-red-50 rounded px-2" onclick="this.closest('tr').remove(); generateEPRLog()">x</button></td>
-                `;
-                $('monitoring-log-body').appendChild(tr);
-                generateEPRLog(); // Refresh log after adding row
-            }
-
-            // Drug Buttons
-            $('drug-admin-container').onclick = async (e) => {
-                if(e.target.tagName !== 'BUTTON') return;
-                let drug = e.target.dataset.drug;
-                if(drug === 'Other') drug = await promptModal("Drug Name:");
-                if(!drug) return;
-                const dose = await promptModal(`Dose for ${drug} (mg):`);
-                if(!dose) return;
-                
-                const tr = document.createElement('tr');
-                const time = new Date().toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
-                tr.innerHTML = `
-                    <td class="p-2"><input type="text" value="${time}" readonly class="text-xs bg-transparent border-none"></td>
-                    <td class="p-2 font-bold text-slate-700">${drug}</td>
-                    <td class="p-2 font-bold">${dose}</td>
-                    <td class="p-2 text-xs">${val('sedationist')}</td>
-                    <td class="p-2 text-center"><button class="text-red-500 font-bold hover:bg-red-50 rounded px-2" onclick="this.closest('tr').remove(); generateEPRLog()">x</button></td>
-                `;
-                $('drug-table-body').appendChild(tr);
-                generateEPRLog(); // Refresh log after adding drug
-            };
-
-            // --- Modal Logic ---
-            const modal = $('custom-modal-backdrop');
-            const modalContent = $('custom-modal');
-            let modalResolve = null;
-
-            window.promptModal = (label) => {
-                return new Promise(resolve => {
-                    $('custom-modal-label').textContent = label;
-                    $('custom-modal-input').value = '';
-                    modal.classList.remove('hidden');
-                    modal.classList.add('flex');
-                    setTimeout(() => {
-                        modalContent.classList.remove('scale-95', 'opacity-0');
-                        modalContent.classList.add('scale-100', 'opacity-100');
-                        $('custom-modal-input').focus();
-                    }, 10);
-                    modalResolve = resolve;
-                });
-            };
-
-            const closeModal = (val) => {
-                modalContent.classList.remove('scale-100', 'opacity-100');
-                modalContent.classList.add('scale-95', 'opacity-0');
-                setTimeout(() => {
-                    modal.classList.add('hidden');
-                    modal.classList.remove('flex');
-                    if(modalResolve) modalResolve(val);
-                    modalResolve = null;
-                }, 200);
-            };
-
-            $('custom-modal-ok').onclick = () => closeModal($('custom-modal-input').value);
-            $('custom-modal-cancel').onclick = () => closeModal(null);
-            $('custom-modal-input').onkeydown = (e) => { if(e.key === 'Enter') $('custom-modal-ok').click(); };
+                // Notes
+                log += `<strong>Notes/Adverse Events:</strong> ${val('general-notes') || 'No additional notes or adverse events.'}<br>`;
+                log += `----------------------------------------------------------<br>`;
 
 
-            // Attach listeners to all inputs/changes on the form and generate initial log
-            const form = $('sedation-form');
-            form.addEventListener('input', generateEPRLog);
-            form.addEventListener('change', generateEPRLog);
-            
-            // Ensure elements exist before trying to read them
-            if ($('epr-log-output')) {
-                // Initial generation and copy button setup
-                generateEPRLog();
+                // --- 5. Outcome & Discharge ---
+                log += `<strong>5. Outcome & Sign Off:</strong><br>`;
+                log += ` - Procedure Outcome: <strong>${findCheckedRadio('outcome-proc') || 'N/A'}</strong><br>`;
+                log += ` - Disposal: <strong>${findCheckedRadio('disposal') || 'N/A'}</strong><br>`;
+                
+                const dcComplete = isChecked('dc-vitals') && isChecked('dc-aao') && isChecked('dc-oral') && isChecked('dc-pain') && isChecked('dc-home');
+                log += ` - Discharge Criteria Met: <strong>${dcComplete ? 'YES' : 'PENDING'}</strong><br>`;
+                log += ` - Reversal Agent Check (2hr): ${isChecked('dc-reversal-time') ? 'Passed' : 'Pending/N/A'}<br>`;
+                
+                const diComplete = isChecked('di-drive') && isChecked('di-adult') && isChecked('di-alcohol') && isChecked('di-decisions');
+                log += ` - Discharge Instructions Given: ${diComplete ? 'Yes (Full 48h restrictions given)' : 'No/Incomplete'}<br>`;
+                log += ` - Signed Off By: ${val('signoff-name')} (GMC: ${val('signoff-gmc')}) @ ${val('signoff-time') || 'N/A'}<br>`;
+                
+                // Final output uses HTML for bolding to match requested "rich text" format
+                $('epr-log-output').innerHTML = log.replace(/\n/g, '<br>');
+            }
 
-                $('copy-log-button').onclick = () => {
-                    // Use a temporary textarea for robust copying, including formatting.
-                    const tempTextarea = document.createElement('textarea');
-                    tempTextarea.value = $('epr-log-output').innerText.trim();
-                    document.body.appendChild(tempTextarea);
-                    tempTextarea.select();
-                    document.execCommand('copy');
-                    document.body.removeChild(tempTextarea);
-                    alert("Log copied to clipboard!");
-                };
-            }
-        });
-    </script>
+            // --- Event Listeners ---
+            $('print-button').onclick = () => window.print();
+            $('header-print-btn').onclick = () => window.print();
+            
+            $('clear-form-button').onclick = () => {
+                if(confirm("Clear entire form?")) {
+                    $('sedation-form').reset();
+                    stopTimer();
+                    $('timer-display').textContent = "00:00:00";
+                    secondsElapsed = 0;
+                    $('drug-table-body').innerHTML = '';
+                    $('monitoring-log-body').innerHTML = '';
+                    $('dose-output').innerHTML = '';
+                    $('dose-output').classList.add('hidden');
+                    generateEPRLog(); // Refresh log after clearing
+                }
+            };
+            
+            $('calculate-doses-button').onclick = () => {
+                const w = parseFloat(val('weight'));
+                if(!w) return alert("Enter weight first");
+                const frail = isChecked('frail-elderly');
+                
+                const p_std_low = (0.5 * w).toFixed(0);
+                const p_std_high = (1.0 * w).toFixed(0);
+                const p_frail_low = (0.25 * w).toFixed(0); // RCEM: halving the dose of propofol seems both safe and effective
+                const p_frail_high = (0.5 * w).toFixed(0);
+                
+                const k_diss_low = (1.0 * w).toFixed(0);
+                const k_diss_high = (2.0 * w).toFixed(0); // RCEM Ketamine initial dose: 1 mg/kg, repeat 2-2.5 mg/kg. Use standard 1-2 mg/kg range for initial bolus.
+                const k_analgesia_low = (0.3 * w).toFixed(1); // RCEM Ketamine Analgesia dose 0.3mg/kg
+                const k_analgesia_high = (0.5 * w).toFixed(1); 
+                
+                const m_initial_low = 1; // RCEM Midazolam initial dose 1-2 mg
+                const m_initial_high = Math.min(2.0, 0.05 * w).toFixed(1); // RCEM Midazolam max single dose 2.5mg, using 2mg as practical max for initial bolus.
+                
+                const f_initial_max_mcg = (0.5 * w).toFixed(0); // RCEM Fentanyl up to 0.5mcg/kg with other sedatives
+                
+                let p_output = frail 
+                    ? `<strong>Propofol (Frail/Elderly):</strong> ${p_frail_low}-${p_frail_high} mg (0.25-0.5 mg/kg IV)`
+                    : `<strong>Propofol (Adult):</strong> ${p_std_low}-${p_std_high} mg (0.5-1.0 mg/kg IV)`;
+                
+                $('dose-output').innerHTML = `
+                    <p class="mb-1">${p_output}</p>
+                    <p class="mb-1"><strong>Ketamine (Dissociative):</strong> ${k_diss_low}-${k_diss_high} mg (1-2 mg/kg IV)</p>
+                    <p class="mb-1"><strong>Ketamine (Analgesia):</strong> ${k_analgesia_low}-${k_analgesia_high} mg (0.3-0.5 mg/kg IV)</p>
+                    <p class="mb-1"><strong>Midazolam (Adjunct):</strong> ${m_initial_low}-${m_initial_high} mg (Initial 1-2 mg; max 2.5 mg single dose)</p>
+                    <p class="mb-1"><strong>Fentanyl (Adjunct):</strong> Up to ${f_initial_max_mcg} mcg (Up to 0.5 mcg/kg IV with sedatives)</p>
+                    <hr class="my-2 border-blue-200">
+                    <span class="text-xs text-slate-600">All doses are initial bolus ranges. Titrate slowly to effect.</span>
+                `;
+                $('dose-output').classList.remove('hidden');
+                generateEPRLog(); // Refresh log after calculating doses
+            };
+
+            // --- Toggle Guides ---
+            const toggle = (btnId, contentId) => {
+                $(btnId).onclick = () => $(contentId).classList.toggle('hidden');
+            };
+            toggle('asa-guide-button', 'asa-guide-content');
+            toggle('mallampati-guide-button', 'mallampati-guide-content');
+            toggle('complications-guide-button', 'complications-guide-content');
+            toggle('ulbt-guide-button', 'ulbt-guide-content');
+
+            // --- Timer Logic ---
+            const timerBtn = $('sedation-timer-button');
+            
+            timerBtn.onclick = () => {
+                if(sedationInterval) stopTimer();
+                else startTimer();
+            };
+
+            function startTimer() {
+                timerBtn.textContent = "STOP TIMER";
+                timerBtn.classList.remove('bg-green-600', 'hover:bg-green-700', 'border-green-700');
+                timerBtn.classList.add('bg-red-600', 'hover:bg-red-700', 'border-red-700');
+                
+                addObsRow(); // Log T=0
+                generateEPRLog(); // Refresh log after starting timer
+                sedationInterval = setInterval(() => {
+                    secondsElapsed++;
+                    const h = new Date(secondsElapsed * 1000).toISOString().substr(11, 8);
+                    $('timer-display').textContent = h;
+                    if(secondsElapsed % 300 === 0) $('obs-toast').classList.remove('hidden');
+                }, 1000);
+            }
+
+            function stopTimer() {
+                clearInterval(sedationInterval);
+                sedationInterval = null;
+                timerBtn.textContent = "START TIMER";
+                timerBtn.classList.add('bg-green-600', 'hover:bg-green-700', 'border-green-700');
+                timerBtn.classList.remove('bg-red-600', 'hover:bg-red-700', 'border-red-700');
+                $('obs-toast').classList.add('hidden');
+                generateEPRLog(); // Refresh log after stopping timer
+            }
+            
+            $('dismiss-toast-button').onclick = () => $('obs-toast').classList.add('hidden');
+
+            // --- Timestamps ---
+            ['procedure-start', 'procedure-end', 'patient-awake'].forEach(key => {
+                $(`${key}-button`).onclick = function() {
+                    const time = new Date().toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
+                    $(`${key}-output`).textContent = time;
+                    this.disabled = true;
+                    this.classList.add('opacity-50', 'cursor-not-allowed');
+                    generateEPRLog(); // Refresh log after stamping time
+                }
+            });
+
+            // --- Dynamic Tables ---
+            $('add-obs-button').onclick = addObsRow;
+            
+            function addObsRow() {
+                const tr = document.createElement('tr');
+                const t = secondsElapsed > 0 ? `T+${Math.floor(secondsElapsed/60)}m` : 'Pre';
+                const time = new Date().toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
+                tr.innerHTML = `
+                    <td class="p-1"><input type="text" value="${t} (${time})" readonly class="text-xs bg-slate-50 border-none px-1"></td>
+                    <td class="p-1"><input type="text" class="text-center"></td>
+                    <td class="p-1"><input type="text" class="text-center"></td>
+                    <td class="p-1"><input type="text" class="text-center"></td>
+                    <td class="p-1"><input type="text" class="text-center"></td>
+                    <td class="p-1"><input type="text" class="text-center"></td>
+                    <td class="p-1">${$('obs-score-template').innerHTML}</td>
+                    <td class="p-1 text-center"><button class="text-red-500 font-bold hover:bg-red-50 rounded px-2" onclick="this.closest('tr').remove(); generateEPRLog()">x</button></td>
+                `;
+                $('monitoring-log-body').appendChild(tr);
+                generateEPRLog(); // Refresh log after adding row
+            }
+
+            // Drug Buttons
+            $('drug-admin-container').onclick = async (e) => {
+                if(e.target.tagName !== 'BUTTON') return;
+                let drug = e.target.dataset.drug;
+                if(drug === 'Other') drug = await promptModal("Drug Name:");
+                if(!drug) return;
+                const dose = await promptModal(`Dose for ${drug} (mg):`);
+                if(!dose) return;
+                
+                const tr = document.createElement('tr');
+                const time = new Date().toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
+                tr.innerHTML = `
+                    <td class="p-2"><input type="text" value="${time}" readonly class="text-xs bg-transparent border-none"></td>
+                    <td class="p-2 font-bold text-slate-700">${drug}</td>
+                    <td class="p-2 font-bold">${dose}</td>
+                    <td class="p-2 text-xs">${val('sedationist')}</td>
+                    <td class="p-2 text-center"><button class="text-red-500 font-bold hover:bg-red-50 rounded px-2" onclick="this.closest('tr').remove(); generateEPRLog()">x</button></td>
+                `;
+                $('drug-table-body').appendChild(tr);
+                generateEPRLog(); // Refresh log after adding drug
+            };
+
+            // --- Modal Logic ---
+            const modal = $('custom-modal-backdrop');
+            const modalContent = $('custom-modal');
+            let modalResolve = null;
+
+            window.promptModal = (label) => {
+                return new Promise(resolve => {
+                    $('custom-modal-label').textContent = label;
+                    $('custom-modal-input').value = '';
+                    modal.classList.remove('hidden');
+                    modal.classList.add('flex');
+                    setTimeout(() => {
+                        modalContent.classList.remove('scale-95', 'opacity-0');
+                        modalContent.classList.add('scale-100', 'opacity-100');
+                        $('custom-modal-input').focus();
+                    }, 10);
+                    modalResolve = resolve;
+                });
+            };
+
+            const closeModal = (val) => {
+                modalContent.classList.remove('scale-100', 'opacity-100');
+                modalContent.classList.add('scale-95', 'opacity-0');
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                    modal.classList.remove('flex');
+                    if(modalResolve) modalResolve(val);
+                    modalResolve = null;
+                }, 200);
+            };
+
+            $('custom-modal-ok').onclick = () => closeModal($('custom-modal-input').value);
+            $('custom-modal-cancel').onclick = () => closeModal(null);
+            $('custom-modal-input').onkeydown = (e) => { if(e.key === 'Enter') $('custom-modal-ok').click(); };
+
+
+            // Attach listeners to all inputs/changes on the form and generate initial log
+            const form = $('sedation-form');
+            form.addEventListener('input', generateEPRLog);
+            form.addEventListener('change', generateEPRLog);
+            
+            // Ensure elements exist before trying to read them
+            if ($('epr-log-output')) {
+                // Initial generation and copy button setup
+                generateEPRLog();
+
+                $('copy-log-button').onclick = copyEPRLog;
+            }
+        });
+    </script>
 </body>
 </html>
