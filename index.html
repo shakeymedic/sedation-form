@@ -148,420 +148,491 @@
 
     <main class="container mx-auto max-w-5xl px-4 py-6">
         
-        <div class="hidden print-header mb-6 text-center border-b-2 border-slate-800 pb-4">
-             <h1 class="text-3xl font-black text-slate-900">Procedural Sedation Record</h1>
-             <p class="text-sm text-slate-500 font-bold">RCEM Best Practice Guidelines (2022)</p>
-        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-        <form id="sedation-form" onsubmit="return false;">
-            
-            <div class="flex flex-col gap-6">
+            <div class="lg:col-span-2">
 
-                <div class="section-card border-l-[8px] border-l-blue-600">
-                    <div class="section-title text-blue-800">1. Patient & Procedure</div>
+                <div class="hidden print-header mb-6 text-center border-b-2 border-slate-800 pb-4">
+                     <h1 class="text-3xl font-black text-slate-900">Procedural Sedation Record</h1>
+                     <p class="text-sm text-slate-500 font-bold">RCEM Best Practice Guidelines (2022)</p>
+                </div>
+
+                <form id="sedation-form" onsubmit="return false;">
                     
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                        <div>
-                            <label for="age">Age</label>
-                            <input type="number" id="age" placeholder="Yr" class="font-bold">
-                        </div>
-                        <div class="md:col-span-2">
-                            <label for="weight">Weight (kg) <span class="text-red-500">*</span></label>
-                            <div class="flex items-center gap-2">
-                                <input type="number" id="weight" placeholder="kg" class="font-bold">
-                                <label class="flex items-center gap-1 bg-slate-100 px-2 py-2 rounded border border-slate-300 cursor-pointer h-[42px] mt-[1px]">
-                                    <input type="checkbox" id="weight-estimated" class="w-4 h-4 text-blue-600 rounded">
-                                    <span class="text-[10px] uppercase font-bold text-slate-600">Est</span>
-                                </label>
+                    <div class="flex flex-col gap-6">
+
+                        <div class="section-card border-l-[8px] border-l-blue-600">
+                            <div class="section-title text-blue-800">1. Patient & Procedure</div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                <div>
+                                    <label for="age">Age</label>
+                                    <input type="number" id="age" placeholder="Yr" class="font-bold">
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label for="weight">Weight (kg) <span class="text-red-500">*</span></label>
+                                    <div class="flex items-center gap-2">
+                                        <input type="number" id="weight" placeholder="kg" class="font-bold">
+                                        <label class="flex items-center gap-1 bg-slate-100 px-2 py-2 rounded border border-slate-300 cursor-pointer h-[42px] mt-[1px]">
+                                            <input type="checkbox" id="weight-estimated" class="w-4 h-4 text-blue-600 rounded">
+                                            <span class="text-[10px] uppercase font-bold text-slate-600">Est</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="md:col-span-4">
+                                    <label for="allergies">Allergies</label>
+                                    <input type="text" id="allergies" placeholder="Reaction details..." class="text-red-700 font-bold">
+                                </div>
+                                <div class="md:col-span-4">
+                                    <label for="pre-analgesia">Pre-Sedation Analgesia</label>
+                                    <input type="text" id="pre-analgesia" placeholder="e.g. IV Morphine 10mg @ 14:00">
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label for="procedure">Procedure</label>
+                                    <input type="text" id="procedure">
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label for="indication">Indication</label>
+                                    <input type="text" id="indication">
+                                </div>
+                                
+                                <div class="md:col-span-4 mt-2 pt-2 border-t border-slate-200 grid grid-cols-1 md:grid-cols-4 gap-4">
+                                    <div><label>Sedationist</label><input type="text" id="sedationist"></div>
+                                    <div><label>Grade</label><input type="text" id="sedationist-grade" placeholder="e.g. SpR / EM-ACPs"></div>
+                                    <div><label>Procedure Dr</label><input type="text" id="procedure-doctor"></div>
+                                    <div><label>Nurse</label><input type="text" id="nurse"></div>
+                                </div>
+                            </div>
+
+                            <div class="sub-card bg-blue-50 border-blue-200 mt-4 no-print">
+                                <div class="flex justify-between items-center mb-2">
+                                    <label class="text-blue-900 font-black">Estimated Dose Guide (Adults)</label>
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="checkbox" id="frail-elderly" class="rounded text-blue-600">
+                                        <span class="text-xs text-blue-800">Frail / >65?</span>
+                                    </label>
+                                </div>
+                                <button type="button" id="calculate-doses-button" class="w-full std-btn bg-white border-blue-300 text-blue-700 hover:bg-blue-100">
+                                    Calculate Ranges
+                                </button>
+                                <div id="dose-output" class="mt-2 p-2 bg-white rounded border border-blue-200 text-sm font-mono hidden text-blue-900"></div>
                             </div>
                         </div>
-                        <div class="md:col-span-4">
-                            <label for="allergies">Allergies</label>
-                            <input type="text" id="allergies" placeholder="Reaction details..." class="text-red-700 font-bold">
+
+                        <div class="section-card border-l-[8px] border-l-orange-500">
+                            <div class="section-title text-orange-800">2. Pre-Sedation Assessment</div>
+                            
+                            <div class="flex flex-col gap-4">
+                                
+                                <div class="bg-orange-50 p-3 rounded border border-orange-200">
+                                    <label class="flex items-start gap-2 cursor-pointer">
+                                        <input id="consent-obtained" type="checkbox" class="mt-1 w-5 h-5 text-orange-600 rounded">
+                                        <span class="text-sm font-bold text-orange-900 leading-tight">Informed consent (verbal/written) obtained & documented.</span>
+                                    </label>
+                                </div>
+
+                                <div class="sub-card mt-0">
+                                    <label>Risks Discussed</label>
+                                    <div class="space-y-2 mt-1">
+                                        <label class="flex items-start gap-2 font-normal text-sm"><input id="risk-nausea" type="checkbox" class="rounded mt-1"> 
+                                            <span class="block leading-snug">Nausea or Vomiting (Common; up to 10-15%)</span>
+                                        </label>
+                                        <label class="flex items-start gap-2 font-normal text-sm"><input id="risk-bp" type="checkbox" class="rounded mt-1"> 
+                                            <span class="block leading-snug">Transient low blood pressure or oxygen drop (Common; 5-10%)</span>
+                                        </label>
+                                        <label class="flex items-start gap-2 font-normal text-sm"><input id="risk-emergence" type="checkbox" class="rounded mt-1"> 
+                                            <span class="block leading-snug">Agitation or Bad Dreams (Emergence Reaction; up to 10%)</span>
+                                        </label>
+                                        <label class="flex items-start gap-2 font-normal text-sm"><input id="risk-severe-breathing" type="checkbox" class="rounded mt-1"> 
+                                            <span class="block leading-snug">Need for Airway Intervention (Rare; SIVA/TROOPS sentinel event <1%)</span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="sub-card mt-0">
+                                    <label>Fasting Status</label>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div><span class="text-[10px] uppercase font-bold text-slate-400">Food</span><input type="time" id="last-food"></div>
+                                        <div><span class="text-[10px] uppercase font-bold text-slate-400">Clear Fluid</span><input type="time" id="last-fluid"></div>
+                                    </div>
+                                </div>
+
+                                <div class="sub-card mt-0">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <label class="mb-0 text-orange-900 font-black">RCEM Sedation Requirements Guide</label>
+                                    </div>
+                                    <div class="overflow-x-auto text-xs">
+                                        <table class="w-full text-left table-auto">
+                                            <thead class="bg-orange-100/50">
+                                                <tr>
+                                                    <th class="py-1 px-2 font-bold text-orange-800">Level</th>
+                                                    <th class="py-1 px-2 font-bold text-orange-800">Staffing</th>
+                                                    <th class="py-1 px-2 font-bold text-orange-800">Monitoring</th>
+                                                    <th class="py-1 px-2 font-bold text-orange-800">Competency</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td class="py-1 px-2 font-bold">Moderate</td>
+                                                    <td class="py-1 px-2">Nurse, Sedationist, Proceduralist</td>
+                                                    <td class="py-1 px-2">ECG, NIBP, SpO₂, Capnography</td>
+                                                    <td class="py-1 px-2">ILS/ALS, Level 1 Sign-off</td>
+                                                </tr>
+                                                <tr class="bg-slate-50">
+                                                    <td class="py-1 px-2 font-bold">Deep/Dissociative</td>
+                                                    <td class="py-1 px-2">Nurse, Sedationist, Proceduralist</td>
+                                                    <td class="py-1 px-2">ECG, NIBP, SpO₂, Capnography</td>
+                                                    <td class="py-1 px-2">RCoA Assessment, Level 2 Sign-off</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <p class="text-[10px] text-slate-500 mt-2">Source: RCEM Best Practice Guideline (2022) - Table 1</p>
+                                </div>
+
+
+                                <div class="sub-card mt-0">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <label class="mb-0">ASA Grade</label>
+                                        <button type="button" id="asa-guide-button" class="text-[10px] bg-slate-200 px-2 rounded no-print">?</button>
+                                    </div>
+                                    <div id="asa-guide-content" class="hidden text-xs text-slate-600 mb-2 p-2 bg-slate-100 rounded">
+                                        I:Healthy, II:Mild, III:Severe, IV:Threat to life
+                                    </div>
+                                    <div class="flex justify-between gap-1">
+                                        <label class="cursor-pointer text-center flex-1"><input type="radio" name="asa-grade" value="I" class="sr-only peer"><div class="py-1 border border-slate-300 rounded peer-checked:bg-blue-600 peer-checked:text-white peer-checked:border-blue-600 text-xs font-bold transition">I</div></label>
+                                        <label class="cursor-pointer text-center flex-1"><input type="radio" name="asa-grade" value="II" class="sr-only peer"><div class="py-1 border border-slate-300 rounded peer-checked:bg-blue-600 peer-checked:text-white peer-checked:border-blue-600 text-xs font-bold transition">II</div></label>
+                                        <label class="cursor-pointer text-center flex-1"><input type="radio" name="asa-grade" value="III" class="sr-only peer"><div class="py-1 border border-amber-300 bg-amber-50 text-amber-800 rounded peer-checked:bg-amber-600 peer-checked:text-white text-xs font-bold transition">III</div></label>
+                                        <label class="cursor-pointer text-center flex-1"><input type="radio" name="asa-grade" value="IV" class="sr-only peer"><div class="py-1 border border-red-300 bg-red-50 text-red-800 rounded peer-checked:bg-red-600 peer-checked:text-white text-xs font-bold transition">IV</div></label>
+                                        <label class="cursor-pointer text-center flex-1"><input type="radio" name="asa-grade" value="V" class="sr-only peer"><div class="py-1 border border-red-300 bg-red-50 text-red-800 rounded peer-checked:bg-red-600 peer-checked:text-white text-xs font-bold transition">V</div></label>
+                                    </div>
+                                </div>
+
+                                <div class="sub-card border-slate-300 mt-0">
+                                    <label class="border-b border-slate-200 pb-1 mb-2">Airway (LEMON)</label>
+                                    
+                                    <div class="mb-3">
+                                        <div class="flex items-center gap-2 mb-1">
+                                            <span class="font-black text-blue-600 w-4">L</span>
+                                            <div class="flex gap-4">
+                                                <label class="font-normal text-xs flex items-center gap-1"><input type="radio" name="lemon-l" value="Normal"> Normal</label>
+                                                <label class="font-normal text-xs flex items-center gap-1"><input type="radio" name="lemon-l" value="Abnormal"> Abnormal</label>
+                                            </div>
+                                        </div>
+                                        <input type="text" id="lemon-l-specify" placeholder="Details..." class="text-xs py-1">
+                                    </div>
+
+                                    <div class="mb-3 flex items-center gap-2">
+                                        <span class="font-black text-blue-600 w-4">E</span>
+                                        <div class="flex gap-4">
+                                            <label class="font-normal text-xs flex items-center gap-1"><input type="radio" name="lemon-e" value="Met"> 3-3-2 Met</label>
+                                            <label class="font-normal text-xs flex items-center gap-1"><input type="radio" name="lemon-e" value="Not Met"> Not Met</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <div class="flex items-center gap-2 mb-1">
+                                            <span class="font-black text-blue-600 w-4">M</span>
+                                            <div class="flex gap-1 flex-1">
+                                                <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-m" value="I" class="sr-only peer"><div class="text-[10px] border rounded peer-checked:bg-blue-600 peer-checked:text-white">I</div></label>
+                                                <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-m" value="II" class="sr-only peer"><div class="text-[10px] border rounded peer-checked:bg-blue-600 peer-checked:text-white">II</div></label>
+                                                <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-m" value="III" class="sr-only peer"><div class="text-[10px] border rounded peer-checked:bg-blue-600 peer-checked:text-white">III</div></label>
+                                                <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-m" value="IV" class="sr-only peer"><div class="text-[10px] border rounded peer-checked:bg-blue-600 peer-checked:text-white">IV</div></label>
+                                                <button type="button" id="mallampati-guide-button" class="text-[10px] bg-slate-200 px-1 rounded no-print">?</button>
+                                            </div>
+                                        </div>
+                                        <div id="mallampati-guide-content" class="hidden">
+                                            <img src="images/Mallampati.jpg" class="w-full rounded border border-slate-300" alt="Mallampati Score">
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <div class="flex items-center gap-2 mb-1">
+                                            <span class="font-black text-blue-600 w-4">U</span>
+                                            <label class="mb-0">Upper Lip Bite Test</label>
+                                            <button type="button" id="ulbt-guide-button" class="text-[10px] bg-slate-200 px-1 rounded no-print">?</button>
+                                        </div>
+                                        <div id="ulbt-guide-content" class="hidden">
+                                            <img src="images/upperlipbitetest.png" class="w-full rounded border border-slate-300" alt="Upper Lip Bite Test Score">
+                                        </div>
+                                        <div class="flex gap-1 flex-1 mt-1">
+                                            <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-u" value="Class 1" class="sr-only peer"><div class="text-xs border rounded peer-checked:bg-blue-600 peer-checked:text-white py-1">Class 1</div></label>
+                                            <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-u" value="Class 2" class="sr-only peer"><div class="text-xs border rounded peer-checked:bg-blue-600 peer-checked:text-white py-1">Class 2</div></label>
+                                            <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-u" value="Class 3" class="sr-only peer"><div class="text-xs border rounded peer-checked:bg-blue-600 peer-checked:text-white py-1">Class 3</div></label>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <div class="flex items-center gap-2 mb-1">
+                                            <span class="font-black text-blue-600 w-4">O</span>
+                                            <div class="flex gap-4">
+                                                <label class="font-normal text-xs flex items-center gap-1"><input type="radio" name="lemon-o" value="No"> No Obstr/OSA</label>
+                                                <label class="font-normal text-xs flex items-center gap-1"><input type="radio" name="lemon-o" value="Yes"> Yes</label>
+                                            </div>
+                                        </div>
+                                        <input type="text" id="lemon-o-specify" placeholder="Details..." class="text-xs py-1">
+                                    </div>
+
+                                    <div class="flex items-center gap-2">
+                                        <span class="font-black text-blue-600 w-4">N</span>
+                                        <div class="flex gap-4">
+                                            <label class="font-normal text-xs flex items-center gap-1"><input type="radio" name="lemon-n" value="Normal"> Neck Normal</label>
+                                            <label class="font-normal text-xs flex items-center gap-1"><input type="radio" name="lemon-n" value="Restricted"> Restricted</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="bg-red-50 border border-red-200 p-3 rounded-lg">
+                                    <label class="text-red-800">Contraindications</label>
+                                    <div class="space-y-1 mt-1">
+                                        <label class="flex items-center gap-2 font-bold text-xs text-red-700"><input id="ci-allergy" type="checkbox" class="text-red-600 rounded"> Known Allergy</label>
+                                        <label class="flex items-center gap-2 font-bold text-xs text-red-700"><input id="ci-hemo" type="checkbox" class="text-red-600 rounded"> Haemodynamic Instability</label>
+                                        <label class="flex items-center gap-2 font-bold text-xs text-red-700"><input id="ci-gcs" type="checkbox" class="text-red-600 rounded"> Compromised Airway / GCS</label>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="md:col-span-4">
-                            <label for="pre-analgesia">Pre-Sedation Analgesia</label>
-                            <input type="text" id="pre-analgesia" placeholder="e.g. IV Morphine 10mg @ 14:00">
+
+                        <div class="section-card border-l-[8px] border-l-green-500">
+                            <div class="section-title text-green-800">3. Plan & Preparation</div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label>Target Level</label>
+                                    <select id="plan-target">
+                                        <option>Minimal (Anxiolysis)</option>
+                                        <option>Moderate (Conscious)</option>
+                                        <option>Deep</option>
+                                        <option>Dissociation</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label>Primary Agent(s)</label>
+                                    <input type="text" id="plan-agent" placeholder="e.g. Propofol">
+                                </div>
+                            </div>
+
+                            <div class="sub-card mt-4">
+                                <label class="mb-2 block">SOAP-ME Checklist</label>
+                                <div class="flex flex-wrap gap-3">
+                                    <label class="flex items-center gap-2 p-2 bg-white border rounded cursor-pointer"><input id="soap-s" type="checkbox" class="rounded text-green-600"> <span class="font-normal">Suction</span></label>
+                                    <label class="flex items-center gap-2 p-2 bg-white border rounded cursor-pointer"><input id="soap-o" type="checkbox" class="rounded text-green-600"> <span class="font-normal">Oxygen/BVM</span></label>
+                                    <label class="flex items-center gap-2 p-2 bg-white border rounded cursor-pointer"><input id="soap-a" type="checkbox" class="rounded text-green-600"> <span class="font-normal">Airway</span></label>
+                                    <label class="flex items-center gap-2 p-2 bg-white border rounded cursor-pointer"><input id="soap-m" type="checkbox" class="rounded text-green-600"> <span class="font-normal">Monitoring</span></label>
+                                    <label class="flex items-center gap-2 p-2 bg-white border rounded cursor-pointer"><input id="soap-e" type="checkbox" class="rounded text-green-600"> <span class="font-normal">Env/IV</span></label>
+                                </div>
+                                
+                                <div class="mt-3 pt-3 border-t border-slate-200">
+                                    <label class="mb-2 block">Emergency Drugs Available</label>
+                                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2">
+                                        <label class="flex items-center gap-1"><input id="em-atropine" type="checkbox" class="rounded"> Atropine</label>
+                                        <label class="flex items-center gap-1"><input id="em-metaraminol" type="checkbox" class="rounded"> Metaraminol</label>
+                                        <label class="flex items-center gap-1"><input id="em-sux" type="checkbox" class="rounded"> Sux</label>
+                                        <label class="flex items-center gap-1"><input id="em-adrenaline" type="checkbox" class="rounded"> Adrenaline</label>
+                                        <label class="flex items-center gap-1"><input id="em-flumazenil" type="checkbox" class="rounded"> Flumazenil</label>
+                                        <label class="flex items-center gap-1"><input id="em-naloxone" type="checkbox" class="rounded"> Naloxone</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg flex items-start gap-3">
+                                <input id="plan-aagbi" type="checkbox" class="mt-1 w-5 h-5 rounded text-blue-600 focus:ring-blue-500">
+                                <div>
+                                    <span class="block text-sm font-bold text-blue-900">AAGBI Standard Monitoring Confirmed</span>
+                                    <span class="text-xs text-blue-700">ECG, NIBP, SpO2 & <strong>Waveform Capnography</strong> (Continuous)</span>
+                                </div>
+                            </div>
+
+                            <div class="mt-4">
+                                <label>Pre-Sedation Vitals</label>
+                                <div class="grid grid-cols-4 gap-2">
+                                    <input type="text" id="pre-vital-hr" placeholder="HR" class="text-center">
+                                    <input type="text" id="pre-vital-bp" placeholder="BP" class="text-center">
+                                    <input type="text" id="pre-vital-spo2" placeholder="SpO2" class="text-center">
+                                    <input type="text" id="pre-vital-rr" placeholder="RR" class="text-center">
+                                </div>
+                            </div>
                         </div>
-                        <div class="md:col-span-2">
-                            <label for="procedure">Procedure</label>
-                            <input type="text" id="procedure">
+
+                        <div class="section-card border-l-[8px] border-l-slate-800 page-break">
+                            <div class="section-title text-slate-800 justify-between">
+                                4. Intra-Sedation Record
+                                <button type="button" id="complications-guide-button" class="text-[10px] bg-slate-200 px-2 py-1 rounded hover:bg-slate-300 no-print">Guide</button>
+                            </div>
+                            
+                            <div id="complications-guide-content" class="hidden mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded text-xs">
+                                 <strong class="block mb-1 text-sm text-yellow-900">Quick Reference - Adverse Events & Intervention (TROOPS/SIVA):</strong>
+                                 <ul class="list-disc ml-4 space-y-1">
+                                    <li><strong>Apnoea:</strong> Stimulate/Airway/BVM. A short uneventful period is acceptable in a well oxygenated patient (e.g., Propofol).</li>
+                                    <li><strong>Laryngospasm:</strong> 100% O₂ / Jaw Thrust (Larson's) / Succinylcholine if refractory.</li>
+                                    <li><strong>Hypotension:</strong> IV Fluids / Vasoactive drugs (e.g., Metaraminol).</li>
+                                    <li><strong>Agitation/Emergence Reaction:</strong> Reassurance / Benzodiazepine (e.g., Midazolam).</li>
+                                    <li><strong>Reversal Agents:</strong> Naloxone / Flumazenil should be recorded as a TROOP Intervention and requires 2 hours post-sedation monitoring.</li>
+                                 </ul>
+                            </div>
+
+                            <div class="bg-slate-800 rounded-xl p-4 text-white shadow-md mb-6 no-print">
+                                <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                                    <div class="text-center md:text-left">
+                                        <div class="text-xs font-bold text-slate-400 uppercase">Sedation Timer</div>
+                                        <div id="timer-display" class="text-5xl font-mono font-black tracking-widest">00:00:00</div>
+                                    </div>
+                                    <button type="button" id="sedation-timer-button" class="std-btn bg-green-600 text-white border-green-700 hover:bg-green-700 w-full md:w-auto text-lg py-3 shadow-lg">
+                                        START TIMER
+                                    </button>
+                                </div>
+                                <div class="grid grid-cols-3 gap-2 mt-4 pt-4 border-t border-slate-700">
+                                    <div class="text-center">
+                                        <button type="button" id="procedure-start-button" class="w-full py-1 text-xs bg-slate-700 hover:bg-slate-600 rounded text-slate-200 font-bold mb-1">Proc Start</button>
+                                        <span id="procedure-start-output" class="text-xs font-mono text-green-400 block h-4"></span>
+                                    </div>
+                                    <div class="text-center">
+                                        <button type="button" id="procedure-end-button" class="w-full py-1 text-xs bg-slate-700 hover:bg-slate-600 rounded text-slate-200 font-bold mb-1">Proc End</button>
+                                        <span id="procedure-end-output" class="text-xs font-mono text-green-400 block h-4"></span>
+                                    </div>
+                                    <div class="text-center">
+                                        <button type="button" id="patient-awake-button" class="w-full py-1 text-xs bg-slate-700 hover:bg-slate-600 rounded text-slate-200 font-bold mb-1">Awake</button>
+                                        <span id="patient-awake-output" class="text-xs font-mono text-green-400 block h-4"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-6">
+                                <label class="mb-2 block">Drug Administration</label>
+                                <div id="drug-admin-container" class="flex flex-wrap gap-2 mb-3 no-print">
+                                    <button type="button" class="drug-btn text-indigo-700 border-indigo-200 bg-indigo-50" data-drug="Propofol">Propofol</button>
+                                    <button type="button" class="drug-btn text-orange-700 border-orange-200 bg-orange-50" data-drug="Ketamine">Ketamine</button>
+                                    <button type="button" class="drug-btn text-blue-700 border-blue-200 bg-blue-50" data-drug="Midazolam">Midazolam</button>
+                                    <button type="button" class="drug-btn text-purple-700 border-purple-200 bg-purple-50" data-drug="Fentanyl">Fentanyl</button>
+                                    <button type="button" class="drug-btn" data-drug="Other">Other</button>
+                                </div>
+                                <div class="overflow-x-auto border border-slate-300 rounded-lg">
+                                    <table class="min-w-full divide-y divide-slate-200">
+                                        <thead class="bg-slate-50">
+                                            <tr>
+                                                <th class="px-3 py-2 text-left text-[10px] font-bold text-slate-500 uppercase">Time</th>
+                                                <th class="px-3 py-2 text-left text-[10px] font-bold text-slate-500 uppercase">Drug</th>
+                                                <th class="px-3 py-2 text-left text-[10px] font-bold text-slate-500 uppercase">Dose (mg)</th>
+                                                <th class="px-3 py-2 text-left text-[10px] font-bold text-slate-500 uppercase">Given By</th>
+                                                <th class="px-3 py-2 w-8 no-print"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="drug-table-body" class="divide-y divide-slate-100 bg-white text-sm"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div>
+                                 <div class="flex justify-between items-end mb-2">
+                                    <label>Monitoring Log (q5min)</label>
+                                    <button type="button" id="add-obs-button" class="std-btn py-1 text-xs bg-green-50 text-green-700 border-green-200 hover:bg-green-100 no-print">+ Add Obs</button>
+                                 </div>
+                                 
+                                 <div id="obs-toast" class="hidden bg-yellow-100 text-yellow-800 p-2 rounded mb-2 text-xs flex justify-between items-center border border-yellow-300">
+                                    <span>&#9200; <strong>5 Minute Alert</strong></span>
+                                    <button id="dismiss-toast-button" class="font-bold underline">OK</button>
+                                 </div>
+
+                                 <div class="overflow-x-auto border border-slate-300 rounded-lg">
+                                    <table class="min-w-full divide-y divide-slate-200">
+                                        <thead class="bg-slate-50">
+                                            <tr>
+                                                <th class="px-2 py-2 text-[10px] font-bold text-slate-500 uppercase">Time</th>
+                                                <th class="px-2 py-2 text-[10px] font-bold text-slate-500 uppercase">HR</th>
+                                                <th class="px-2 py-2 text-[10px] font-bold text-slate-500 uppercase">BP</th>
+                                                <th class="px-2 py-2 text-[10px] font-bold text-slate-500 uppercase">SpO2</th>
+                                                <th class="px-2 py-2 text-[10px] font-bold text-slate-500 uppercase">RR</th>
+                                                <th class="px-2 py-2 text-[10px] font-bold text-slate-500 uppercase">EtCO2</th>
+                                                <th class="px-2 py-2 text-[10px] font-bold text-slate-500 uppercase w-24">Score</th>
+                                                <th class="px-2 py-2 w-8 no-print"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="monitoring-log-body" class="divide-y divide-slate-100 bg-white text-sm"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4">
+                                <label>Notes / Adverse Events <span class="text-xs font-normal text-slate-500">(Consider TROOPS Intermediate/Sentinel reporting)</span></label>
+                                <textarea id="general-notes" rows="3" class="w-full p-2 border border-slate-300 rounded text-sm"></textarea>
+                            </div>
                         </div>
-                        <div class="md:col-span-2">
-                            <label for="indication">Indication</label>
-                            <input type="text" id="indication">
+
+                        <div class="section-card border-l-[8px] border-l-purple-600">
+                            <div class="section-title text-purple-800">5. Outcome & Discharge</div>
+                            
+                            <div class="flex flex-col gap-4">
+                                <div class="sub-card bg-white mt-0">
+                                    <label>Procedure Outcome</label>
+                                    <div class="flex gap-4 mt-2">
+                                        <label class="flex items-center gap-2 font-normal"><input type="radio" name="outcome-proc" value="Successful" class="text-blue-600"> Successful</label>
+                                        <label class="flex items-center gap-2 font-normal"><input type="radio" name="outcome-proc" value="Unsuccessful" class="text-blue-600"> Unsuccessful</label>
+                                    </div>
+                                </div>
+                                <div class="sub-card bg-white mt-0">
+                                    <label>Discharge Criteria (RCEM Box 3)</label>
+                                    <div class="space-y-2 mt-2 text-sm">
+                                        <label class="flex items-center gap-2 font-normal"><input type="checkbox" id="dc-vitals" class="rounded text-blue-600"> Vital signs returned to baseline (No supplementary O₂)</label>
+                                        <label class="flex items-center gap-2 font-normal"><input type="checkbox" id="dc-aao" class="rounded text-blue-600"> Alert & Orientated (Baseline GCS)</label>
+                                        <label class="flex items-center gap-2 font-normal"><input type="checkbox" id="dc-oral" class="rounded text-blue-600"> Able to tolerate oral fluids (No vomiting)</label>
+                                        <label class="flex items-center gap-2 font-normal"><input type="checkbox" id="dc-pain" class="rounded text-blue-600"> Adequate analgesia / minimal nausea</label>
+                                        <label class="flex items-center gap-2 font-normal"><input type="checkbox" id="dc-home" class="rounded text-blue-600"> Appropriate care available at home</label>
+                                        <label class="flex items-center gap-2 font-normal"><input type="checkbox" id="dc-reversal-time" class="rounded text-red-600"> 2 hours elapsed since use of reversal agent (Naloxone/Flumazenil)</label>
+                                    </div>
+                                    <label class="mt-4 pt-2 border-t border-slate-200 block text-xs font-bold text-slate-500">Post-Discharge Instructions Given (48h)</label>
+                                    <div class="space-y-1 mt-1 text-sm">
+                                        <label class="flex items-center gap-2 font-normal"><input type="checkbox" id="di-drive" class="rounded text-purple-600"> No driving / operating heavy machinery</label>
+                                        <label class="flex items-center gap-2 font-normal"><input type="checkbox" id="di-adult" class="rounded text-purple-600"> Accompanied home by responsible person / 24h care</label>
+                                        <label class="flex items-center gap-2 font-normal"><input type="checkbox" id="di-alcohol" class="rounded text-purple-600"> No alcohol / avoid strenuous exercise</label>
+                                        <label class="flex items-center gap-2 font-normal"><input type="checkbox" id="di-decisions" class="rounded text-purple-600"> No legal decisions or document signing</label>
+                                    </div>
+                                </div>
+                                
+                                <div class="sub-card bg-slate-50 mt-0">
+                                    <label class="border-b border-slate-200 pb-1 mb-3">Disposal</label>
+                                    <div class="flex gap-4">
+                                        <label class="flex items-center gap-2 font-normal"><input type="radio" name="disposal" value="Home" class="text-purple-600"> Home</label>
+                                        <label class="flex items-center gap-2 font-normal"><input type="radio" name="disposal" value="CDU" class="text-purple-600"> CDU</label>
+                                        <label class="flex items-center gap-2 font-normal"><input type="radio" name="disposal" value="Ward" class="text-purple-600"> Admit to Ward</label>
+                                    </div>
+                                </div>
+
+                                <div class="sub-card bg-slate-50 mt-0">
+                                    <label class="border-b border-slate-200 pb-1 mb-3">Sign Off</label>
+                                    <div class="space-y-3">
+                                        <div><label>Name</label><input type="text" id="signoff-name"></div>
+                                        <div><label>GMC No</label><input type="text" id="signoff-gmc"></div>
+                                        <div><label>Time</label><input type="time" id="signoff-time"></div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         
-                        <div class="md:col-span-4 mt-2 pt-2 border-t border-slate-200 grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div><label>Sedationist</label><input type="text" id="sedationist"></div>
-                            <div><label>Procedure Dr</label><input type="text" id="procedure-doctor"></div>
-                            <div><label>Nurse</label><input type="text" id="nurse"></div>
-                        </div>
                     </div>
 
-                    <div class="sub-card bg-blue-50 border-blue-200 mt-4 no-print">
-                        <div class="flex justify-between items-center mb-2">
-                            <label class="text-blue-900 font-black">Estimated Dose Guide (Adults)</label>
-                            <label class="flex items-center gap-2 cursor-pointer">
-                                <input type="checkbox" id="frail-elderly" class="rounded text-blue-600">
-                                <span class="text-xs text-blue-800">Frail / >65?</span>
-                            </label>
-                        </div>
-                        <button type="button" id="calculate-doses-button" class="w-full std-btn bg-white border-blue-300 text-blue-700 hover:bg-blue-100">
-                            Calculate Ranges
-                        </button>
-                        <div id="dose-output" class="mt-2 p-2 bg-white rounded border border-blue-200 text-sm font-mono hidden text-blue-900"></div>
+                </form>
+            </div> <div class="lg:col-span-1 sticky top-20 h-fit no-print">
+                <div id="epr-log-container" class="section-card border-l-[8px] border-l-gray-500 p-4">
+                    <div class="section-title text-gray-800 mb-2">EPR Quick Log</div>
+                    <button type="button" id="copy-log-button" class="w-full std-btn btn-primary mb-3 no-print">
+                        Copy to EPR
+                    </button>
+                    <div id="epr-log-output" class="p-3 bg-white border border-slate-300 rounded text-sm overflow-auto max-h-[80vh] min-h-[500px] text-black font-serif" contenteditable="true">
+                        <strong>Procedural Sedation Record</strong>
+                        <br>
+                        Log updates automatically...
                     </div>
                 </div>
-
-                <div class="section-card border-l-[8px] border-l-orange-500">
-                    <div class="section-title text-orange-800">2. Pre-Sedation Assessment</div>
-                    
-                    <div class="flex flex-col gap-4">
-                        
-                        <div class="bg-orange-50 p-3 rounded border border-orange-200">
-                            <label class="flex items-start gap-2 cursor-pointer">
-                                <input id="consent-obtained" type="checkbox" class="mt-1 w-5 h-5 text-orange-600 rounded">
-                                <span class="text-sm font-bold text-orange-900 leading-tight">Informed consent (verbal/written) obtained & documented.</span>
-                            </label>
-                        </div>
-
-                        <div class="sub-card mt-0">
-                            <label>Risks Discussed</label>
-                            <div class="space-y-2 mt-1">
-                                <label class="flex items-start gap-2 font-normal text-sm"><input id="risk-nausea" type="checkbox" class="rounded mt-1"> 
-                                    <span class="block leading-snug">Nausea or Vomiting (Common; up to 10-15%)</span>
-                                </label>
-                                <label class="flex items-start gap-2 font-normal text-sm"><input id="risk-bp" type="checkbox" class="rounded mt-1"> 
-                                    <span class="block leading-snug">Transient low blood pressure or oxygen drop (Common; 5-10%)</span>
-                                </label>
-                                <label class="flex items-start gap-2 font-normal text-sm"><input id="risk-emergence" type="checkbox" class="rounded mt-1"> 
-                                    <span class="block leading-snug">Agitation or Bad Dreams (Emergence Reaction; up to 10%)</span>
-                                </label>
-                                <label class="flex items-start gap-2 font-normal text-sm"><input id="risk-severe-breathing" type="checkbox" class="rounded mt-1"> 
-                                    <span class="block leading-snug">Need for Airway Intervention (Rare; SIVA/TROOPS sentinel event <1%)</span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="sub-card mt-0">
-                            <label>Fasting Status</label>
-                            <div class="grid grid-cols-2 gap-4">
-                                <div><span class="text-[10px] uppercase font-bold text-slate-400">Food</span><input type="time" id="last-food"></div>
-                                <div><span class="text-[10px] uppercase font-bold text-slate-400">Clear Fluid</span><input type="time" id="last-fluid"></div>
-                            </div>
-                        </div>
-
-                        <div class="sub-card mt-0">
-                            <div class="flex justify-between items-center mb-2">
-                                <label class="mb-0">ASA Grade</label>
-                                <button type="button" id="asa-guide-button" class="text-[10px] bg-slate-200 px-2 rounded no-print">?</button>
-                            </div>
-                            <div id="asa-guide-content" class="hidden text-xs text-slate-600 mb-2 p-2 bg-slate-100 rounded">
-                                I:Healthy, II:Mild, III:Severe, IV:Threat to life
-                            </div>
-                            <div class="flex justify-between gap-1">
-                                <label class="cursor-pointer text-center flex-1"><input type="radio" name="asa-grade" value="I" class="sr-only peer"><div class="py-1 border border-slate-300 rounded peer-checked:bg-blue-600 peer-checked:text-white peer-checked:border-blue-600 text-xs font-bold transition">I</div></label>
-                                <label class="cursor-pointer text-center flex-1"><input type="radio" name="asa-grade" value="II" class="sr-only peer"><div class="py-1 border border-slate-300 rounded peer-checked:bg-blue-600 peer-checked:text-white peer-checked:border-blue-600 text-xs font-bold transition">II</div></label>
-                                <label class="cursor-pointer text-center flex-1"><input type="radio" name="asa-grade" value="III" class="sr-only peer"><div class="py-1 border border-amber-300 bg-amber-50 text-amber-800 rounded peer-checked:bg-amber-600 peer-checked:text-white text-xs font-bold transition">III</div></label>
-                                <label class="cursor-pointer text-center flex-1"><input type="radio" name="asa-grade" value="IV" class="sr-only peer"><div class="py-1 border border-red-300 bg-red-50 text-red-800 rounded peer-checked:bg-red-600 peer-checked:text-white text-xs font-bold transition">IV</div></label>
-                                <label class="cursor-pointer text-center flex-1"><input type="radio" name="asa-grade" value="V" class="sr-only peer"><div class="py-1 border border-red-300 bg-red-50 text-red-800 rounded peer-checked:bg-red-600 peer-checked:text-white text-xs font-bold transition">V</div></label>
-                            </div>
-                        </div>
-
-                        <div class="sub-card border-slate-300 mt-0">
-                             <label class="border-b border-slate-200 pb-1 mb-2">Airway (LEMON)</label>
-                             
-                             <div class="mb-3">
-                                 <div class="flex items-center gap-2 mb-1">
-                                     <span class="font-black text-blue-600 w-4">L</span>
-                                     <div class="flex gap-4">
-                                        <label class="font-normal text-xs flex items-center gap-1"><input type="radio" name="lemon-l" value="Normal"> Normal</label>
-                                        <label class="font-normal text-xs flex items-center gap-1"><input type="radio" name="lemon-l" value="Abnormal"> Abnormal</label>
-                                     </div>
-                                 </div>
-                                 <input type="text" id="lemon-l-specify" placeholder="Details..." class="text-xs py-1">
-                             </div>
-
-                             <div class="mb-3 flex items-center gap-2">
-                                 <span class="font-black text-blue-600 w-4">E</span>
-                                 <div class="flex gap-4">
-                                    <label class="font-normal text-xs flex items-center gap-1"><input type="radio" name="lemon-e" value="Met"> 3-3-2 Met</label>
-                                    <label class="font-normal text-xs flex items-center gap-1"><input type="radio" name="lemon-e" value="Not Met"> Not Met</label>
-                                 </div>
-                             </div>
-
-                             <div class="mb-3">
-                                 <div class="flex items-center gap-2 mb-1">
-                                     <span class="font-black text-blue-600 w-4">M</span>
-                                     <div class="flex gap-1 flex-1">
-                                        <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-m" value="I" class="sr-only peer"><div class="text-[10px] border rounded peer-checked:bg-blue-600 peer-checked:text-white">I</div></label>
-                                        <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-m" value="II" class="sr-only peer"><div class="text-[10px] border rounded peer-checked:bg-blue-600 peer-checked:text-white">II</div></label>
-                                        <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-m" value="III" class="sr-only peer"><div class="text-[10px] border rounded peer-checked:bg-blue-600 peer-checked:text-white">III</div></label>
-                                        <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-m" value="IV" class="sr-only peer"><div class="text-[10px] border rounded peer-checked:bg-blue-600 peer-checked:text-white">IV</div></label>
-                                        <button type="button" id="mallampati-guide-button" class="text-[10px] bg-slate-200 px-1 rounded no-print">?</button>
-                                     </div>
-                                 </div>
-                                 <div id="mallampati-guide-content" class="hidden">
-                                     <img src="images/Mallampati.jpg" class="w-full rounded border border-slate-300" alt="Mallampati Score">
-                                 </div>
-                             </div>
-
-                             <div class="mb-3">
-                                 <div class="flex items-center gap-2 mb-1">
-                                     <span class="font-black text-blue-600 w-4">U</span>
-                                     <label class="mb-0">Upper Lip Bite Test</label>
-                                     <button type="button" id="ulbt-guide-button" class="text-[10px] bg-slate-200 px-1 rounded no-print">?</button>
-                                 </div>
-                                 <div id="ulbt-guide-content" class="hidden">
-                                     <img src="images/upperlipbitetest.png" class="w-full rounded border border-slate-300" alt="Upper Lip Bite Test Score">
-                                 </div>
-                                 <div class="flex gap-1 flex-1 mt-1">
-                                    <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-u" value="Class 1" class="sr-only peer"><div class="text-xs border rounded peer-checked:bg-blue-600 peer-checked:text-white py-1">Class 1</div></label>
-                                    <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-u" value="Class 2" class="sr-only peer"><div class="text-xs border rounded peer-checked:bg-blue-600 peer-checked:text-white py-1">Class 2</div></label>
-                                    <label class="cursor-pointer flex-1 text-center"><input type="radio" name="lemon-u" value="Class 3" class="sr-only peer"><div class="text-xs border rounded peer-checked:bg-blue-600 peer-checked:text-white py-1">Class 3</div></label>
-                                 </div>
-                             </div>
-
-                             <div class="mb-3">
-                                 <div class="flex items-center gap-2 mb-1">
-                                     <span class="font-black text-blue-600 w-4">O</span>
-                                     <div class="flex gap-4">
-                                        <label class="font-normal text-xs flex items-center gap-1"><input type="radio" name="lemon-o" value="No"> No Obstr/OSA</label>
-                                        <label class="font-normal text-xs flex items-center gap-1"><input type="radio" name="lemon-o" value="Yes"> Yes</label>
-                                     </div>
-                                 </div>
-                                 <input type="text" id="lemon-o-specify" placeholder="Details..." class="text-xs py-1">
-                             </div>
-
-                             <div class="flex items-center gap-2">
-                                 <span class="font-black text-blue-600 w-4">N</span>
-                                 <div class="flex gap-4">
-                                    <label class="font-normal text-xs flex items-center gap-1"><input type="radio" name="lemon-n" value="Normal"> Neck Normal</label>
-                                    <label class="font-normal text-xs flex items-center gap-1"><input type="radio" name="lemon-n" value="Restricted"> Restricted</label>
-                                 </div>
-                             </div>
-                        </div>
-
-                        <div class="bg-red-50 border border-red-200 p-3 rounded-lg">
-                            <label class="text-red-800">Contraindications</label>
-                            <div class="space-y-1 mt-1">
-                                <label class="flex items-center gap-2 font-bold text-xs text-red-700"><input id="ci-allergy" type="checkbox" class="text-red-600 rounded"> Known Allergy</label>
-                                <label class="flex items-center gap-2 font-bold text-xs text-red-700"><input id="ci-hemo" type="checkbox" class="text-red-600 rounded"> Haemodynamic Instability</label>
-                                <label class="flex items-center gap-2 font-bold text-xs text-red-700"><input id="ci-gcs" type="checkbox" class="text-red-600 rounded"> Compromised Airway / GCS</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="section-card border-l-[8px] border-l-green-500">
-                    <div class="section-title text-green-800">3. Plan & Preparation</div>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label>Target Level</label>
-                            <select id="plan-target">
-                                <option>Minimal (Anxiolysis)</option>
-                                <option>Moderate (Conscious)</option>
-                                <option>Deep</option>
-                                <option>Dissociation</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label>Primary Agent(s)</label>
-                            <input type="text" id="plan-agent" placeholder="e.g. Propofol">
-                        </div>
-                    </div>
-
-                    <div class="sub-card mt-4">
-                        <label class="mb-2 block">SOAP-ME Checklist</label>
-                        <div class="flex flex-wrap gap-3">
-                            <label class="flex items-center gap-2 p-2 bg-white border rounded cursor-pointer"><input id="soap-s" type="checkbox" class="rounded text-green-600"> <span class="font-normal">Suction</span></label>
-                            <label class="flex items-center gap-2 p-2 bg-white border rounded cursor-pointer"><input id="soap-o" type="checkbox" class="rounded text-green-600"> <span class="font-normal">Oxygen/BVM</span></label>
-                            <label class="flex items-center gap-2 p-2 bg-white border rounded cursor-pointer"><input id="soap-a" type="checkbox" class="rounded text-green-600"> <span class="font-normal">Airway</span></label>
-                            <label class="flex items-center gap-2 p-2 bg-white border rounded cursor-pointer"><input id="soap-m" type="checkbox" class="rounded text-green-600"> <span class="font-normal">Monitoring</span></label>
-                            <label class="flex items-center gap-2 p-2 bg-white border rounded cursor-pointer"><input id="soap-e" type="checkbox" class="rounded text-green-600"> <span class="font-normal">Env/IV</span></label>
-                        </div>
-                        
-                        <div class="mt-3 pt-3 border-t border-slate-200">
-                            <label class="mb-2 block">Emergency Drugs Available</label>
-                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2">
-                                <label class="flex items-center gap-1"><input id="em-atropine" type="checkbox" class="rounded"> Atropine</label>
-                                <label class="flex items-center gap-1"><input id="em-metaraminol" type="checkbox" class="rounded"> Metaraminol</label>
-                                <label class="flex items-center gap-1"><input id="em-sux" type="checkbox" class="rounded"> Sux</label>
-                                <label class="flex items-center gap-1"><input id="em-adrenaline" type="checkbox" class="rounded"> Adrenaline</label>
-                                <label class="flex items-center gap-1"><input id="em-flumazenil" type="checkbox" class="rounded"> Flumazenil</label>
-                                <label class="flex items-center gap-1"><input id="em-naloxone" type="checkbox" class="rounded"> Naloxone</label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg flex items-start gap-3">
-                        <input id="plan-aagbi" type="checkbox" class="mt-1 w-5 h-5 rounded text-blue-600 focus:ring-blue-500">
-                        <div>
-                            <span class="block text-sm font-bold text-blue-900">AAGBI Standard Monitoring Confirmed</span>
-                            <span class="text-xs text-blue-700">ECG, NIBP, SpO2 & <strong>Waveform Capnography</strong> (Continuous)</span>
-                        </div>
-                    </div>
-
-                    <div class="mt-4">
-                        <label>Pre-Sedation Vitals</label>
-                        <div class="grid grid-cols-4 gap-2">
-                            <input type="text" id="pre-vital-hr" placeholder="HR" class="text-center">
-                            <input type="text" id="pre-vital-bp" placeholder="BP" class="text-center">
-                            <input type="text" id="pre-vital-spo2" placeholder="SpO2" class="text-center">
-                            <input type="text" id="pre-vital-rr" placeholder="RR" class="text-center">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="section-card border-l-[8px] border-l-slate-800 page-break">
-                    <div class="section-title text-slate-800 justify-between">
-                        4. Intra-Sedation Record
-                        <button type="button" id="complications-guide-button" class="text-[10px] bg-slate-200 px-2 py-1 rounded hover:bg-slate-300 no-print">Guide</button>
-                    </div>
-                    
-                    <div id="complications-guide-content" class="hidden mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded text-xs">
-                         <strong class="block mb-1 text-sm text-yellow-900">Quick Reference - Adverse Events & Intervention (TROOPS/SIVA):</strong>
-                         <ul class="list-disc ml-4 space-y-1">
-                            <li><strong>Apnoea:</strong> Stimulate/Airway/BVM. A short uneventful period is acceptable in a well oxygenated patient (e.g., Propofol).</li>
-                            <li><strong>Laryngospasm:</strong> 100% O₂ / Jaw Thrust (Larson's) / Succinylcholine if refractory.</li>
-                            <li><strong>Hypotension:</strong> IV Fluids / Vasoactive drugs (e.g., Metaraminol).</li>
-                            <li><strong>Agitation/Emergence Reaction:</strong> Reassurance / Benzodiazepine (e.g., Midazolam).</li>
-                            <li><strong>Reversal Agents:</strong> Naloxone / Flumazenil should be recorded as a TROOP Intervention and requires 2 hours post-sedation monitoring.</li>
-                         </ul>
-                    </div>
-
-                    <div class="bg-slate-800 rounded-xl p-4 text-white shadow-md mb-6 no-print">
-                        <div class="flex flex-col md:flex-row items-center justify-between gap-4">
-                            <div class="text-center md:text-left">
-                                <div class="text-xs font-bold text-slate-400 uppercase">Sedation Timer</div>
-                                <div id="timer-display" class="text-5xl font-mono font-black tracking-widest">00:00:00</div>
-                            </div>
-                            <button type="button" id="sedation-timer-button" class="std-btn bg-green-600 text-white border-green-700 hover:bg-green-700 w-full md:w-auto text-lg py-3 shadow-lg">
-                                START TIMER
-                            </button>
-                        </div>
-                        <div class="grid grid-cols-3 gap-2 mt-4 pt-4 border-t border-slate-700">
-                            <div class="text-center">
-                                <button type="button" id="procedure-start-button" class="w-full py-1 text-xs bg-slate-700 hover:bg-slate-600 rounded text-slate-200 font-bold mb-1">Proc Start</button>
-                                <span id="procedure-start-output" class="text-xs font-mono text-green-400 block h-4"></span>
-                            </div>
-                            <div class="text-center">
-                                <button type="button" id="procedure-end-button" class="w-full py-1 text-xs bg-slate-700 hover:bg-slate-600 rounded text-slate-200 font-bold mb-1">Proc End</button>
-                                <span id="procedure-end-output" class="text-xs font-mono text-green-400 block h-4"></span>
-                            </div>
-                            <div class="text-center">
-                                <button type="button" id="patient-awake-button" class="w-full py-1 text-xs bg-slate-700 hover:bg-slate-600 rounded text-slate-200 font-bold mb-1">Awake</button>
-                                <span id="patient-awake-output" class="text-xs font-mono text-green-400 block h-4"></span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mb-6">
-                        <label class="mb-2 block">Drug Administration</label>
-                        <div id="drug-admin-container" class="flex flex-wrap gap-2 mb-3 no-print">
-                            <button type="button" class="drug-btn text-indigo-700 border-indigo-200 bg-indigo-50" data-drug="Propofol">Propofol</button>
-                            <button type="button" class="drug-btn text-orange-700 border-orange-200 bg-orange-50" data-drug="Ketamine">Ketamine</button>
-                            <button type="button" class="drug-btn text-blue-700 border-blue-200 bg-blue-50" data-drug="Midazolam">Midazolam</button>
-                            <button type="button" class="drug-btn text-purple-700 border-purple-200 bg-purple-50" data-drug="Fentanyl">Fentanyl</button>
-                            <button type="button" class="drug-btn" data-drug="Other">Other</button>
-                        </div>
-                        <div class="overflow-x-auto border border-slate-300 rounded-lg">
-                            <table class="min-w-full divide-y divide-slate-200">
-                                <thead class="bg-slate-50">
-                                    <tr>
-                                        <th class="px-3 py-2 text-left text-[10px] font-bold text-slate-500 uppercase">Time</th>
-                                        <th class="px-3 py-2 text-left text-[10px] font-bold text-slate-500 uppercase">Drug</th>
-                                        <th class="px-3 py-2 text-left text-[10px] font-bold text-slate-500 uppercase">Dose (mg)</th>
-                                        <th class="px-3 py-2 text-left text-[10px] font-bold text-slate-500 uppercase">Given By</th>
-                                        <th class="px-3 py-2 w-8 no-print"></th>
-                                    </tr>
-                                </thead>
-                                <tbody id="drug-table-body" class="divide-y divide-slate-100 bg-white text-sm"></tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <div>
-                         <div class="flex justify-between items-end mb-2">
-                            <label>Monitoring Log (q5min)</label>
-                            <button type="button" id="add-obs-button" class="std-btn py-1 text-xs bg-green-50 text-green-700 border-green-200 hover:bg-green-100 no-print">+ Add Obs</button>
-                         </div>
-                         
-                         <div id="obs-toast" class="hidden bg-yellow-100 text-yellow-800 p-2 rounded mb-2 text-xs flex justify-between items-center border border-yellow-300">
-                            <span>&#9200; <strong>5 Minute Alert</strong></span>
-                            <button id="dismiss-toast-button" class="font-bold underline">OK</button>
-                         </div>
-
-                         <div class="overflow-x-auto border border-slate-300 rounded-lg">
-                            <table class="min-w-full divide-y divide-slate-200">
-                                <thead class="bg-slate-50">
-                                    <tr>
-                                        <th class="px-2 py-2 text-[10px] font-bold text-slate-500 uppercase">Time</th>
-                                        <th class="px-2 py-2 text-[10px] font-bold text-slate-500 uppercase">HR</th>
-                                        <th class="px-2 py-2 text-[10px] font-bold text-slate-500 uppercase">BP</th>
-                                        <th class="px-2 py-2 text-[10px] font-bold text-slate-500 uppercase">SpO2</th>
-                                        <th class="px-2 py-2 text-[10px] font-bold text-slate-500 uppercase">RR</th>
-                                        <th class="px-2 py-2 text-[10px] font-bold text-slate-500 uppercase">EtCO2</th>
-                                        <th class="px-2 py-2 text-[10px] font-bold text-slate-500 uppercase w-24">Score</th>
-                                        <th class="px-2 py-2 w-8 no-print"></th>
-                                    </tr>
-                                </thead>
-                                <tbody id="monitoring-log-body" class="divide-y divide-slate-100 bg-white text-sm"></tbody>
-                            </table>
-                        </div>
-                    </div>
-                    
-                    <div class="mt-4">
-                        <label>Notes / Adverse Events <span class="text-xs font-normal text-slate-500">(Consider TROOPS Intermediate/Sentinel reporting)</span></label>
-                        <textarea id="general-notes" rows="3" class="w-full p-2 border border-slate-300 rounded text-sm"></textarea>
-                    </div>
-                </div>
-
-                <div class="section-card border-l-[8px] border-l-purple-600">
-                    <div class="section-title text-purple-800">5. Outcome & Discharge</div>
-                    
-                    <div class="flex flex-col gap-4">
-                        <div class="sub-card bg-white mt-0">
-                            <label>Procedure Outcome</label>
-                            <div class="flex gap-4 mt-2">
-                                <label class="flex items-center gap-2 font-normal"><input type="radio" name="outcome-proc" value="Successful" class="text-blue-600"> Successful</label>
-                                <label class="flex items-center gap-2 font-normal"><input type="radio" name="outcome-proc" value="Unsuccessful" class="text-blue-600"> Unsuccessful</label>
-                            </div>
-                        </div>
-                        <div class="sub-card bg-white mt-0">
-                            <label>Discharge Criteria</label>
-                            <div class="space-y-2 mt-2">
-                                <label class="flex items-center gap-2 font-normal"><input type="checkbox" id="dc-aao" class="rounded text-blue-600"> Alert, orientated, baseline GCS</label>
-                                <label class="flex items-center gap-2 font-normal"><input type="checkbox" id="dc-vitals" class="rounded text-blue-600"> Vitals stable > 30m</label>
-                                <label class="flex items-center gap-2 font-normal"><input type="checkbox" id="dc-ambulate" class="rounded text-blue-600"> Ambulating safely</label>
-                                <label class="flex items-center gap-2 font-normal"><input type="checkbox" id="dc-pain" class="rounded text-blue-600"> Pain controlled</label>
-                            </div>
-                        </div>
-                        <div class="sub-card bg-slate-50 mt-0">
-                            <label class="border-b border-slate-200 pb-1 mb-3">Sign Off</label>
-                            <div class="space-y-3">
-                                <div><label>Name</label><input type="text" id="signoff-name"></div>
-                                <div><label>GMC No</label><input type="text" id="signoff-gmc"></div>
-                                <div><label>Time</label><input type="time" id="signoff-time"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="text-center no-print mt-8">
-                     <button type="button" id="print-button" class="std-btn bg-slate-800 text-white text-lg px-8 py-3 shadow-lg hover:bg-slate-900">
-                        Print / Save to PDF
-                     </button>
-                     <p class="mt-4 text-xs text-slate-500">
-                         <a href="#" id="clear-form-button" class="text-red-500 underline">Clear Form</a>
-                     </p>
-                </div>
-
             </div>
 
-        </form>
+        </div> <div class="text-center no-print mt-8">
+             <button type="button" id="print-button" class="std-btn bg-slate-800 text-white text-lg px-8 py-3 shadow-lg hover:bg-slate-900">
+                Print / Save to PDF
+             </button>
+             <p class="mt-4 text-xs text-slate-500">
+                 <a href="#" id="clear-form-button" class="text-red-500 underline">Clear Form</a>
+             </p>
+        </div>
     </main>
 
     <div id="custom-modal-backdrop" class="fixed inset-0 hidden items-center justify-center z-50">
