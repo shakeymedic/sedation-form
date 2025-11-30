@@ -33,6 +33,7 @@
             align-items: center;
             justify-content: center;
             font-size: 0.75rem;
+            cursor: pointer;
         }
         .std-btn:hover { background-color: #e2e8f0; }
         .std-btn:active { transform: translateY(1px); }
@@ -646,142 +647,148 @@
             function generateEPRLog() {
                 if (!$('epr-log-output')) return; 
 
-                let log = '';
-                const date = new Date().toLocaleDateString('en-GB', {year:'numeric', month:'short', day:'2-digit'});
-                const startTime = $('timer-display')?.textContent.split(' ')[0] || '00:00:00';
-                
-                // --- 1. Header and Patient Details ---
-                log += `<strong>PROCEDURAL SEDATION RECORD (${date})</strong><br>`;
-                log += `----------------------------------------------------------<br>`;
-                log += `<strong>1. Patient & Pre-Sedation Assessment:</strong><br>`;
-                log += ` - Sedationist: ${val('sedationist')} (${val('sedationist-grade')})<br>`;
-                log += ` - Procedure Dr: ${val('procedure-doctor')}<br>`;
-                log += ` - Nurse: ${val('nurse')}<br>`;
-                log += ` - Weight: ${val('weight')} kg (Est: ${isChecked('weight-estimated') ? 'Yes' : 'No'})<br>`;
-                log += ` - Allergies: <strong>${val('allergies') || 'None Known'}</strong><br>`;
-                log += ` - Frail/Elderly: ${isChecked('frail-elderly') ? 'Yes' : 'No'}<br>`;
-                log += ` - ASA Grade: ${findCheckedRadio('asa-grade') || 'N/A'}<br>`;
-                log += ` - Fasting (Food/Fluid): ${val('last-food') || 'N/A'} / ${val('last-fluid') || 'N/A'}<br>`;
-                log += ` - Pre-Analgesia: ${val('pre-analgesia') || 'None'}<br>`;
+                // Use try-catch to prevent entire log failure if one element is missing
+                try {
+                    let log = '';
+                    const date = new Date().toLocaleDateString('en-GB', {year:'numeric', month:'short', day:'2-digit'});
+                    const startTime = $('timer-display')?.textContent.split(' ')[0] || '00:00:00';
+                    
+                    // --- 1. Header and Patient Details ---
+                    log += `<strong>PROCEDURAL SEDATION RECORD (${date})</strong><br>`;
+                    log += `----------------------------------------------------------<br>`;
+                    log += `<strong>1. Patient & Pre-Sedation Assessment:</strong><br>`;
+                    log += ` - Sedationist: ${val('sedationist')} (${val('sedationist-grade')})<br>`;
+                    log += ` - Procedure Dr: ${val('procedure-doctor')}<br>`;
+                    log += ` - Nurse: ${val('nurse')}<br>`;
+                    log += ` - Weight: ${val('weight')} kg (Est: ${isChecked('weight-estimated') ? 'Yes' : 'No'})<br>`;
+                    log += ` - Allergies: <strong>${val('allergies') || 'None Known'}</strong><br>`;
+                    log += ` - Frail/Elderly: ${isChecked('frail-elderly') ? 'Yes' : 'No'}<br>`;
+                    log += ` - ASA Grade: ${findCheckedRadio('asa-grade') || 'N/A'}<br>`;
+                    log += ` - Fasting (Food/Fluid): ${val('last-food') || 'N/A'} / ${val('last-fluid') || 'N/A'}<br>`;
+                    log += ` - Pre-Analgesia: ${val('pre-analgesia') || 'None'}<br>`;
 
-                // --- 2. Capacity & Consent (Enhanced) ---
-                log += `<strong>2. Consent & Risks:</strong><br>`;
-                const cap = findCheckedRadio('capacity');
-                log += ` - Capacity: ${cap}<br>`;
-                
-                let consentType = findCheckedRadio('consent-type');
-                if (consentType) log += ` - Consent Type: <strong>${consentType}</strong><br>`;
-                
-                if(cap === 'Yes') {
-                     log += ` - Leaflet Given: ${isChecked('consent-leaflet') ? 'Yes' : 'No'}<br>`;
-                     log += ` - Questions Answered: ${isChecked('consent-questions') ? 'Yes' : 'No'}<br>`;
+                    // --- 2. Capacity & Consent (Enhanced) ---
+                    log += `<strong>2. Consent & Risks:</strong><br>`;
+                    const cap = findCheckedRadio('capacity');
+                    log += ` - Capacity: ${cap}<br>`;
+                    
+                    let consentType = findCheckedRadio('consent-type');
+                    if (consentType) log += ` - Consent Type: <strong>${consentType}</strong><br>`;
+                    
+                    if(cap === 'Yes') {
+                        log += ` - Leaflet Given: ${isChecked('consent-leaflet') ? 'Yes' : 'No'}<br>`;
+                        log += ` - Questions Answered: ${isChecked('consent-questions') ? 'Yes' : 'No'}<br>`;
+                    }
+                    
+                    let risks = [];
+                    // Common
+                    if(isChecked('risk-nausea')) risks.push('Nausea/Vomiting');
+                    if(isChecked('risk-drowsy')) risks.push('Drowsiness');
+                    if(isChecked('risk-hypotension')) risks.push('Hypotension');
+                    if(isChecked('risk-failure')) risks.push('Proc. Failure');
+                    // Rare
+                    if(isChecked('risk-laryngospasm')) risks.push('Laryngospasm');
+                    if(isChecked('risk-aspiration')) risks.push('Aspiration');
+                    if(isChecked('risk-resp-depress')) risks.push('Apnoea');
+                    if(isChecked('risk-allergy')) risks.push('Anaphylaxis');
+                    if(isChecked('risk-emergence')) risks.push('Emergence Rxn');
+                    
+                    log += ` - Risks Discussed: ${risks.length > 0 ? risks.join(', ') : 'None documented'}<br>`;
+
+
+                    // --- 3. Airway Assessment (LEMON) ---
+                    const L = val('lemon-l-specify') || findCheckedRadio('lemon-l');
+                    const M = findCheckedRadio('lemon-m');
+                    const U = findCheckedRadio('lemon-u');
+                    const O = val('lemon-o-specify') || findCheckedRadio('lemon-o');
+                    const N = findCheckedRadio('lemon-n');
+
+                    log += `<strong>3. Airway (LEMON) Assessment:</strong><br>`;
+                    log += ` - Look (L): ${L}<br>`;
+                    log += ` - Eval (E - 332): ${findCheckedRadio('lemon-e') || 'N/A'}<br>`;
+                    log += ` - Mallampati (M): ${M || 'N/A'}<br>`;
+                    log += ` - ULBT (U): ${U || 'N/A'}<br>`;
+                    log += ` - Obstr (O): ${O}<br>`;
+                    log += ` - Neck (N): ${N || 'N/A'}<br>`;
+                    log += ` - Contraindications: Allergy(${isChecked('ci-allergy') ? 'Y' : 'N'}), Hemo Instab(${isChecked('ci-hemo') ? 'Y' : 'N'}), Airway Comp(${isChecked('ci-gcs') ? 'Y' : 'N'})<br>`;
+
+
+                    // --- 4. Plan & Safety ---
+                    log += `<strong>4. Plan & Preparation:</strong><br>`;
+                    log += ` - Target Level: ${val('plan-target')}. Primary Agent: ${val('plan-agent')}<br>`;
+                    log += ` - Monitoring: ${isChecked('plan-aagbi') ? 'AAGBI Standard (ECG, NIBP, SpO₂, EtCO₂)' : 'Basic Monitor'}<br>`;
+                    log += ` - Pre-Vitals: HR ${val('pre-vital-hr')}, BP ${val('pre-vital-bp')}, SpO₂ ${val('pre-vital-spo2')}%, RR ${val('pre-vital-rr')}<br>`;
+                    
+                    const toComplete = isChecked('to-identity') && isChecked('to-role') && isChecked('to-site') && isChecked('to-monitoring');
+                    log += ` - Safety Time Out: <strong>${toComplete ? 'COMPLETED' : 'INCOMPLETE'}</strong> (ID, Roles, Site, Monitoring)<br>`;
+                    
+                    log += `----------------------------------------------------------<br>`;
+
+
+                    // --- 5. Intra-Procedure & Log ---
+                    log += `<strong>5. Intra-Procedure Log (Timer: ${startTime}):</strong><br>`;
+                    log += ` - Proc Start: ${$('procedure-start-output')?.textContent || 'N/A'}<br>`;
+                    log += ` - Proc End: ${$('procedure-end-output')?.textContent || 'N/A'}<br>`;
+
+                    // Drug Log
+                    const drugRows = $('drug-table-body').querySelectorAll('tr');
+                    if (drugRows.length > 0) {
+                        log += `<strong>Drugs Administered:</strong><br>`;
+                        drugRows.forEach(row => {
+                            const cells = row.querySelectorAll('td');
+                            const inputVal = cells[0].querySelector('input').value;
+                            const dTime = inputVal.match(/\((.*?)\)/)?.[1]?.trim() || inputVal.trim();
+                            const drugName = cells[1].textContent;
+                            const drugDose = cells[2].textContent;
+                            const giver = cells[3].textContent;
+                            log += ` - ${dTime}: <strong>${drugName} ${drugDose} mg</strong> (Given by ${giver})<br>`;
+                        });
+                    }
+
+                    // Monitoring Log
+                    const obsRows = $('monitoring-log-body').querySelectorAll('tr');
+                    if (obsRows.length > 0) {
+                        log += `<strong>Observations:</strong><br>`;
+                        obsRows.forEach(row => {
+                            const cells = row.querySelectorAll('td');
+                            const oTime = cells[0].querySelector('input').value;
+                            const hr = cells[1].querySelector('input').value;
+                            const bp = cells[2].querySelector('input').value;
+                            const spo2 = cells[3].querySelector('input').value;
+                            const rr = cells[4].querySelector('input').value;
+                            const etco2 = cells[5].querySelector('input').value;
+                            const scoreEl = cells[6].querySelector('select');
+                            const scoreText = scoreEl.value ? scoreEl.selectedOptions[0].textContent : '';
+                            
+                            // Only log if data is present
+                            if(hr || bp || spo2 || rr || etco2 || scoreText) {
+                                log += ` - ${oTime}: HR ${hr}, BP ${bp}, SpO₂ ${spo2}%, RR ${rr}, EtCO₂ ${etco2}, Score: ${scoreText}<br>`;
+                            }
+                        });
+                    }
+
+                    // Notes
+                    log += `<strong>Notes/Adverse Events:</strong> ${val('general-notes') || 'No additional notes or adverse events.'}<br>`;
+                    log += `----------------------------------------------------------<br>`;
+
+
+                    // --- 6. Outcome & Discharge ---
+                    log += `<strong>6. Outcome & Sign Off:</strong><br>`;
+                    log += ` - Procedure Outcome: <strong>${findCheckedRadio('outcome-proc') || 'N/A'}</strong><br>`;
+                    log += ` - Disposal: <strong>${findCheckedRadio('disposal') || 'N/A'}</strong><br>`;
+                    
+                    const dcComplete = isChecked('dc-vitals') && isChecked('dc-aao') && isChecked('dc-oral') && isChecked('dc-pain') && isChecked('dc-home');
+                    log += ` - Discharge Criteria Met: <strong>${dcComplete ? 'YES' : 'PENDING'}</strong><br>`;
+                    log += ` - Reversal Agent Check (2hr): ${isChecked('dc-reversal-time') ? 'Passed' : 'Pending/N/A'}<br>`;
+                    
+                    const diComplete = isChecked('di-drive') && isChecked('di-adult') && isChecked('di-alcohol') && isChecked('di-decisions');
+                    log += ` - Discharge Instructions Given: ${diComplete ? 'Yes (Full 48h restrictions given)' : 'No/Incomplete'}<br>`;
+                    log += ` - Signed Off By: ${val('signoff-name')} (GMC: ${val('signoff-gmc')}) @ ${val('signoff-time') || 'N/A'}<br>`;
+                    
+                    $('epr-log-output').innerHTML = log;
+                } catch (e) {
+                    console.error("Log generation error:", e);
                 }
-                
-                let risks = [];
-                // Common
-                if(isChecked('risk-nausea')) risks.push('Nausea/Vomiting');
-                if(isChecked('risk-drowsy')) risks.push('Drowsiness');
-                if(isChecked('risk-hypotension')) risks.push('Hypotension');
-                if(isChecked('risk-failure')) risks.push('Proc. Failure');
-                // Rare
-                if(isChecked('risk-laryngospasm')) risks.push('Laryngospasm');
-                if(isChecked('risk-aspiration')) risks.push('Aspiration');
-                if(isChecked('risk-resp-depress')) risks.push('Apnoea');
-                if(isChecked('risk-allergy')) risks.push('Anaphylaxis');
-                if(isChecked('risk-emergence')) risks.push('Emergence Rxn');
-                
-                log += ` - Risks Discussed: ${risks.length > 0 ? risks.join(', ') : 'None documented'}<br>`;
-
-
-                // --- 3. Airway Assessment (LEMON) ---
-                const L = val('lemon-l-specify') || findCheckedRadio('lemon-l');
-                const M = findCheckedRadio('lemon-m');
-                const U = findCheckedRadio('lemon-u');
-                const O = val('lemon-o-specify') || findCheckedRadio('lemon-o');
-                const N = findCheckedRadio('lemon-n');
-
-                log += `<strong>3. Airway (LEMON) Assessment:</strong><br>`;
-                log += ` - Look (L): ${L}<br>`;
-                log += ` - Eval (E - 332): ${findCheckedRadio('lemon-e') || 'N/A'}<br>`;
-                log += ` - Mallampati (M): ${M || 'N/A'}<br>`;
-                log += ` - ULBT (U): ${U || 'N/A'}<br>`;
-                log += ` - Obstr (O): ${O}<br>`;
-                log += ` - Neck (N): ${N || 'N/A'}<br>`;
-                log += ` - Contraindications: Allergy(${isChecked('ci-allergy') ? 'Y' : 'N'}), Hemo Instab(${isChecked('ci-hemo') ? 'Y' : 'N'}), Airway Comp(${isChecked('ci-gcs') ? 'Y' : 'N'})<br>`;
-
-
-                // --- 4. Plan & Safety ---
-                log += `<strong>4. Plan & Preparation:</strong><br>`;
-                log += ` - Target Level: ${val('plan-target')}. Primary Agent: ${val('plan-agent')}<br>`;
-                log += ` - Monitoring: ${isChecked('plan-aagbi') ? 'AAGBI Standard (ECG, NIBP, SpO₂, EtCO₂)' : 'Basic Monitor'}<br>`;
-                log += ` - Pre-Vitals: HR ${val('pre-vital-hr')}, BP ${val('pre-vital-bp')}, SpO₂ ${val('pre-vital-spo2')}%, RR ${val('pre-vital-rr')}<br>`;
-                
-                const toComplete = isChecked('to-identity') && isChecked('to-role') && isChecked('to-site') && isChecked('to-monitoring');
-                log += ` - Safety Time Out: <strong>${toComplete ? 'COMPLETED' : 'INCOMPLETE'}</strong> (ID, Roles, Site, Monitoring)<br>`;
-                
-                log += `----------------------------------------------------------<br>`;
-
-
-                // --- 5. Intra-Procedure & Log ---
-                log += `<strong>5. Intra-Procedure Log (Timer: ${startTime}):</strong><br>`;
-                log += ` - Proc Start: ${$('procedure-start-output')?.textContent || 'N/A'}<br>`;
-                log += ` - Proc End: ${$('procedure-end-output')?.textContent || 'N/A'}<br>`;
-
-                // Drug Log
-                const drugRows = $('drug-table-body').querySelectorAll('tr');
-                if (drugRows.length > 0) {
-                    log += `<strong>Drugs Administered:</strong><br>`;
-                    drugRows.forEach(row => {
-                        const cells = row.querySelectorAll('td');
-                        const dTime = cells[0].querySelector('input').value.match(/\((.*?)\)/)?.[1]?.trim() || cells[0].querySelector('input').value.trim();
-                        const drugName = cells[1].textContent;
-                        const drugDose = cells[2].textContent;
-                        const giver = cells[3].textContent;
-                        log += ` - ${dTime}: <strong>${drugName} ${drugDose} mg</strong> (Given by ${giver})<br>`;
-                    });
-                }
-
-                // Monitoring Log
-                const obsRows = $('monitoring-log-body').querySelectorAll('tr');
-                if (obsRows.length > 0) {
-                    log += `<strong>Observations:</strong><br>`;
-                    obsRows.forEach(row => {
-                        const cells = row.querySelectorAll('td');
-                        const oTime = cells[0].querySelector('input').value;
-                        const hr = cells[1].querySelector('input').value;
-                        const bp = cells[2].querySelector('input').value;
-                        const spo2 = cells[3].querySelector('input').value;
-                        const rr = cells[4].querySelector('input').value;
-                        const etco2 = cells[5].querySelector('input').value;
-                        const scoreEl = cells[6].querySelector('select');
-                        const scoreText = scoreEl.value ? scoreEl.selectedOptions[0].textContent : '';
-                        
-                        // Only log if data is present
-                        if(hr || bp || spo2 || rr || etco2 || scoreText) {
-                            log += ` - ${oTime}: HR ${hr}, BP ${bp}, SpO₂ ${spo2}%, RR ${rr}, EtCO₂ ${etco2}, Score: ${scoreText}<br>`;
-                        }
-                    });
-                }
-
-                // Notes
-                log += `<strong>Notes/Adverse Events:</strong> ${val('general-notes') || 'No additional notes or adverse events.'}<br>`;
-                log += `----------------------------------------------------------<br>`;
-
-
-                // --- 6. Outcome & Discharge ---
-                log += `<strong>6. Outcome & Sign Off:</strong><br>`;
-                log += ` - Procedure Outcome: <strong>${findCheckedRadio('outcome-proc') || 'N/A'}</strong><br>`;
-                log += ` - Disposal: <strong>${findCheckedRadio('disposal') || 'N/A'}</strong><br>`;
-                
-                const dcComplete = isChecked('dc-vitals') && isChecked('dc-aao') && isChecked('dc-oral') && isChecked('dc-pain') && isChecked('dc-home');
-                log += ` - Discharge Criteria Met: <strong>${dcComplete ? 'YES' : 'PENDING'}</strong><br>`;
-                log += ` - Reversal Agent Check (2hr): ${isChecked('dc-reversal-time') ? 'Passed' : 'Pending/N/A'}<br>`;
-                
-                const diComplete = isChecked('di-drive') && isChecked('di-adult') && isChecked('di-alcohol') && isChecked('di-decisions');
-                log += ` - Discharge Instructions Given: ${diComplete ? 'Yes (Full 48h restrictions given)' : 'No/Incomplete'}<br>`;
-                log += ` - Signed Off By: ${val('signoff-name')} (GMC: ${val('signoff-gmc')}) @ ${val('signoff-time') || 'N/A'}<br>`;
-                
-                $('epr-log-output').innerHTML = log;
             }
 
             // --- Event Listeners ---
