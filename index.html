@@ -170,11 +170,9 @@
         </div>
     </header>
 
-    <main class="container mx-auto max-w-7xl px-4 py-6">
-        
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+    <main class="container mx-auto max-w-[95%] px-4 py-6"> <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-            <div class="lg:col-span-8 flex flex-col gap-6">
+            <div class="lg:col-span-9 flex flex-col gap-6">
 
                 <div class="hidden print-header mb-6 text-center border-b-2 border-slate-800 pb-4">
                      <h1 class="text-3xl font-black text-slate-900">Procedural Sedation Record</h1>
@@ -278,23 +276,36 @@
                                 </div>
 
                                 <div class="sub-card mt-0 border-slate-300">
-                                    <label class="border-b border-slate-200 pb-1 mb-2">Risk Discussion</label>
+                                    <label class="border-b border-slate-200 pb-1 mb-2">Risk Discussion & Frequency (RCEM)</label>
                                     
-                                    <span class="text-[10px] font-black text-slate-500 uppercase mb-2 block bg-slate-100 p-1 rounded">Common / Minor Side Effects</span>
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-y-2 gap-x-4 mb-4 px-2">
-                                         <label class="flex items-center gap-2 font-medium text-xs text-slate-700"><input id="risk-nausea" type="checkbox" class="rounded border-slate-400"> Nausea / Vomiting</label>
-                                         <label class="flex items-center gap-2 font-medium text-xs text-slate-700"><input id="risk-drowsy" type="checkbox" class="rounded border-slate-400"> Drowsiness / Ataxia</label>
-                                         <label class="flex items-center gap-2 font-medium text-xs text-slate-700"><input id="risk-hypotension" type="checkbox" class="rounded border-slate-400"> Hypotension (Transient)</label>
-                                         <label class="flex items-center gap-2 font-medium text-xs text-slate-700"><input id="risk-failure" type="checkbox" class="rounded border-slate-400"> Procedure Failure</label>
-                                    </div>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 px-2">
+                                        <div>
+                                            <span class="text-[10px] font-black text-slate-500 uppercase mb-1 block">Common (>1 in 100)</span>
+                                            <div class="space-y-1">
+                                                <label class="flex items-center gap-2 font-medium text-xs text-slate-700"><input id="risk-nausea" type="checkbox" class="rounded border-slate-400"> Nausea / Vomiting</label>
+                                                <label class="flex items-center gap-2 font-medium text-xs text-slate-700"><input id="risk-drowsy" type="checkbox" class="rounded border-slate-400"> Drowsiness / Ataxia</label>
+                                                <label class="flex items-center gap-2 font-medium text-xs text-slate-700"><input id="risk-hypotension" type="checkbox" class="rounded border-slate-400"> Hypotension (~1 in 50)</label>
+                                                <label class="flex items-center gap-2 font-medium text-xs text-slate-700"><input id="risk-resp-depress" type="checkbox" class="rounded border-slate-400"> Resp. Depression/Hypoxia (~1 in 50)</label>
+                                            </div>
+                                        </div>
 
-                                    <span class="text-[10px] font-black text-red-700 uppercase mb-2 block bg-red-100 p-1 rounded border border-red-200">Rare / Severe Complications</span>
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-y-2 gap-x-4 px-2">
-                                         <label class="flex items-center gap-2 font-bold text-xs text-red-900"><input id="risk-laryngospasm" type="checkbox" class="rounded border-red-300"> Laryngospasm</label>
-                                         <label class="flex items-center gap-2 font-bold text-xs text-red-900"><input id="risk-aspiration" type="checkbox" class="rounded border-red-300"> Aspiration</label>
-                                         <label class="flex items-center gap-2 font-bold text-xs text-red-900"><input id="risk-resp-depress" type="checkbox" class="rounded border-red-300"> Resp. Depression (Apnoea)</label>
-                                         <label class="flex items-center gap-2 font-bold text-xs text-red-900"><input id="risk-allergy" type="checkbox" class="rounded border-red-300"> Anaphylaxis</label>
-                                         <label class="flex items-center gap-2 font-bold text-xs text-red-900"><input id="risk-emergence" type="checkbox" class="rounded border-red-300"> Emergence Reaction</label>
+                                        <div>
+                                            <span class="text-[10px] font-black text-red-700 uppercase mb-1 block">Rare (~1 in 1000)</span>
+                                            <div class="space-y-1">
+                                                <label class="flex items-center gap-2 font-bold text-xs text-red-900"><input id="risk-laryngospasm" type="checkbox" class="rounded border-red-300"> Laryngospasm (1:1000)</label>
+                                                <label class="flex items-center gap-2 font-bold text-xs text-red-900"><input id="risk-aspiration" type="checkbox" class="rounded border-red-300"> Aspiration (1:1000 - 1:3000)</label>
+                                                <label class="flex items-center gap-2 font-bold text-xs text-red-900"><input id="risk-allergy" type="checkbox" class="rounded border-red-300"> Anaphylaxis</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="md:col-span-2 border-t border-slate-200 pt-2">
+                                            <span class="text-[10px] font-black text-slate-500 uppercase mb-1 block">Procedure Outcomes</span>
+                                            <div class="flex flex-wrap gap-4">
+                                                <label class="flex items-center gap-2 font-medium text-xs text-slate-700"><input id="risk-failure" type="checkbox" class="rounded border-slate-400"> Failure of Procedure (May need GA)</label>
+                                                <label class="flex items-center gap-2 font-medium text-xs text-slate-700"><input id="risk-treatment" type="checkbox" class="rounded border-slate-400"> Need for further treatment / admission</label>
+                                                <label class="flex items-center gap-2 font-medium text-xs text-slate-700"><input id="risk-emergence" type="checkbox" class="rounded border-slate-400"> Emergence Reaction (Ketamine)</label>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -494,7 +505,7 @@
                             
                             <div class="mt-4">
                                 <label>Notes / Adverse Events <span class="text-xs font-normal text-slate-500">(Consider TROOPS Intermediate/Sentinel reporting)</span></label>
-                                <textarea id="general-notes" rows="3" class="w-full p-2 border border-slate-400 rounded-md text-sm font-medium"></textarea>
+                                <textarea id="general-notes" rows="5" class="w-full p-2 border border-slate-400 rounded-md text-sm font-medium"></textarea>
                             </div>
                         </div>
 
@@ -553,7 +564,7 @@
                 </form>
             </div> 
 
-            <div class="lg:col-span-4 relative">
+            <div class="lg:col-span-3 relative">
                 <div class="sticky top-24 h-fit no-print space-y-4">
                     <div id="epr-log-container" class="bg-white p-4 rounded-xl shadow-lg border border-slate-300">
                         <div class="flex justify-between items-center mb-3">
@@ -668,7 +679,7 @@
                     log += ` - Allergies: <strong>${val('allergies') || 'None Known'}</strong><br>`;
                     log += ` - Frail/Elderly: ${isChecked('frail-elderly') ? 'Yes' : 'No'}<br>`;
                     log += ` - ASA Grade: ${findCheckedRadio('asa-grade') || 'N/A'}<br>`;
-                    log += ` - Fasting (Food/Fluid): ${val('last-food') || 'N/A'} / ${val('last-fluid') || 'N/A'}<br>`;
+                    log += ` - Fasting (Food/Fluid): ${val('last-food') || 'N/A' / ${val('last-fluid') || 'N/A'}}<br>`;
                     log += ` - Pre-Analgesia: ${val('pre-analgesia') || 'None'}<br>`;
 
                     // --- 2. Capacity & Consent (Enhanced) ---
@@ -689,11 +700,13 @@
                     if(isChecked('risk-nausea')) risks.push('Nausea/Vomiting');
                     if(isChecked('risk-drowsy')) risks.push('Drowsiness');
                     if(isChecked('risk-hypotension')) risks.push('Hypotension');
+                    if(isChecked('risk-resp-depress')) risks.push('Hypoxia/Apnoea');
+                    // Procedure
                     if(isChecked('risk-failure')) risks.push('Proc. Failure');
+                    if(isChecked('risk-treatment')) risks.push('Further Treatment');
                     // Rare
                     if(isChecked('risk-laryngospasm')) risks.push('Laryngospasm');
                     if(isChecked('risk-aspiration')) risks.push('Aspiration');
-                    if(isChecked('risk-resp-depress')) risks.push('Apnoea');
                     if(isChecked('risk-allergy')) risks.push('Anaphylaxis');
                     if(isChecked('risk-emergence')) risks.push('Emergence Rxn');
                     
