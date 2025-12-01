@@ -16,7 +16,7 @@
         ::-webkit-scrollbar-thumb { background: #64748b; border-radius: 4px; }
         html { scroll-behavior: smooth; }
         
-        /* Inputs & Controls */
+        /* Inputs & Controls - MATCHING TRAUMA TOOL COLORS (#94a3b8) */
         input, textarea, select { border-color: #94a3b8; outline: none; transition: all 0.2s; }
         input:focus, textarea:focus, select:focus { border-color: #2563eb; ring: 2px; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2); }
 
@@ -76,12 +76,12 @@
         .drug-btn:hover { background-color: #f1f5f9; border-color: #94a3b8; }
         .drug-btn:active { transform: scale(0.95); }
 
-        /* Cards */
+        /* Cards - MATCHING TRAUMA TOOL BORDERS */
         .section-card {
             background-color: white;
             border-radius: 0.75rem; /* rounded-xl */
             box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); /* shadow-sm */
-            border: 2px solid #cbd5e1;
+            border: 1px solid #94a3b8; /* Slate 400 to match Trauma Tool */
             overflow: hidden;
             margin-bottom: 1.5rem;
             padding: 1.25rem;
@@ -155,7 +155,7 @@
                 <div>
                     <h1 class="text-xl md:text-2xl font-black text-slate-900 leading-tight">Sedation Record <span class="text-xs font-normal text-slate-500 bg-slate-100 px-2 py-0.5 rounded border ml-2">RCEM 2022</span></h1>
                     <p class="text-xs text-green-600 font-bold flex items-center gap-1">
-                        <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> Active
+                        <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> Auto-save enabled
                     </p>
                 </div>
             </div>
@@ -170,9 +170,10 @@
         </div>
     </header>
 
-    <main class="container mx-auto max-w-[95%] px-4 py-6"> <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+    <main class="container mx-auto px-4 py-6"> 
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-            <div class="lg:col-span-9 flex flex-col gap-6">
+            <div class="lg:col-span-8 flex flex-col gap-6">
 
                 <div class="hidden print-header mb-6 text-center border-b-2 border-slate-800 pb-4">
                      <h1 class="text-3xl font-black text-slate-900">Procedural Sedation Record</h1>
@@ -564,13 +565,13 @@
                 </form>
             </div> 
 
-            <div class="lg:col-span-3 relative">
+            <div class="lg:col-span-4 relative">
                 <div class="sticky top-24 h-fit no-print space-y-4">
                     <div id="epr-log-container" class="bg-white p-4 rounded-xl shadow-lg border border-slate-300">
                         <div class="flex justify-between items-center mb-3">
                             <h2 class="text-sm font-bold text-slate-700 uppercase tracking-wide">EPR Quick Log</h2>
                             <button type="button" id="copy-log-button" class="px-3 py-1 text-xs font-bold bg-blue-600 text-white rounded hover:bg-blue-700 transition shadow-sm">
-                                Copy Text
+                                Copy Rich Text
                             </button>
                         </div>
                         <div id="epr-log-output" class="rich-output focus:ring-2 ring-blue-500 ring-offset-2" contenteditable="true">
@@ -585,7 +586,7 @@
                             Print / Save to PDF
                          </button>
                          <p class="mt-4 text-xs text-slate-500">
-                             <a href="#" id="clear-form-button" class="text-red-500 underline font-bold">Clear Form</a>
+                             <a href="#" id="clear-form-button" class="text-red-500 underline font-bold">Reset Form</a>
                          </p>
                     </div>
                 </div>
@@ -630,6 +631,88 @@
             let sedationInterval = null;
             let secondsElapsed = 0;
             
+            // --- Persistence (Auto-Save) Logic ---
+            function saveState() {
+                const data = {};
+                // Inputs & Textareas
+                document.querySelectorAll('input, textarea, select').forEach(el => {
+                    if (el.type === 'checkbox' || el.type === 'radio') {
+                        if (el.checked) data[el.id || el.name + ':' + el.value] = true;
+                    } else if (el.id) {
+                        data[el.id] = el.value;
+                    }
+                });
+                // Table HTML (Drugs & Obs)
+                data['drug-table-html'] = $('drug-table-body').innerHTML;
+                data['obs-table-html'] = $('monitoring-log-body').innerHTML;
+                data['dose-output-html'] = $('dose-output').innerHTML;
+                data['dose-output-visible'] = !$('dose-output').classList.contains('hidden');
+                
+                // Timer State (Basic)
+                data['timer-display'] = $('timer-display').textContent;
+                data['seconds-elapsed'] = secondsElapsed;
+                data['timer-running'] = !!sedationInterval;
+                // Button states
+                data['btn-start-text'] = $('procedure-start-output').textContent;
+                data['btn-end-text'] = $('procedure-end-output').textContent;
+                data['btn-awake-text'] = $('patient-awake-output').textContent;
+                
+                localStorage.setItem('sedation_record_data', JSON.stringify(data));
+                generateEPRLog();
+            }
+
+            function loadState() {
+                const saved = localStorage.getItem('sedation_record_data');
+                if (!saved) return;
+                try {
+                    const data = JSON.parse(saved);
+                    
+                    // Inputs
+                    document.querySelectorAll('input, textarea, select').forEach(el => {
+                        if (el.type === 'checkbox') {
+                            if (data[el.id]) el.checked = true;
+                        } else if (el.type === 'radio') {
+                            if (data[el.name + ':' + el.value]) el.checked = true;
+                        } else if (el.id && data[el.id] !== undefined) {
+                            el.value = data[el.id];
+                        }
+                    });
+
+                    // Tables
+                    if(data['drug-table-html']) $('drug-table-body').innerHTML = data['drug-table-html'];
+                    if(data['obs-table-html']) $('monitoring-log-body').innerHTML = data['obs-table-html'];
+                    if(data['dose-output-html']) $('dose-output').innerHTML = data['dose-output-html'];
+                    if(data['dose-output-visible']) $('dose-output').classList.remove('hidden');
+
+                    // Timer & Buttons
+                    if(data['timer-display']) $('timer-display').textContent = data['timer-display'];
+                    if(data['seconds-elapsed']) secondsElapsed = parseInt(data['seconds-elapsed']);
+                    
+                    if(data['btn-start-text']) {
+                        $('procedure-start-output').textContent = data['btn-start-text'];
+                        $('procedure-start-button').classList.add('opacity-50', 'cursor-not-allowed');
+                        $('procedure-start-button').disabled = true;
+                    }
+                    if(data['btn-end-text']) {
+                        $('procedure-end-output').textContent = data['btn-end-text'];
+                        $('procedure-end-button').classList.add('opacity-50', 'cursor-not-allowed');
+                        $('procedure-end-button').disabled = true;
+                    }
+                    if(data['btn-awake-text']) {
+                        $('patient-awake-output').textContent = data['btn-awake-text'];
+                        $('patient-awake-button').classList.add('opacity-50', 'cursor-not-allowed');
+                        $('patient-awake-button').disabled = true;
+                    }
+
+                    // Toggles
+                    toggleCapacity();
+                    
+                    // Re-attach listeners to dynamic buttons in tables if needed (onclick attr handles this mostly)
+                    
+                    generateEPRLog();
+                } catch (e) { console.error("Load Error", e); }
+            }
+
             // --- Utility Functions ---
             function findCheckedRadio(name) {
                 const radios = document.getElementsByName(name);
@@ -654,21 +737,19 @@
                     yesDiv.classList.remove('hidden');
                     noDiv.classList.add('hidden');
                 }
-                generateEPRLog();
+                generateEPRLog(); // Trigger log update but don't save loop
             };
-            document.getElementsByName('capacity').forEach(r => r.addEventListener('change', toggleCapacity));
+            document.getElementsByName('capacity').forEach(r => r.addEventListener('change', () => { toggleCapacity(); saveState(); }));
 
             // --- EPR LOG GENERATOR ---
             function generateEPRLog() {
                 if (!$('epr-log-output')) return; 
 
-                // Use try-catch to prevent entire log failure if one element is missing
                 try {
                     let log = '';
                     const date = new Date().toLocaleDateString('en-GB', {year:'numeric', month:'short', day:'2-digit'});
                     const startTime = $('timer-display')?.textContent.split(' ')[0] || '00:00:00';
                     
-                    // --- 1. Header and Patient Details ---
                     log += `<strong>PROCEDURAL SEDATION RECORD (${date})</strong><br>`;
                     log += `----------------------------------------------------------<br>`;
                     log += `<strong>1. Patient & Pre-Sedation Assessment:</strong><br>`;
@@ -682,7 +763,6 @@
                     log += ` - Fasting (Food/Fluid): ${val('last-food') || 'N/A' / ${val('last-fluid') || 'N/A'}}<br>`;
                     log += ` - Pre-Analgesia: ${val('pre-analgesia') || 'None'}<br>`;
 
-                    // --- 2. Capacity & Consent (Enhanced) ---
                     log += `<strong>2. Consent & Risks:</strong><br>`;
                     const cap = findCheckedRadio('capacity');
                     log += ` - Capacity: ${cap}<br>`;
@@ -696,15 +776,12 @@
                     }
                     
                     let risks = [];
-                    // Common
                     if(isChecked('risk-nausea')) risks.push('Nausea/Vomiting');
                     if(isChecked('risk-drowsy')) risks.push('Drowsiness');
                     if(isChecked('risk-hypotension')) risks.push('Hypotension');
                     if(isChecked('risk-resp-depress')) risks.push('Hypoxia/Apnoea');
-                    // Procedure
                     if(isChecked('risk-failure')) risks.push('Proc. Failure');
                     if(isChecked('risk-treatment')) risks.push('Further Treatment');
-                    // Rare
                     if(isChecked('risk-laryngospasm')) risks.push('Laryngospasm');
                     if(isChecked('risk-aspiration')) risks.push('Aspiration');
                     if(isChecked('risk-allergy')) risks.push('Anaphylaxis');
@@ -713,8 +790,6 @@
                     log += ` - Risks Discussed: ${risks.length > 0 ? risks.join(', ') : 'None documented'}<br>`;
                     log += ` - Contraindications: Allergy(${isChecked('ci-allergy') ? 'Y' : 'N'}), Hemo Instab(${isChecked('ci-hemo') ? 'Y' : 'N'}), Airway Comp(${isChecked('ci-gcs') ? 'Y' : 'N'})<br>`;
 
-
-                    // --- 4. Plan & Safety ---
                     log += `<strong>3. Plan & Preparation:</strong><br>`;
                     log += ` - Target Level: ${val('plan-target')}. Primary Agent: ${val('plan-agent')}<br>`;
                     log += ` - Monitoring: ${isChecked('plan-aagbi') ? 'AAGBI Standard (ECG, NIBP, SpO₂, EtCO₂)' : 'Basic Monitor'}<br>`;
@@ -725,13 +800,10 @@
                     
                     log += `----------------------------------------------------------<br>`;
 
-
-                    // --- 5. Intra-Procedure & Log ---
                     log += `<strong>4. Intra-Procedure Log (Timer: ${startTime}):</strong><br>`;
                     log += ` - Proc Start: ${$('procedure-start-output')?.textContent || 'N/A'}<br>`;
                     log += ` - Proc End: ${$('procedure-end-output')?.textContent || 'N/A'}<br>`;
 
-                    // Drug Log
                     const drugRows = $('drug-table-body').querySelectorAll('tr');
                     if (drugRows.length > 0) {
                         log += `<strong>Drugs Administered:</strong><br>`;
@@ -746,7 +818,6 @@
                         });
                     }
 
-                    // Monitoring Log
                     const obsRows = $('monitoring-log-body').querySelectorAll('tr');
                     if (obsRows.length > 0) {
                         log += `<strong>Observations:</strong><br>`;
@@ -761,19 +832,15 @@
                             const scoreEl = cells[6].querySelector('select');
                             const scoreText = scoreEl.value ? scoreEl.selectedOptions[0].textContent : '';
                             
-                            // Only log if data is present
                             if(hr || bp || spo2 || rr || etco2 || scoreText) {
                                 log += ` - ${oTime}: HR ${hr}, BP ${bp}, SpO₂ ${spo2}%, RR ${rr}, EtCO₂ ${etco2}, Score: ${scoreText}<br>`;
                             }
                         });
                     }
 
-                    // Notes
                     log += `<strong>Notes/Adverse Events:</strong> ${val('general-notes') || 'No additional notes or adverse events.'}<br>`;
                     log += `----------------------------------------------------------<br>`;
 
-
-                    // --- 6. Outcome & Discharge ---
                     log += `<strong>5. Outcome & Sign Off:</strong><br>`;
                     log += ` - Procedure Outcome: <strong>${findCheckedRadio('outcome-proc') || 'N/A'}</strong><br>`;
                     log += ` - Disposal: <strong>${findCheckedRadio('disposal') || 'N/A'}</strong><br>`;
@@ -797,18 +864,9 @@
             $('header-print-btn').onclick = () => window.print();
             
             $('clear-form-button').onclick = () => {
-                if(confirm("Clear entire form?")) {
-                    $('sedation-form').reset();
-                    stopTimer();
-                    $('timer-display').textContent = "00:00:00";
-                    secondsElapsed = 0;
-                    $('drug-table-body').innerHTML = '';
-                    $('monitoring-log-body').innerHTML = '';
-                    $('dose-output').innerHTML = '';
-                    $('dose-output').classList.add('hidden');
-                    // Reset toggles manually if needed
-                    toggleCapacity();
-                    generateEPRLog(); 
+                if(confirm("Clear form data? This will reset all fields.")) {
+                    localStorage.removeItem('sedation_record_data');
+                    location.reload();
                 }
             };
             
@@ -846,10 +904,9 @@
                     <span class="text-xs text-slate-600">All doses are initial bolus ranges. Titrate slowly to effect.</span>
                 `;
                 $('dose-output').classList.remove('hidden');
-                generateEPRLog(); // Refresh log after calculating doses
+                saveState();
             };
 
-            // --- Toggle Guides ---
             const toggle = (btnId, contentId) => {
                 const btn = $(btnId);
                 if(btn) btn.onclick = () => $(contentId).classList.toggle('hidden');
@@ -863,7 +920,6 @@
             timerBtn.onclick = () => {
                 if(sedationInterval) stopTimer();
                 else {
-                    // Safety Check before starting
                     const safetyChecks = isChecked('to-identity') && isChecked('to-role') && isChecked('to-site') && isChecked('to-monitoring');
                     if(!safetyChecks) {
                         if(!confirm("⚠️ SAFETY WARNING: 'Time Out' checks are not fully completed.\n\nAre you sure you want to start sedation?")) {
@@ -879,13 +935,15 @@
                 timerBtn.classList.remove('bg-green-600', 'hover:bg-green-700', 'border-green-700');
                 timerBtn.classList.add('bg-red-600', 'hover:bg-red-700', 'border-red-700');
                 
-                addObsRow(); // Log T=0
-                generateEPRLog(); // Refresh log after starting timer
+                if(secondsElapsed === 0) addObsRow(); // Only add if fresh start
+                saveState();
+                
                 sedationInterval = setInterval(() => {
                     secondsElapsed++;
                     const h = new Date(secondsElapsed * 1000).toISOString().substr(11, 8);
                     $('timer-display').textContent = h;
                     if(secondsElapsed % 300 === 0) $('obs-toast').classList.remove('hidden');
+                    // We don't save every second to avoid perf hits, but maybe on obs add
                 }, 1000);
             }
 
@@ -896,23 +954,21 @@
                 timerBtn.classList.add('bg-green-600', 'hover:bg-green-700', 'border-green-700');
                 timerBtn.classList.remove('bg-red-600', 'hover:bg-red-700', 'border-red-700');
                 $('obs-toast').classList.add('hidden');
-                generateEPRLog(); // Refresh log after stopping timer
+                saveState();
             }
             
             $('dismiss-toast-button').onclick = () => $('obs-toast').classList.add('hidden');
 
-            // --- Timestamps ---
             ['procedure-start', 'procedure-end', 'patient-awake'].forEach(key => {
                 $(`${key}-button`).onclick = function() {
                     const time = new Date().toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
                     $(`${key}-output`).textContent = time;
                     this.disabled = true;
                     this.classList.add('opacity-50', 'cursor-not-allowed');
-                    generateEPRLog(); // Refresh log after stamping time
+                    saveState();
                 }
             });
 
-            // --- Dynamic Tables ---
             $('add-obs-button').onclick = addObsRow;
             
             function addObsRow() {
@@ -921,19 +977,18 @@
                 const time = new Date().toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
                 tr.innerHTML = `
                     <td class="p-1"><input type="text" value="${t} (${time})" readonly class="text-xs bg-slate-50 border-none px-1 rounded"></td>
-                    <td class="p-1"><input type="text" class="text-center font-bold border-slate-300 rounded"></td>
-                    <td class="p-1"><input type="text" class="text-center font-bold border-slate-300 rounded"></td>
-                    <td class="p-1"><input type="text" class="text-center font-bold border-slate-300 rounded"></td>
-                    <td class="p-1"><input type="text" class="text-center font-bold border-slate-300 rounded"></td>
-                    <td class="p-1"><input type="text" class="text-center font-bold border-slate-300 rounded"></td>
-                    <td class="p-1 border border-slate-300 rounded">${$('obs-score-template').innerHTML}</td>
-                    <td class="p-1 text-center"><button class="text-red-500 font-bold hover:bg-red-50 rounded px-2" onclick="this.closest('tr').remove(); generateEPRLog()">x</button></td>
+                    <td class="p-1"><input type="text" class="text-center font-bold border-slate-300 rounded" oninput="saveState()"></td>
+                    <td class="p-1"><input type="text" class="text-center font-bold border-slate-300 rounded" oninput="saveState()"></td>
+                    <td class="p-1"><input type="text" class="text-center font-bold border-slate-300 rounded" oninput="saveState()"></td>
+                    <td class="p-1"><input type="text" class="text-center font-bold border-slate-300 rounded" oninput="saveState()"></td>
+                    <td class="p-1"><input type="text" class="text-center font-bold border-slate-300 rounded" oninput="saveState()"></td>
+                    <td class="p-1 border border-slate-300 rounded" onchange="saveState()">${$('obs-score-template').innerHTML}</td>
+                    <td class="p-1 text-center"><button class="text-red-500 font-bold hover:bg-red-50 rounded px-2" onclick="this.closest('tr').remove(); saveState()">x</button></td>
                 `;
                 $('monitoring-log-body').appendChild(tr);
-                generateEPRLog(); // Refresh log after adding row
+                saveState();
             }
 
-            // Drug Buttons
             $('drug-admin-container').onclick = async (e) => {
                 if(e.target.tagName !== 'BUTTON') return;
                 let drug = e.target.dataset.drug;
@@ -949,10 +1004,10 @@
                     <td class="p-2 font-bold text-slate-700">${drug}</td>
                     <td class="p-2 font-bold">${dose}</td>
                     <td class="p-2 text-xs">${val('sedationist')}</td>
-                    <td class="p-2 text-center"><button class="text-red-500 font-bold hover:bg-red-50 rounded px-2" onclick="this.closest('tr').remove(); generateEPRLog()">x</button></td>
+                    <td class="p-2 text-center"><button class="text-red-500 font-bold hover:bg-red-50 rounded px-2" onclick="this.closest('tr').remove(); saveState()">x</button></td>
                 `;
                 $('drug-table-body').appendChild(tr);
-                generateEPRLog(); // Refresh log after adding drug
+                saveState();
             };
 
             // --- Modal Logic ---
@@ -990,17 +1045,15 @@
             $('custom-modal-cancel').onclick = () => closeModal(null);
             $('custom-modal-input').onkeydown = (e) => { if(e.key === 'Enter') $('custom-modal-ok').click(); };
 
-
-            // Attach listeners to all inputs/changes on the form and generate initial log
             const form = $('sedation-form');
-            form.addEventListener('input', generateEPRLog);
-            form.addEventListener('change', generateEPRLog);
+            form.addEventListener('input', saveState);
+            form.addEventListener('change', saveState);
             
-            // Ensure elements exist before trying to read them
             if ($('epr-log-output')) {
-                // Initial generation and copy button setup
-                generateEPRLog();
-
+                // Initialize State from LocalStorage
+                loadState();
+                
+                // Copy Button
                 $('copy-log-button').onclick = async () => {
                     try {
                         const el = $('epr-log-output');
