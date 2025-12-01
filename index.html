@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Procedural Sedation Record</title>
+    <title>Procedural Sedation Record (RCEM)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        /* --- CORE STYLES --- */
+        /* --- CORE STYLES (MATCHING TRAUMA TOOL) --- */
         body { font-family: 'Inter', sans-serif; }
         
         /* Custom Scrollbar */
@@ -20,10 +20,27 @@
         input, textarea, select { border-color: #94a3b8; outline: none; transition: all 0.2s; }
         input:focus, textarea:focus, select:focus { border-color: #2563eb; ring: 2px; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2); }
 
-        /* --- BUTTONS --- */
+        /* Rich Text Output Styles */
+        .rich-output {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            color: #334155;
+            background-color: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            min-height: 24rem;
+            overflow-y: auto;
+            white-space: pre-wrap; 
+        }
+        .rich-output strong { font-weight: 800; color: #0f172a; }
+        .rich-output u { text-decoration: underline; }
+
+        /* Buttons */
         .std-btn { 
             transition: all 0.1s; 
-            border: 2px solid #cbd5e1; 
+            border: 1px solid #cbd5e1; 
             background-color: #f8fafc; 
             color: #334155; 
             border-radius: 0.5rem;
@@ -41,14 +58,14 @@
         .btn-primary { 
             background-color: #2563eb; 
             color: white; 
-            border: 2px solid #1d4ed8; 
+            border: 1px solid #1d4ed8; 
             box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3);
         }
         .btn-primary:hover { background-color: #1d4ed8; }
 
         .drug-btn {
             background-color: white;
-            border: 2px solid #cbd5e1;
+            border: 1px solid #cbd5e1;
             color: #475569;
             font-weight: 700;
             font-size: 0.75rem;
@@ -59,11 +76,11 @@
         .drug-btn:hover { background-color: #f1f5f9; border-color: #94a3b8; }
         .drug-btn:active { transform: scale(0.95); }
 
-        /* --- CARDS --- */
+        /* Cards */
         .section-card {
             background-color: white;
-            border-radius: 0.75rem;
-            box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            border-radius: 0.75rem; /* rounded-xl */
+            box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); /* shadow-sm */
             border: 2px solid #cbd5e1;
             overflow: hidden;
             margin-bottom: 1.5rem;
@@ -73,12 +90,12 @@
         .section-title {
             font-size: 1.5rem;
             font-weight: 900;
-            color: #0f172a;
             margin-bottom: 1rem;
             padding-bottom: 0.5rem;
             border-bottom: 2px solid #e2e8f0;
             display: flex;
             align-items: center;
+            justify-content: space-between;
         }
 
         .sub-card {
@@ -94,7 +111,7 @@
             font-size: 0.75rem;
             font-weight: 800;
             text-transform: uppercase;
-            color: #475569;
+            color: #475569; /* slate-600 */
             margin-bottom: 0.25rem;
         }
 
@@ -106,23 +123,12 @@
             border: 1px solid #94a3b8; 
             font-weight: 600;
         }
-        
-        /* --- RICH TEXT / LOG OUTPUT STYLE (MATCHING TRAUMA TOOL) --- */
-        .rich-output {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            font-size: 0.85rem;
-            line-height: 1.4;
-            color: #334155;
-            background-color: #f8fafc; /* Slate-50 background */
-            border: 1px solid #cbd5e1;
-            border-radius: 0.5rem;
-            padding: 1rem;
-            min-height: 24rem;
-            overflow-y: auto;
-            white-space: pre-wrap; 
+
+        /* Modal */
+        #custom-modal-backdrop {
+            background-color: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(2px);
         }
-        .rich-output strong { font-weight: 800; color: #0f172a; } /* Darker bold text */
-        .rich-output u { text-decoration: underline; }
 
         /* --- PRINT --- */
         @media print {
@@ -138,12 +144,6 @@
             header { display: none; }
             .print-header { display: block !important; }
         }
-
-        /* Modal */
-        #custom-modal-backdrop {
-            background-color: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(2px);
-        }
     </style>
 </head>
 <body class="bg-slate-100 text-slate-900 antialiased pb-10">
@@ -153,12 +153,14 @@
             <div class="flex items-center gap-4">
                 <img src="https://iili.io/KGQOvkl.md.png" alt="Logo" class="h-16 md:h-20 w-auto object-contain" onerror="this.style.display='none'">
                 <div>
-                    <h1 class="text-xl md:text-2xl font-black text-slate-900 leading-tight">Sedation Record</h1>
-                    <p class="text-xs text-blue-600 font-bold bg-blue-50 px-2 py-0.5 rounded border border-blue-100 inline-block">RCEM Guidelines (2022)</p>
+                    <h1 class="text-xl md:text-2xl font-black text-slate-900 leading-tight">Sedation Record <span class="text-xs font-normal text-slate-500 bg-slate-100 px-2 py-0.5 rounded border ml-2">RCEM 2022</span></h1>
+                    <p class="text-xs text-green-600 font-bold flex items-center gap-1">
+                        <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> Active
+                    </p>
                 </div>
             </div>
-            <div class="flex items-center gap-3">
-                 <a href="https://drive.google.com/file/d/1nI7EvvR_6Pg1l_L7c0Z5PevoseCy7Qia/view?usp=sharing" target="_blank" class="hidden sm:inline-flex items-center gap-2 px-3 py-1 text-xs font-bold text-blue-700 bg-blue-50 rounded border-2 border-blue-200 hover:bg-blue-100 transition">
+            <div class="flex items-center gap-2">
+                 <a href="https://drive.google.com/file/d/1nI7EvvR_6Pg1l_L7c0Z5PevoseCy7Qia/view?usp=sharing" target="_blank" class="hidden sm:inline-flex items-center gap-2 px-3 py-1 text-xs font-bold text-blue-700 bg-blue-50 rounded border border-blue-200 hover:bg-blue-100 transition">
                     Paper Form
                 </a>
                 <button id="header-print-btn" class="px-4 py-2 bg-slate-800 text-white text-xs font-bold rounded hover:bg-slate-700 transition border-2 border-slate-900">
@@ -189,12 +191,12 @@
                             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                                 <div>
                                     <label for="age">Age</label>
-                                    <input type="number" id="age" placeholder="Yr" class="font-bold border-slate-400">
+                                    <input type="number" id="age" placeholder="Yr" class="font-bold border-slate-400 rounded-md">
                                 </div>
                                 <div class="md:col-span-2">
                                     <label for="weight">Weight (kg) <span class="text-red-500">*</span></label>
                                     <div class="flex items-center gap-2">
-                                        <input type="number" id="weight" placeholder="kg" class="font-bold border-slate-400">
+                                        <input type="number" id="weight" placeholder="kg" class="font-bold border-slate-400 rounded-md">
                                         <label class="flex items-center gap-1 bg-slate-100 px-2 py-2 rounded border border-slate-400 cursor-pointer h-[42px] mt-[1px] hover:bg-slate-200">
                                             <input type="checkbox" id="weight-estimated" class="w-4 h-4 text-blue-600 rounded border-slate-400">
                                             <span class="text-[10px] uppercase font-bold text-slate-600">Est</span>
@@ -203,26 +205,26 @@
                                 </div>
                                 <div class="md:col-span-4">
                                     <label for="allergies">Allergies</label>
-                                    <input type="text" id="allergies" placeholder="Reaction details..." class="text-red-700 font-bold border-slate-400">
+                                    <input type="text" id="allergies" placeholder="Reaction details..." class="text-red-700 font-bold border-slate-400 rounded-md">
                                 </div>
                                 <div class="md:col-span-4">
                                     <label for="pre-analgesia">Pre-Sedation Analgesia</label>
-                                    <input type="text" id="pre-analgesia" placeholder="e.g. IV Morphine 10mg @ 14:00" class="border-slate-400">
+                                    <input type="text" id="pre-analgesia" placeholder="e.g. IV Morphine 10mg @ 14:00" class="border-slate-400 rounded-md">
                                 </div>
                                 <div class="md:col-span-2">
                                     <label for="procedure">Procedure</label>
-                                    <input type="text" id="procedure" class="border-slate-400">
+                                    <input type="text" id="procedure" class="border-slate-400 rounded-md">
                                 </div>
                                 <div class="md:col-span-2">
                                     <label for="indication">Indication</label>
-                                    <input type="text" id="indication" class="border-slate-400">
+                                    <input type="text" id="indication" class="border-slate-400 rounded-md">
                                 </div>
                                 
                                 <div class="md:col-span-4 mt-2 pt-2 border-t border-slate-200 grid grid-cols-1 md:grid-cols-4 gap-4">
-                                    <div><label>Sedationist</label><input type="text" id="sedationist" class="border-slate-400"></div>
-                                    <div><label>Grade</label><input type="text" id="sedationist-grade" placeholder="e.g. SpR / EM-ACPs" class="border-slate-400"></div>
-                                    <div><label>Procedure Dr</label><input type="text" id="procedure-doctor" class="border-slate-400"></div>
-                                    <div><label>Nurse</label><input type="text" id="nurse" class="border-slate-400"></div>
+                                    <div><label>Sedationist</label><input type="text" id="sedationist" class="border-slate-400 rounded-md"></div>
+                                    <div><label>Grade</label><input type="text" id="sedationist-grade" placeholder="e.g. SpR / EM-ACPs" class="border-slate-400 rounded-md"></div>
+                                    <div><label>Procedure Dr</label><input type="text" id="procedure-doctor" class="border-slate-400 rounded-md"></div>
+                                    <div><label>Nurse</label><input type="text" id="nurse" class="border-slate-400 rounded-md"></div>
                                 </div>
                             </div>
 
@@ -299,8 +301,8 @@
                                 <div class="sub-card mt-0 border-slate-300">
                                     <label>Fasting Status</label>
                                     <div class="grid grid-cols-2 gap-4">
-                                        <div><span class="text-[10px] uppercase font-bold text-slate-500">Food</span><input type="time" id="last-food" class="border-slate-400"></div>
-                                        <div><span class="text-[10px] uppercase font-bold text-slate-500">Clear Fluid</span><input type="time" id="last-fluid" class="border-slate-400"></div>
+                                        <div><span class="text-[10px] uppercase font-bold text-slate-500">Food</span><input type="time" id="last-food" class="border-slate-400 rounded-md"></div>
+                                        <div><span class="text-[10px] uppercase font-bold text-slate-500">Clear Fluid</span><input type="time" id="last-fluid" class="border-slate-400 rounded-md"></div>
                                     </div>
                                 </div>
 
@@ -313,11 +315,11 @@
                                         I:Healthy, II:Mild, III:Severe, IV:Threat to life
                                     </div>
                                     <div class="flex justify-between gap-1">
-                                        <label class="cursor-pointer text-center flex-1"><input type="radio" name="asa-grade" value="I" class="sr-only peer"><div class="py-2 border-2 border-slate-300 rounded peer-checked:bg-blue-600 peer-checked:text-white peer-checked:border-blue-700 text-xs font-bold transition hover:bg-slate-50">I</div></label>
-                                        <label class="cursor-pointer text-center flex-1"><input type="radio" name="asa-grade" value="II" class="sr-only peer"><div class="py-2 border-2 border-slate-300 rounded peer-checked:bg-blue-600 peer-checked:text-white peer-checked:border-blue-700 text-xs font-bold transition hover:bg-slate-50">II</div></label>
-                                        <label class="cursor-pointer text-center flex-1"><input type="radio" name="asa-grade" value="III" class="sr-only peer"><div class="py-2 border-2 border-amber-200 bg-amber-50 text-amber-800 rounded peer-checked:bg-amber-600 peer-checked:text-white peer-checked:border-amber-700 text-xs font-bold transition hover:bg-amber-100">III</div></label>
-                                        <label class="cursor-pointer text-center flex-1"><input type="radio" name="asa-grade" value="IV" class="sr-only peer"><div class="py-2 border-2 border-red-200 bg-red-50 text-red-800 rounded peer-checked:bg-red-600 peer-checked:text-white peer-checked:border-red-700 text-xs font-bold transition hover:bg-red-100">IV</div></label>
-                                        <label class="cursor-pointer text-center flex-1"><input type="radio" name="asa-grade" value="V" class="sr-only peer"><div class="py-2 border-2 border-red-200 bg-red-50 text-red-800 rounded peer-checked:bg-red-600 peer-checked:text-white peer-checked:border-red-700 text-xs font-bold transition hover:bg-red-100">V</div></label>
+                                        <label class="cursor-pointer text-center flex-1"><input type="radio" name="asa-grade" value="I" class="sr-only peer"><div class="py-2 border-2 border-slate-300 rounded-md peer-checked:bg-blue-600 peer-checked:text-white peer-checked:border-blue-700 text-xs font-bold transition hover:bg-slate-50">I</div></label>
+                                        <label class="cursor-pointer text-center flex-1"><input type="radio" name="asa-grade" value="II" class="sr-only peer"><div class="py-2 border-2 border-slate-300 rounded-md peer-checked:bg-blue-600 peer-checked:text-white peer-checked:border-blue-700 text-xs font-bold transition hover:bg-slate-50">II</div></label>
+                                        <label class="cursor-pointer text-center flex-1"><input type="radio" name="asa-grade" value="III" class="sr-only peer"><div class="py-2 border-2 border-amber-200 bg-amber-50 text-amber-800 rounded-md peer-checked:bg-amber-600 peer-checked:text-white peer-checked:border-amber-700 text-xs font-bold transition hover:bg-amber-100">III</div></label>
+                                        <label class="cursor-pointer text-center flex-1"><input type="radio" name="asa-grade" value="IV" class="sr-only peer"><div class="py-2 border-2 border-red-200 bg-red-50 text-red-800 rounded-md peer-checked:bg-red-600 peer-checked:text-white peer-checked:border-red-700 text-xs font-bold transition hover:bg-red-100">IV</div></label>
+                                        <label class="cursor-pointer text-center flex-1"><input type="radio" name="asa-grade" value="V" class="sr-only peer"><div class="py-2 border-2 border-red-200 bg-red-50 text-red-800 rounded-md peer-checked:bg-red-600 peer-checked:text-white peer-checked:border-red-700 text-xs font-bold transition hover:bg-red-100">V</div></label>
                                     </div>
                                 </div>
                                 
@@ -338,7 +340,7 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <label>Target Level</label>
-                                    <select id="plan-target" class="border-slate-400">
+                                    <select id="plan-target" class="border-slate-400 rounded-md">
                                         <option>Minimal (Anxiolysis)</option>
                                         <option>Moderate (Conscious)</option>
                                         <option>Deep</option>
@@ -347,7 +349,7 @@
                                 </div>
                                 <div>
                                     <label>Primary Agent(s)</label>
-                                    <input type="text" id="plan-agent" placeholder="e.g. Propofol" class="border-slate-400">
+                                    <input type="text" id="plan-agent" placeholder="e.g. Propofol" class="border-slate-400 rounded-md">
                                 </div>
                             </div>
 
@@ -373,10 +375,10 @@
                             <div class="mt-4">
                                 <label>Pre-Sedation Vitals</label>
                                 <div class="grid grid-cols-4 gap-2">
-                                    <input type="text" id="pre-vital-hr" placeholder="HR" class="text-center font-mono font-bold border-slate-400">
-                                    <input type="text" id="pre-vital-bp" placeholder="BP" class="text-center font-mono font-bold border-slate-400">
-                                    <input type="text" id="pre-vital-spo2" placeholder="SpO2" class="text-center font-mono font-bold border-slate-400">
-                                    <input type="text" id="pre-vital-rr" placeholder="RR" class="text-center font-mono font-bold border-slate-400">
+                                    <input type="text" id="pre-vital-hr" placeholder="HR" class="text-center font-mono font-bold border-slate-400 rounded-md">
+                                    <input type="text" id="pre-vital-bp" placeholder="BP" class="text-center font-mono font-bold border-slate-400 rounded-md">
+                                    <input type="text" id="pre-vital-spo2" placeholder="SpO2" class="text-center font-mono font-bold border-slate-400 rounded-md">
+                                    <input type="text" id="pre-vital-rr" placeholder="RR" class="text-center font-mono font-bold border-slate-400 rounded-md">
                                 </div>
                             </div>
                         </div>
@@ -394,7 +396,7 @@
                         </div>
 
                         <div class="section-card border-l-[8px] border-l-slate-800 page-break">
-                            <div class="section-title text-slate-800 justify-between">
+                            <div class="section-title text-slate-800">
                                 4. Intra-Sedation Record
                                 <button type="button" id="complications-guide-button" class="text-[10px] bg-slate-200 px-2 py-1 rounded hover:bg-slate-300 no-print">Guide</button>
                             </div>
@@ -492,7 +494,7 @@
                             
                             <div class="mt-4">
                                 <label>Notes / Adverse Events <span class="text-xs font-normal text-slate-500">(Consider TROOPS Intermediate/Sentinel reporting)</span></label>
-                                <textarea id="general-notes" rows="3" class="w-full p-2 border border-slate-400 rounded text-sm font-medium"></textarea>
+                                <textarea id="general-notes" rows="3" class="w-full p-2 border border-slate-400 rounded-md text-sm font-medium"></textarea>
                             </div>
                         </div>
 
@@ -538,9 +540,9 @@
                                 <div class="sub-card bg-slate-50 mt-0 border-slate-300">
                                     <label class="border-b border-slate-200 pb-1 mb-3">Sign Off</label>
                                     <div class="space-y-3">
-                                        <div><label>Name</label><input type="text" id="signoff-name" class="border-slate-400"></div>
-                                        <div><label>GMC No</label><input type="text" id="signoff-gmc" class="border-slate-400"></div>
-                                        <div><label>Time</label><input type="time" id="signoff-time" class="border-slate-400"></div>
+                                        <div><label>Name</label><input type="text" id="signoff-name" class="border-slate-400 rounded-md"></div>
+                                        <div><label>GMC No</label><input type="text" id="signoff-gmc" class="border-slate-400 rounded-md"></div>
+                                        <div><label>Time</label><input type="time" id="signoff-time" class="border-slate-400 rounded-md"></div>
                                     </div>
                                 </div>
                             </div>
@@ -696,27 +698,11 @@
                     if(isChecked('risk-emergence')) risks.push('Emergence Rxn');
                     
                     log += ` - Risks Discussed: ${risks.length > 0 ? risks.join(', ') : 'None documented'}<br>`;
-
-
-                    // --- 3. Airway Assessment (LEMON) ---
-                    const L = val('lemon-l-specify') || findCheckedRadio('lemon-l');
-                    const M = findCheckedRadio('lemon-m');
-                    const U = findCheckedRadio('lemon-u');
-                    const O = val('lemon-o-specify') || findCheckedRadio('lemon-o');
-                    const N = findCheckedRadio('lemon-n');
-
-                    log += `<strong>3. Airway (LEMON) Assessment:</strong><br>`;
-                    log += ` - Look (L): ${L}<br>`;
-                    log += ` - Eval (E - 332): ${findCheckedRadio('lemon-e') || 'N/A'}<br>`;
-                    log += ` - Mallampati (M): ${M || 'N/A'}<br>`;
-                    log += ` - ULBT (U): ${U || 'N/A'}<br>`;
-                    log += ` - Obstr (O): ${O}<br>`;
-                    log += ` - Neck (N): ${N || 'N/A'}<br>`;
                     log += ` - Contraindications: Allergy(${isChecked('ci-allergy') ? 'Y' : 'N'}), Hemo Instab(${isChecked('ci-hemo') ? 'Y' : 'N'}), Airway Comp(${isChecked('ci-gcs') ? 'Y' : 'N'})<br>`;
 
 
                     // --- 4. Plan & Safety ---
-                    log += `<strong>4. Plan & Preparation:</strong><br>`;
+                    log += `<strong>3. Plan & Preparation:</strong><br>`;
                     log += ` - Target Level: ${val('plan-target')}. Primary Agent: ${val('plan-agent')}<br>`;
                     log += ` - Monitoring: ${isChecked('plan-aagbi') ? 'AAGBI Standard (ECG, NIBP, SpO₂, EtCO₂)' : 'Basic Monitor'}<br>`;
                     log += ` - Pre-Vitals: HR ${val('pre-vital-hr')}, BP ${val('pre-vital-bp')}, SpO₂ ${val('pre-vital-spo2')}%, RR ${val('pre-vital-rr')}<br>`;
@@ -728,7 +714,7 @@
 
 
                     // --- 5. Intra-Procedure & Log ---
-                    log += `<strong>5. Intra-Procedure Log (Timer: ${startTime}):</strong><br>`;
+                    log += `<strong>4. Intra-Procedure Log (Timer: ${startTime}):</strong><br>`;
                     log += ` - Proc Start: ${$('procedure-start-output')?.textContent || 'N/A'}<br>`;
                     log += ` - Proc End: ${$('procedure-end-output')?.textContent || 'N/A'}<br>`;
 
@@ -775,7 +761,7 @@
 
 
                     // --- 6. Outcome & Discharge ---
-                    log += `<strong>6. Outcome & Sign Off:</strong><br>`;
+                    log += `<strong>5. Outcome & Sign Off:</strong><br>`;
                     log += ` - Procedure Outcome: <strong>${findCheckedRadio('outcome-proc') || 'N/A'}</strong><br>`;
                     log += ` - Disposal: <strong>${findCheckedRadio('disposal') || 'N/A'}</strong><br>`;
                     
@@ -852,12 +838,11 @@
 
             // --- Toggle Guides ---
             const toggle = (btnId, contentId) => {
-                $(btnId).onclick = () => $(contentId).classList.toggle('hidden');
+                const btn = $(btnId);
+                if(btn) btn.onclick = () => $(contentId).classList.toggle('hidden');
             };
             toggle('asa-guide-button', 'asa-guide-content');
-            toggle('mallampati-guide-button', 'mallampati-guide-content');
             toggle('complications-guide-button', 'complications-guide-content');
-            toggle('ulbt-guide-button', 'ulbt-guide-content');
 
             // --- Timer Logic ---
             const timerBtn = $('sedation-timer-button');
@@ -922,13 +907,13 @@
                 const t = secondsElapsed > 0 ? `T+${Math.floor(secondsElapsed/60)}m` : 'Pre';
                 const time = new Date().toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
                 tr.innerHTML = `
-                    <td class="p-1"><input type="text" value="${t} (${time})" readonly class="text-xs bg-slate-50 border-none px-1"></td>
-                    <td class="p-1"><input type="text" class="text-center font-bold"></td>
-                    <td class="p-1"><input type="text" class="text-center font-bold"></td>
-                    <td class="p-1"><input type="text" class="text-center font-bold"></td>
-                    <td class="p-1"><input type="text" class="text-center font-bold"></td>
-                    <td class="p-1"><input type="text" class="text-center font-bold"></td>
-                    <td class="p-1">${$('obs-score-template').innerHTML}</td>
+                    <td class="p-1"><input type="text" value="${t} (${time})" readonly class="text-xs bg-slate-50 border-none px-1 rounded"></td>
+                    <td class="p-1"><input type="text" class="text-center font-bold border-slate-300 rounded"></td>
+                    <td class="p-1"><input type="text" class="text-center font-bold border-slate-300 rounded"></td>
+                    <td class="p-1"><input type="text" class="text-center font-bold border-slate-300 rounded"></td>
+                    <td class="p-1"><input type="text" class="text-center font-bold border-slate-300 rounded"></td>
+                    <td class="p-1"><input type="text" class="text-center font-bold border-slate-300 rounded"></td>
+                    <td class="p-1 border border-slate-300 rounded">${$('obs-score-template').innerHTML}</td>
                     <td class="p-1 text-center"><button class="text-red-500 font-bold hover:bg-red-50 rounded px-2" onclick="this.closest('tr').remove(); generateEPRLog()">x</button></td>
                 `;
                 $('monitoring-log-body').appendChild(tr);
