@@ -321,7 +321,46 @@
                                         <div><span class="text-[10px] uppercase font-bold text-slate-500">Clear Fluid</span><input type="time" id="last-fluid" class="border-slate-400 rounded-md"></div>
                                     </div>
                                 </div>
-
+                                
+                                <div class="sub-card mt-0 border-slate-300">
+                                    <label class="border-b border-slate-200 pb-1 mb-2">Airway Assessment</label>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div class="border-r md:border-slate-200 pr-2">
+                                            <span class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Mallampati Score</span>
+                                            <div class="flex items-start gap-2">
+                                                 <img src="images/Mallampati.jpg" alt="Mallampati" class="w-16 h-auto object-contain border rounded cursor-pointer hover:scale-150 transition origin-top-left bg-white">
+                                                 <div class="flex-1 grid grid-cols-2 gap-1">
+                                                     <label class="cursor-pointer text-center"><input type="radio" name="airway-mallampati" value="I" class="sr-only peer"><div class="px-2 py-1 border border-slate-300 rounded text-xs peer-checked:bg-blue-600 peer-checked:text-white transition">Class I</div></label>
+                                                     <label class="cursor-pointer text-center"><input type="radio" name="airway-mallampati" value="II" class="sr-only peer"><div class="px-2 py-1 border border-slate-300 rounded text-xs peer-checked:bg-blue-600 peer-checked:text-white transition">Class II</div></label>
+                                                     <label class="cursor-pointer text-center"><input type="radio" name="airway-mallampati" value="III" class="sr-only peer"><div class="px-2 py-1 border border-amber-300 bg-amber-50 rounded text-xs peer-checked:bg-amber-600 peer-checked:text-white transition">Class III</div></label>
+                                                     <label class="cursor-pointer text-center"><input type="radio" name="airway-mallampati" value="IV" class="sr-only peer"><div class="px-2 py-1 border border-red-300 bg-red-50 rounded text-xs peer-checked:bg-red-600 peer-checked:text-white transition">Class IV</div></label>
+                                                 </div>
+                                            </div>
+                                        </div>
+                                
+                                        <div>
+                                            <span class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Upper Lip Bite Test</span>
+                                            <div class="flex items-start gap-2">
+                                                 <img src="images/upperlipbitetest.png" alt="ULBT" class="w-16 h-auto object-contain border rounded cursor-pointer hover:scale-150 transition origin-top-left bg-white">
+                                                 <div class="flex-1 grid grid-cols-1 gap-1">
+                                                     <label class="cursor-pointer"><input type="radio" name="airway-ulbt" value="1" class="sr-only peer"><div class="px-2 py-1 border border-slate-300 rounded text-xs peer-checked:bg-blue-600 peer-checked:text-white transition text-center">Class 1 (Lower incisors bite upper lip)</div></label>
+                                                     <label class="cursor-pointer"><input type="radio" name="airway-ulbt" value="2" class="sr-only peer"><div class="px-2 py-1 border border-slate-300 rounded text-xs peer-checked:bg-blue-600 peer-checked:text-white transition text-center">Class 2 (Can bite mucosa only)</div></label>
+                                                     <label class="cursor-pointer"><input type="radio" name="airway-ulbt" value="3" class="sr-only peer"><div class="px-2 py-1 border border-red-300 bg-red-50 rounded text-xs peer-checked:bg-red-600 peer-checked:text-white transition text-center">Class 3 (Cannot bite upper lip)</div></label>
+                                                 </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mt-3 pt-2 border-t border-slate-200">
+                                        <span class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Difficult Airway Predictors</span>
+                                        <div class="flex flex-wrap gap-3">
+                                             <label class="flex items-center gap-2 font-medium text-xs text-slate-700 cursor-pointer"><input id="airway-mouth" type="checkbox" class="rounded text-red-600 border-slate-400"> Mouth Opening &lt;3cm</label>
+                                             <label class="flex items-center gap-2 font-medium text-xs text-slate-700 cursor-pointer"><input id="airway-tmd" type="checkbox" class="rounded text-red-600 border-slate-400"> Thyromental &lt;6cm</label>
+                                             <label class="flex items-center gap-2 font-medium text-xs text-slate-700 cursor-pointer"><input id="airway-neck" type="checkbox" class="rounded text-red-600 border-slate-400"> Limited Neck Mobility</label>
+                                             <label class="flex items-center gap-2 font-medium text-xs text-slate-700 cursor-pointer"><input id="airway-bmi" type="checkbox" class="rounded text-red-600 border-slate-400"> BMI &gt;35</label>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="sub-card border-slate-300 mt-0">
                                     <div class="flex justify-between items-center mb-2">
                                         <label class="mb-0">ASA Grade</label>
@@ -762,6 +801,20 @@
 
                     // --- 2. ASSESSMENT ---
                     log += `<strong>2. Assessment & Consent</strong><br>`;
+                    
+                    // Added Airway Logic
+                    const mallampati = findCheckedRadio('airway-mallampati');
+                    const ulbt = findCheckedRadio('airway-ulbt');
+                    let airwayFlags = [];
+                    if(isChecked('airway-mouth')) airwayFlags.push('Mouth Opening <3cm');
+                    if(isChecked('airway-tmd')) airwayFlags.push('TMD <6cm');
+                    if(isChecked('airway-neck')) airwayFlags.push('Neck Mobility Reduced');
+                    if(isChecked('airway-bmi')) airwayFlags.push('High BMI');
+
+                    if(mallampati || ulbt || airwayFlags.length > 0) {
+                        log += `Airway: Mallampati ${mallampati || '-'} | ULBT ${ulbt || '-'} | Flags: ${airwayFlags.length ? airwayFlags.join(', ') : 'None'}<br>`;
+                    }
+
                     log += `ASA Grade: ${findCheckedRadio('asa-grade') || '-'}<br>`;
                     log += `Capacity: ${findCheckedRadio('capacity') || 'Yes'}<br>`;
                     
