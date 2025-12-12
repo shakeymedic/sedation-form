@@ -699,7 +699,12 @@
 
             <div class="bg-blue-50 border-l-4 border-blue-600 p-4 mb-6">
                 <h3 class="font-bold text-blue-900 mb-2 uppercase text-sm">⚠️ The 24-Hour Safety Rules</h3>
-                <p class="mb-2 text-sm font-semibold">For the next 24 hours, you MUST NOT:</p>
+                
+                <div class="mb-3 text-sm font-semibold text-blue-800">
+                    <p>You received sedation at <span id="letter-time-start" class="border-b border-blue-400 border-dotted"></span> on <span id="letter-date-start" class="border-b border-blue-400 border-dotted"></span>.</p>
+                    <p class="mt-1">For your safety, the following restrictions apply until <span id="letter-time-end" class="font-black bg-yellow-200 px-1 rounded"></span> on <span id="letter-date-end" class="font-black bg-yellow-200 px-1 rounded"></span> (24 hours later):</p>
+                </div>
+
                 <ul class="list-disc ml-5 space-y-1 text-sm text-slate-800">
                     <li><strong>Drive a car</strong>, ride a bicycle, or operate any machinery.</li>
                     <li>Drink alcohol or take sleeping tablets.</li>
@@ -983,12 +988,52 @@
                 }
             }
 
-            // --- DISCHARGE LETTER LOGIC ---
+            // --- DISCHARGE LETTER LOGIC (UPDATED WITH TIME CALC) ---
             $('create-discharge-letter-btn').onclick = () => {
                 // Populate Fields
-                $('letter-date').textContent = new Date().toLocaleDateString('en-GB', {day:'numeric', month:'long', year:'numeric'});
+                const now = new Date();
+                const nowStr = now.toLocaleDateString('en-GB', {day:'numeric', month:'long', year:'numeric'});
+                $('letter-date').textContent = nowStr;
                 $('letter-patient-name').textContent = val('patient-name') || '______________________';
                 $('letter-procedure').textContent = val('procedure') || 'Procedure';
+
+                // --- Time Calculation Logic ---
+                // 1. Try to get time from "Proc End" button output
+                let sedTimeStr = $('procedure-end-output').textContent;
+                // 2. If empty, try "Sign Off Time" input
+                if (!sedTimeStr || sedTimeStr.trim() === '') {
+                    sedTimeStr = val('signoff-time');
+                }
+                // 3. If still empty, default to current time
+                if (!sedTimeStr || sedTimeStr.trim() === '') {
+                    sedTimeStr = now.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
+                }
+
+                // Create Date objects for calculations
+                // Note: We assume sedation happened "Today" for calculation purposes.
+                // If parsing fails, default to 'now'.
+                let baseDate = new Date();
+                const parts = sedTimeStr.split(':');
+                if (parts.length === 2) {
+                    baseDate.setHours(parseInt(parts[0]), parseInt(parts[1]), 0, 0);
+                }
+
+                // Calculate expiry (+24 hours)
+                const expiryDate = new Date(baseDate.getTime() + (24 * 60 * 60 * 1000));
+
+                // Format Strings
+                const timeOpts = {hour:'2-digit', minute:'2-digit'};
+                const dateOpts = {day:'numeric', month:'short'};
+                
+                const formatTime = (d) => d.toLocaleTimeString('en-GB', timeOpts);
+                const formatDate = (d) => d.toLocaleDateString('en-GB', dateOpts);
+
+                // Update Letter DOM
+                $('letter-time-start').textContent = formatTime(baseDate);
+                $('letter-date-start').textContent = formatDate(baseDate);
+                
+                $('letter-time-end').textContent = formatTime(expiryDate);
+                $('letter-date-end').textContent = formatDate(expiryDate);
                 
                 // Show View
                 $('main-app-container').classList.add('hidden');
