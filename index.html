@@ -192,6 +192,9 @@
                  <a href="https://drive.google.com/file/d/1nI7EvvR_6Pg1l_L7c0Z5PevoseCy7Qia/view?usp=sharing" target="_blank" class="hidden sm:inline-flex items-center gap-2 px-3 py-1 text-xs font-bold text-blue-700 bg-blue-50 rounded border border-blue-200 hover:bg-blue-100 transition">
                     Paper Form
                 </a>
+                <button id="header-print-letter-btn" class="hidden sm:block px-4 py-2 bg-purple-600 text-white text-xs font-bold rounded hover:bg-purple-700 transition border-2 border-purple-800">
+                    DISCHARGE LETTER
+                </button>
                 <button id="header-print-btn" class="px-4 py-2 bg-slate-800 text-white text-xs font-bold rounded hover:bg-slate-700 transition border-2 border-slate-900">
                     PRINT RECORD
                 </button>
@@ -693,8 +696,8 @@
 
             <p class="mb-4">Dear Patient,</p>
             <p class="mb-4">
-                Today you received medication (sedation) to make you sleepy and relaxed while we performed your procedure. 
-                Even if you feel wide awake now, the medication can stay in your body for up to 24 hours and may affect your judgment, memory, and coordination.
+                Today you received the following medication(s): <span id="letter-drugs-given" class="font-bold"></span>.
+                These medicines make you sleepy and relaxed. Even if you feel wide awake now, the medication can stay in your body for up to 24 hours and may affect your judgment, memory, and coordination.
             </p>
 
             <div class="bg-blue-50 border-l-4 border-blue-600 p-4 mb-6">
@@ -724,11 +727,8 @@
 
             <div class="mb-6">
                 <h3 class="font-bold text-slate-900 border-b border-slate-300 mb-2 pb-1">Common Side Effects</h3>
-                <ul class="list-disc ml-5 space-y-1 text-sm">
-                    <li>You may feel tired, dizzy, or unsteady on your feet. Take it easy and rest.</li>
-                    <li>You may not remember much about the procedure. This is normal (Amnesia).</li>
-                    <li>You may feel a little nauseous. Eat light meals and drink plenty of water.</li>
-                </ul>
+                <ul id="letter-side-effects-list" class="list-disc ml-5 space-y-1 text-sm">
+                    </ul>
             </div>
 
             <div class="bg-red-50 border-l-4 border-red-600 p-4 mb-8">
@@ -988,60 +988,82 @@
                 }
             }
 
-            // --- DISCHARGE LETTER LOGIC (UPDATED WITH TIME CALC) ---
-            $('create-discharge-letter-btn').onclick = () => {
-                // Populate Fields
+            // --- DISCHARGE LETTER LOGIC ---
+            const showDischargeLetter = () => {
+                // Populate Basic Fields
                 const now = new Date();
                 const nowStr = now.toLocaleDateString('en-GB', {day:'numeric', month:'long', year:'numeric'});
                 $('letter-date').textContent = nowStr;
                 $('letter-patient-name').textContent = val('patient-name') || '______________________';
                 $('letter-procedure').textContent = val('procedure') || 'Procedure';
 
-                // --- Time Calculation Logic ---
-                // 1. Try to get time from "Proc End" button output
-                let sedTimeStr = $('procedure-end-output').textContent;
-                // 2. If empty, try "Sign Off Time" input
-                if (!sedTimeStr || sedTimeStr.trim() === '') {
-                    sedTimeStr = val('signoff-time');
-                }
-                // 3. If still empty, default to current time
-                if (!sedTimeStr || sedTimeStr.trim() === '') {
-                    sedTimeStr = now.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
-                }
+                // --- 1. Drug Extraction & Side Effect Logic ---
+                const drugRows = document.querySelectorAll('#drug-table-body tr td:nth-child(2)');
+                let drugsSet = new Set();
+                drugRows.forEach(td => drugsSet.add(td.textContent.trim()));
+                
+                const drugsArray = Array.from(drugsSet);
+                const drugsString = drugsArray.length > 0 ? drugsArray.join(' & ') : "Sedation";
+                $('letter-drugs-given').textContent = drugsString;
 
-                // Create Date objects for calculations
-                // Note: We assume sedation happened "Today" for calculation purposes.
-                // If parsing fails, default to 'now'.
+                // Build Side Effects List
+                const sideEffectsList = $('letter-side-effects-list');
+                sideEffectsList.innerHTML = ''; // Clear previous
+
+                const addEffect = (text) => {
+                    const li = document.createElement('li');
+                    li.textContent = text;
+                    sideEffectsList.appendChild(li);
+                };
+
+                // Default Effects
+                addEffect("You may feel tired, dizzy, or unsteady on your feet. Take it easy and rest.");
+                addEffect("You may not remember much about the procedure (Amnesia). This is normal.");
+
+                // Specific Effects
+                const hasKetamine = drugsArray.some(d => d.toLowerCase().includes('ketamine'));
+                const hasOpioid = drugsArray.some(d => d.toLowerCase().includes('fentanyl') || d.toLowerCase().includes('morphine'));
+                
+                if (hasKetamine) {
+                    addEffect("Ketamine can cause vivid dreams or 'daydreams' as it wears off. A quiet, calm environment helps this pass naturally.");
+                }
+                if (hasOpioid) {
+                    addEffect("You may feel a little nauseous or itchy. This usually settles quickly.");
+                } else {
+                    addEffect("You may feel a little nauseous. Eat light meals and drink plenty of water.");
+                }
+                
+                addEffect("If your cannula site (where the needle was) becomes red, hot, or swollen, please seek medical advice.");
+
+
+                // --- 2. Time Calculation Logic ---
+                let sedTimeStr = $('procedure-end-output').textContent;
+                if (!sedTimeStr || sedTimeStr.trim() === '') sedTimeStr = val('signoff-time');
+                if (!sedTimeStr || sedTimeStr.trim() === '') sedTimeStr = now.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
+
                 let baseDate = new Date();
                 const parts = sedTimeStr.split(':');
                 if (parts.length === 2) {
                     baseDate.setHours(parseInt(parts[0]), parseInt(parts[1]), 0, 0);
                 }
 
-                // Calculate expiry (+24 hours)
                 const expiryDate = new Date(baseDate.getTime() + (24 * 60 * 60 * 1000));
-
-                // Format Strings
                 const timeOpts = {hour:'2-digit', minute:'2-digit'};
                 const dateOpts = {day:'numeric', month:'short'};
                 
-                const formatTime = (d) => d.toLocaleTimeString('en-GB', timeOpts);
-                const formatDate = (d) => d.toLocaleDateString('en-GB', dateOpts);
-
-                // Update Letter DOM
-                $('letter-time-start').textContent = formatTime(baseDate);
-                $('letter-date-start').textContent = formatDate(baseDate);
-                
-                $('letter-time-end').textContent = formatTime(expiryDate);
-                $('letter-date-end').textContent = formatDate(expiryDate);
+                $('letter-time-start').textContent = baseDate.toLocaleTimeString('en-GB', timeOpts);
+                $('letter-date-start').textContent = baseDate.toLocaleDateString('en-GB', dateOpts);
+                $('letter-time-end').textContent = expiryDate.toLocaleTimeString('en-GB', timeOpts);
+                $('letter-date-end').textContent = expiryDate.toLocaleDateString('en-GB', dateOpts);
                 
                 // Show View
                 $('main-app-container').classList.add('hidden');
                 $('discharge-letter-view').classList.remove('hidden');
-                
-                // Scroll to top
                 window.scrollTo(0, 0);
             };
+
+            $('create-discharge-letter-btn').onclick = showDischargeLetter;
+            $('header-print-letter-btn').onclick = showDischargeLetter;
 
             $('close-letter-btn').onclick = () => {
                 $('discharge-letter-view').classList.add('hidden');
