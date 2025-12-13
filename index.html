@@ -133,7 +133,8 @@
 
         /* --- PRINT STYLES --- */
         @media print {
-            body { background: white; }
+            @page { margin: 0.5cm; size: A4 portrait; }
+            body { background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             .no-print { display: none !important; }
             
             /* Logic to switch between printing Form vs Letter */
@@ -668,8 +669,8 @@
         </div>
     </main>
 
-    <div id="discharge-letter-view" class="hidden bg-white p-8 max-w-3xl mx-auto border shadow-2xl mt-8 mb-8 text-slate-900">
-        <div class="no-print flex justify-between items-center mb-8 border-b pb-4">
+    <div id="discharge-letter-view" class="hidden bg-white p-6 max-w-3xl mx-auto border shadow-2xl mt-8 mb-8 text-slate-900 print:p-0 print:shadow-none print:border-none print:mt-0 print:mb-0">
+        <div class="no-print flex justify-between items-center mb-6 border-b pb-4">
             <h2 class="text-xl font-bold text-slate-700">Preview: Patient Discharge Letter</h2>
             <div class="flex gap-2">
                 <button id="close-letter-btn" class="px-4 py-2 border rounded hover:bg-slate-100">Back to Form</button>
@@ -677,39 +678,40 @@
             </div>
         </div>
 
-        <div class="font-[Inter] leading-relaxed">
-            <div class="border-b-2 border-slate-800 pb-4 mb-6 flex justify-between items-start">
+        <div class="font-[Inter] leading-snug">
+            <div class="border-b-2 border-slate-800 pb-3 mb-4 flex justify-between items-start">
                 <div>
-                    <h1 class="text-2xl font-black uppercase tracking-tight">Emergency Department</h1>
-                    <p class="text-lg font-bold text-slate-600">Discharge Advice Following Procedural Sedation</p>
+                    <h1 class="text-xl font-black uppercase tracking-tight">Emergency Department</h1>
+                    <p class="text-base font-bold text-slate-600">Discharge Advice Following Procedural Sedation</p>
                 </div>
-                <div class="text-right text-sm">
+                <div class="text-right text-xs">
                     <p class="font-bold">Date: <span id="letter-date"></span></p>
                     <p class="text-slate-500">Trust Ref: RCEM/SED/2022</p>
                 </div>
             </div>
 
-            <div class="mb-6">
-                <p class="mb-2"><strong>Patient Name:</strong> <span id="letter-patient-name" class="border-b border-dotted border-slate-400 px-2 min-w-[200px] inline-block"></span></p>
+            <div class="mb-4 text-sm">
+                <p class="mb-1"><strong>Patient Name:</strong> <span id="letter-patient-name" class="border-b border-dotted border-slate-400 px-2 min-w-[200px] inline-block font-mono"></span></p>
                 <p><strong>Procedure:</strong> <span id="letter-procedure"></span></p>
             </div>
 
-            <p class="mb-4">Dear Patient,</p>
-            <p class="mb-4">
+            <p class="mb-2 text-sm font-bold">Dear Patient,</p>
+            <p class="mb-4 text-sm text-slate-800">
                 Today you received the following medication(s): <span id="letter-drugs-given" class="font-bold"></span>.
                 These medicines make you sleepy and relaxed. Even if you feel wide awake now, the medication can stay in your body for up to 24 hours and may affect your judgment, memory, and coordination.
             </p>
 
-            <div class="bg-blue-50 border-l-4 border-blue-600 p-4 mb-6">
-                <h3 class="font-bold text-blue-900 mb-2 uppercase text-sm">⚠️ The 24-Hour Safety Rules</h3>
+            <div class="bg-blue-50 border-l-4 border-blue-600 p-3 mb-4">
+                <h3 class="font-bold text-blue-900 mb-1 uppercase text-sm">⚠️ The 24-Hour Safety Rules</h3>
                 
-                <div class="mb-3 text-sm font-semibold text-blue-800">
-                    <p>You received sedation at <span id="letter-time-start" class="border-b border-blue-400 border-dotted"></span> on <span id="letter-date-start" class="border-b border-blue-400 border-dotted"></span>.</p>
-                    <p class="mt-1">For your safety, the following restrictions apply until <span id="letter-time-end" class="font-black bg-yellow-200 px-1 rounded"></span> on <span id="letter-date-end" class="font-black bg-yellow-200 px-1 rounded"></span> (24 hours later):</p>
+                <div class="mb-2 text-sm font-semibold text-blue-800">
+                    <p>You received sedation at <span id="letter-time-start" class="border-b border-blue-400 border-dotted font-bold"></span> on <span id="letter-date-start" class="border-b border-blue-400 border-dotted font-bold"></span>.</p>
+                    
+                    <p class="mt-2 text-slate-900">For your safety, you <strong class="text-red-600 text-base">MUST NOT</strong> do any of the following until <span id="letter-time-end" class="font-black bg-yellow-200 px-1 rounded"></span> on <span id="letter-date-end" class="font-black bg-yellow-200 px-1 rounded"></span> (24 hours later):</p>
                 </div>
 
-                <ul class="list-disc ml-5 space-y-1 text-sm text-slate-800">
-                    <li><strong>Drive a car</strong>, ride a bicycle, or operate any machinery.</li>
+                <ul class="list-disc ml-5 space-y-1 text-sm text-slate-900 font-bold">
+                    <li>Drive a car, ride a bicycle, or operate any machinery.</li>
                     <li>Drink alcohol or take sleeping tablets.</li>
                     <li>Sign legal documents or make important financial decisions.</li>
                     <li>Cook or use sharp implements/kettles without supervision (risk of burns/injury).</li>
@@ -717,23 +719,23 @@
                 </ul>
             </div>
 
-            <div class="mb-6">
-                <h3 class="font-bold text-slate-900 border-b border-slate-300 mb-2 pb-1">Supervision</h3>
+            <div class="mb-4">
+                <h3 class="font-bold text-slate-900 border-b border-slate-300 mb-1 pb-1 text-sm">Supervision</h3>
                 <p class="text-sm">
                     You have been discharged because you are awake and safe, but you <strong>must be accompanied home by a responsible adult</strong> 
                     who can stay with you for the next 24 hours. Do not go home to an empty house.
                 </p>
             </div>
 
-            <div class="mb-6">
-                <h3 class="font-bold text-slate-900 border-b border-slate-300 mb-2 pb-1">Common Side Effects</h3>
-                <ul id="letter-side-effects-list" class="list-disc ml-5 space-y-1 text-sm">
-                    </ul>
+            <div class="mb-4">
+                <h3 class="font-bold text-slate-900 border-b border-slate-300 mb-1 pb-1 text-sm">Common Side Effects</h3>
+                <ul id="letter-side-effects-list" class="list-disc ml-5 space-y-1 text-sm text-slate-700">
+                </ul>
             </div>
 
-            <div class="bg-red-50 border-l-4 border-red-600 p-4 mb-8">
-                <h3 class="font-bold text-red-900 mb-2 uppercase text-sm">🛑 When to Seek Help</h3>
-                <p class="mb-2 text-sm">Please return to the Emergency Department or call 111 immediately if you experience:</p>
+            <div class="bg-red-50 border-l-4 border-red-600 p-3 mb-4">
+                <h3 class="font-bold text-red-900 mb-1 uppercase text-sm">🛑 When to Seek Help</h3>
+                <p class="mb-1 text-sm text-red-900">Please return to the Emergency Department or call 111 immediately if you experience:</p>
                 <ul class="list-disc ml-5 space-y-1 text-sm text-red-900 font-medium">
                     <li>Severe pain that is not improved by simple painkillers.</li>
                     <li>Persistent vomiting or inability to keep fluids down.</li>
@@ -742,9 +744,9 @@
                 </ul>
             </div>
 
-            <div class="mt-8 pt-4 border-t border-slate-200 text-xs text-slate-500">
+            <div class="mt-4 pt-4 border-t border-slate-200 text-xs text-slate-500">
                 <p>This advice sheet is based on RCEM Best Practice Guidelines (2022). If you have any non-urgent concerns, please contact your GP.</p>
-                <p class="mt-2">Clinician Signature: __________________________</p>
+                <p class="mt-4">Clinician Signature: __________________________</p>
             </div>
         </div>
     </div>
