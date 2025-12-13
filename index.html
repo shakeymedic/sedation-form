@@ -883,7 +883,7 @@
             };
             document.getElementsByName('capacity').forEach(r => r.addEventListener('change', () => { toggleCapacity(); saveState(); }));
 
-            // --- EPR LOG GENERATOR ---
+            // --- EPR LOG GENERATOR (UPDATED FOR FULL GRANULARITY) ---
             function generateEPRLog() {
                 if (!$('epr-log-output')) return; 
 
@@ -905,6 +905,7 @@
 
                     log += `<strong>2. Assessment & Consent</strong><br>`;
                     
+                    // -- Airway --
                     const mallampati = findCheckedRadio('airway-mallampati');
                     const ulbt = findCheckedRadio('airway-ulbt');
                     let airwayFlags = [];
@@ -917,7 +918,16 @@
                         log += `Airway: Mallampati ${mallampati || '-'} | ULBT ${ulbt || '-'} | Flags: ${airwayFlags.length ? airwayFlags.join(', ') : 'None'}<br>`;
                     }
 
+                    // -- ASA & Contraindications --
                     log += `ASA Grade: ${findCheckedRadio('asa-grade') || '-'}<br>`;
+                    
+                    let ci = [];
+                    if(isChecked('ci-allergy')) ci.push('Allergy');
+                    if(isChecked('ci-hemo')) ci.push('Haemodynamic Instability');
+                    if(isChecked('ci-gcs')) ci.push('Compromised Airway/GCS');
+                    if(ci.length > 0) log += `<strong>CONTRAINDICATIONS NOTED: ${ci.join(', ')}</strong><br>`;
+
+                    // -- Risks & Consent --
                     log += `Capacity: ${findCheckedRadio('capacity') || 'Yes'}<br>`;
                     
                     let risks = [];
@@ -927,20 +937,45 @@
                     if(isChecked('risk-resp-depress')) risks.push('Hypoxia');
                     if(isChecked('risk-laryngospasm')) risks.push('Laryngospasm');
                     if(isChecked('risk-aspiration')) risks.push('Aspiration');
+                    if(isChecked('risk-allergy')) risks.push('Anaphylaxis');
+                    
+                    if(isChecked('risk-failure')) risks.push('Proc Failure');
+                    if(isChecked('risk-treatment')) risks.push('Further Tx/Admission');
+                    if(isChecked('risk-emergence')) risks.push('Emergence Reaction');
+
                     if(risks.length === 0) risks.push('None documented');
                     log += `Risks Discussed: ${risks.join(', ')}<br>`;
-                    log += `Consent: ${findCheckedRadio('consent-type') || '...'}<br><br>`;
+                    log += `Consent: ${findCheckedRadio('consent-type') || '...'}<br>`;
+                    
+                    let consentExtras = [];
+                    if(isChecked('consent-leaflet')) consentExtras.push('Leaflet Given');
+                    if(isChecked('consent-questions')) consentExtras.push('Questions Answered');
+                    if(consentExtras.length > 0) log += `Consent Notes: ${consentExtras.join(', ')}<br>`;
 
-                    log += `<strong>3. Plan & Safety</strong><br>`;
+                    log += `<br><strong>3. Plan & Safety</strong><br>`;
                     log += `Target: ${val('plan-target') || '...'} | Agent: ${val('plan-agent') || '...'}<br>`;
                     log += `Pre-Vitals: HR ${val('pre-vital-hr') || '-'} | BP ${val('pre-vital-bp') || '-'} | SpO2 ${val('pre-vital-spo2') || '-'}%<br>`;
                     
-                    const toComplete = isChecked('to-identity') && isChecked('to-role') && isChecked('to-site') && isChecked('to-monitoring');
-                    log += `Safety Time Out: <strong>${toComplete ? 'COMPLETED' : 'PENDING'}</strong><br>`;
-                    if(isChecked('plan-aagbi')) log += `<em>(AAGBI Standards + Waveform Capnography Confirmed)</em><br>`;
-                    log += `<br>`;
+                    // -- SOAP-ME Explicit List --
+                    let soap = [];
+                    if(isChecked('soap-s')) soap.push('Suction');
+                    if(isChecked('soap-o')) soap.push('Oxygen/BVM');
+                    if(isChecked('soap-a')) soap.push('Airway Equipment');
+                    if(isChecked('soap-m')) soap.push('Monitoring');
+                    if(isChecked('soap-e')) soap.push('Environment/IV');
+                    if(soap.length > 0) log += `Checklist (SOAP-ME): ${soap.join(', ')}<br>`;
 
-                    log += `<strong>4. Intra-Procedure Log</strong><br>`;
+                    if(isChecked('plan-aagbi')) log += `Monitoring: AAGBI Standards + Waveform Capnography Confirmed<br>`;
+
+                    // -- Time Out Explicit List --
+                    let timeOut = [];
+                    if(isChecked('to-identity')) timeOut.push('Patient ID');
+                    if(isChecked('to-role')) timeOut.push('Roles Assigned');
+                    if(isChecked('to-site')) timeOut.push('Site/Side');
+                    if(isChecked('to-monitoring')) timeOut.push('Monitoring Active');
+                    log += `Safety Time Out: ${timeOut.length ? timeOut.join(', ') : 'None Recorded'}<br>`;
+                    
+                    log += `<br><strong>4. Intra-Procedure Log</strong><br>`;
                     log += `Proc Start: ${$('procedure-start-output')?.textContent || '--:--'} | End: ${$('procedure-end-output')?.textContent || '--:--'}<br>`;
                     
                     const drugRows = $('drug-table-body').querySelectorAll('tr');
@@ -981,8 +1016,23 @@
                     log += `Outcome: ${findCheckedRadio('outcome-proc') || '...'}<br>`;
                     log += `Disposal: ${findCheckedRadio('disposal') || '...'}<br>`;
                     
-                    const dcComplete = isChecked('dc-vitals') && isChecked('dc-aao') && isChecked('dc-oral') && isChecked('dc-pain') && isChecked('dc-home');
-                    log += `Criteria Met: ${dcComplete ? 'YES' : 'Pending'}<br>`;
+                    // -- Discharge Criteria Explicit List --
+                    let dc = [];
+                    if(isChecked('dc-vitals')) dc.push('Vitals Baseline');
+                    if(isChecked('dc-aao')) dc.push('Alert/Orientated');
+                    if(isChecked('dc-oral')) dc.push('Tol. Fluids');
+                    if(isChecked('dc-pain')) dc.push('Pain Managed');
+                    if(isChecked('dc-home')) dc.push('Home Care');
+                    if(isChecked('dc-reversal-time')) dc.push('Reversal Wait OK');
+                    log += `Discharge Checks: ${dc.length ? dc.join(', ') : 'None Checked'}<br>`;
+
+                    // -- Instructions Explicit List --
+                    let di = [];
+                    if(isChecked('di-drive')) di.push('No Driving');
+                    if(isChecked('di-adult')) di.push('Accompanied');
+                    if(isChecked('di-alcohol')) di.push('No Alcohol');
+                    if(isChecked('di-decisions')) di.push('No Legal Decisions');
+                    if(di.length > 0) log += `Instructions Given: ${di.join(', ')}<br>`;
                     
                     $('epr-log-output').innerHTML = log;
                 } catch (e) {
