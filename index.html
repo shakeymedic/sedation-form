@@ -896,9 +896,21 @@
                     
                     log += `<strong>1. Staff & Patient</strong><br>`;
                     log += `Patient: ${val('patient-name') || '...'}<br>`;
+                    
+                    // FIXED: Added Procedure and Indication
+                    log += `Procedure: <strong>${val('procedure') || 'Not specified'}</strong><br>`;
+                    log += `Indication: ${val('indication') || 'Not specified'}<br>`;
+                    
                     log += `Sedationist: ${val('sedationist') || '...'} (${val('sedationist-grade') || 'Grade'})<br>`;
                     log += `Proc. Dr: ${val('procedure-doctor') || '...'} | Nurse: ${val('nurse') || '...'}<br>`;
-                    log += `Weight: ${val('weight') || '--'} kg | Age: ${val('age') || '--'} yrs<br>`;
+                    
+                    // FIXED: Added Estimated Weight flag
+                    const weightEst = isChecked('weight-estimated') ? '(Est)' : '';
+                    log += `Weight: ${val('weight') || '--'} kg ${weightEst} | Age: ${val('age') || '--'} yrs<br>`;
+                    
+                    // FIXED: Added Frail/Elderly Flag
+                    if(isChecked('frail-elderly')) log += `<em>Patient flagged as Frail / >65</em><br>`;
+
                     log += `Allergies: <strong>${val('allergies') || 'None Known'}</strong><br>`;
                     log += `Pre-Analgesia: ${val('pre-analgesia') || 'None'}<br>`;
                     log += `Fasting: Food (${val('last-food') || '--:--'}) | Fluid (${val('last-fluid') || '--:--'})<br><br>`;
@@ -954,7 +966,9 @@
 
                     log += `<br><strong>3. Plan & Safety</strong><br>`;
                     log += `Target: ${val('plan-target') || '...'} | Agent: ${val('plan-agent') || '...'}<br>`;
-                    log += `Pre-Vitals: HR ${val('pre-vital-hr') || '-'} | BP ${val('pre-vital-bp') || '-'} | SpO2 ${val('pre-vital-spo2') || '-'}%<br>`;
+                    
+                    // FIXED: Added RR to Pre-vitals
+                    log += `Pre-Vitals: HR ${val('pre-vital-hr') || '-'} | BP ${val('pre-vital-bp') || '-'} | SpO2 ${val('pre-vital-spo2') || '-'}% | RR ${val('pre-vital-rr') || '-'} <br>`;
                     
                     // -- SOAP-ME Explicit List --
                     let soap = [];
@@ -976,7 +990,8 @@
                     log += `Safety Time Out: ${timeOut.length ? timeOut.join(', ') : 'None Recorded'}<br>`;
                     
                     log += `<br><strong>4. Intra-Procedure Log</strong><br>`;
-                    log += `Proc Start: ${$('procedure-start-output')?.textContent || '--:--'} | End: ${$('procedure-end-output')?.textContent || '--:--'}<br>`;
+                    // FIXED: Added Awake time
+                    log += `Proc Start: ${$('procedure-start-output')?.textContent || '--:--'} | End: ${$('procedure-end-output')?.textContent || '--:--'} | Awake: ${$('patient-awake-output')?.textContent || '--:--'}<br>`;
                     
                     const drugRows = $('drug-table-body').querySelectorAll('tr');
                     if (drugRows.length > 0) {
@@ -1033,6 +1048,11 @@
                     if(isChecked('di-alcohol')) di.push('No Alcohol');
                     if(isChecked('di-decisions')) di.push('No Legal Decisions');
                     if(di.length > 0) log += `Instructions Given: ${di.join(', ')}<br>`;
+                    
+                    // FIXED: Added Sign off details
+                    if(val('signoff-name') || val('signoff-gmc')) {
+                        log += `<br><strong>Signed Off By:</strong> ${val('signoff-name')} (GMC: ${val('signoff-gmc')}) @ ${val('signoff-time')}`;
+                    }
                     
                     $('epr-log-output').innerHTML = log;
                 } catch (e) {
