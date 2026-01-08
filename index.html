@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Procedural Sedation Record (RCEM) - Rich Text</title>
+    <title>Sedation & Agitation Management Tool</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
@@ -131,6 +131,36 @@
             backdrop-filter: blur(2px);
         }
 
+        /* Tabs */
+        .tab-btn {
+            padding: 0.75rem 1.5rem;
+            font-weight: 800;
+            font-size: 0.875rem;
+            border-bottom: 3px solid transparent;
+            color: #64748b;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .tab-btn.active {
+            color: #0f172a;
+            border-bottom-color: #0f172a;
+        }
+        .tab-btn:hover:not(.active) {
+            color: #334155;
+            border-bottom-color: #cbd5e1;
+        }
+        
+        /* Agitated Specifics */
+        .agitated-warning {
+            background: repeating-linear-gradient(
+              45deg,
+              #fffbeb,
+              #fffbeb 10px,
+              #fef3c7 10px,
+              #fef3c7 20px
+            );
+        }
+
         /* --- PRINT STYLES --- */
         @media print {
             @page { margin: 0.5cm; size: A4 portrait; }
@@ -140,7 +170,8 @@
             /* Logic to switch between printing Form vs Letter */
             body.printing-letter header, 
             body.printing-letter main,
-            body.printing-letter .print-header { 
+            body.printing-letter .print-header,
+            body.printing-letter #tabs-container { 
                 display: none !important; 
             }
             
@@ -173,6 +204,10 @@
             body:not(.printing-letter) .container { max-width: 100% !important; padding: 0 !important; }
             body:not(.printing-letter) .lg\:col-span-8 { width: 100% !important; }
             body:not(.printing-letter) .lg\:col-span-4 { display: none !important; }
+
+            /* Tab Handling for Print */
+            #tab-agitated.hidden, #tab-procedural.hidden { display: none !important; }
+            /* Force visible whichever is active on screen */
         }
     </style>
 </head>
@@ -183,7 +218,7 @@
             <div class="flex items-center gap-4">
                 <img src="https://iili.io/KGQOvkl.md.png" alt="Logo" class="h-16 md:h-20 w-auto object-contain" onerror="this.style.display='none'">
                 <div>
-                    <h1 class="text-xl md:text-2xl font-black text-slate-900 leading-tight">Sedation Record <span class="text-xs font-normal text-slate-500 bg-slate-100 px-2 py-0.5 rounded border ml-2">RCEM 2022</span></h1>
+                    <h1 class="text-xl md:text-2xl font-black text-slate-900 leading-tight">Sedation Record</h1>
                     <p class="text-xs text-green-600 font-bold flex items-center gap-1">
                         <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> Auto-save enabled
                     </p>
@@ -201,10 +236,16 @@
                 </button>
             </div>
         </div>
+        
+        <div id="tabs-container" class="container mx-auto px-4 flex gap-4 border-t border-slate-100 bg-white">
+            <button id="btn-tab-procedural" class="tab-btn active">Procedural Sedation</button>
+            <button id="btn-tab-agitated" class="tab-btn text-red-700 hover:text-red-900">🚨 Agitated Patient (Emergency)</button>
+        </div>
     </header>
 
     <main id="main-app-container" class="container mx-auto px-4 py-6"> 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <div id="tab-procedural" class="grid grid-cols-1 lg:grid-cols-12 gap-6 transition-opacity duration-300">
 
             <div class="lg:col-span-8 flex flex-col gap-6">
 
@@ -222,14 +263,10 @@
                             
                             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                                 <div class="md:col-span-2">
-                                    <label for="patient-name">Patient Name / Sticker</label>
-                                    <input type="text" id="patient-name" placeholder="Patient Name" class="font-bold border-slate-400 rounded-md">
-                                </div>
-                                <div>
                                     <label for="age">Age</label>
                                     <input type="number" id="age" placeholder="Yr" class="font-bold border-slate-400 rounded-md">
                                 </div>
-                                <div class="md:col-span-1">
+                                <div class="md:col-span-2">
                                     <label for="weight">Weight (kg) <span class="text-red-500">*</span></label>
                                     <div class="flex items-center gap-2">
                                         <input type="number" id="weight" placeholder="kg" class="font-bold border-slate-400 rounded-md">
@@ -667,6 +704,115 @@
             </div>
 
         </div>
+
+        <div id="tab-agitated" class="hidden container mx-auto max-w-4xl transition-opacity duration-300">
+            
+            <div class="agitated-warning border-l-[10px] border-l-red-600 shadow-lg rounded-r-xl p-6 mb-8">
+                <h1 class="text-3xl font-black text-red-900 uppercase">Sedation of the Severely Agitated Patient</h1>
+                <p class="text-red-800 font-bold mt-2">Emergency Protocol Checklist</p>
+                <div class="mt-4 flex gap-3">
+                    <span class="bg-red-600 text-white px-3 py-1 text-xs font-bold rounded uppercase">Immediate Threat Only</span>
+                    <span class="bg-red-600 text-white px-3 py-1 text-xs font-bold rounded uppercase">Senior Input</span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="section-card border-l-[6px] border-l-slate-700">
+                    <div class="section-title text-slate-800">1. Call for Help & Prep</div>
+                    <div class="space-y-3">
+                        <label class="flex items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded cursor-pointer">
+                            <input type="checkbox" class="w-6 h-6 text-red-600 focus:ring-red-500 rounded border-slate-300">
+                            <span class="font-bold text-slate-700">Security / Police called</span>
+                        </label>
+                        <label class="flex items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded cursor-pointer">
+                            <input type="checkbox" class="w-6 h-6 text-red-600 focus:ring-red-500 rounded border-slate-300">
+                            <span class="font-bold text-slate-700">Senior Clinician informed (Cons/Reg)</span>
+                        </label>
+                        <label class="flex items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded cursor-pointer">
+                            <input type="checkbox" class="w-6 h-6 text-red-600 focus:ring-red-500 rounded border-slate-300">
+                            <span class="font-bold text-slate-700">Capacity Assessed / Verbal De-escalation Failed</span>
+                        </label>
+                        <label class="flex items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded cursor-pointer">
+                            <input type="checkbox" class="w-6 h-6 text-red-600 focus:ring-red-500 rounded border-slate-300">
+                            <span class="font-bold text-slate-700">'Emergency Sedation' notice posted</span>
+                        </label>
+                        <label class="flex items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded cursor-pointer">
+                            <input type="checkbox" class="w-6 h-6 text-red-600 focus:ring-red-500 rounded border-slate-300">
+                            <span class="font-bold text-slate-700">Roles Assigned (Airway, Drugs, Restraint)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="section-card border-l-[6px] border-l-red-600">
+                    <div class="section-title text-red-800">2. Emergency Dose Calc</div>
+                    
+                    <div class="bg-red-50 p-4 rounded-lg border border-red-200 mb-4">
+                        <label class="text-red-900 mb-2">Patient Estimated Weight (kg)</label>
+                        <div class="flex gap-2">
+                            <input type="number" id="agitated-weight" placeholder="e.g. 80" class="text-2xl font-black text-red-900 w-full p-3 rounded border-red-300">
+                        </div>
+                        <button id="calc-agitated-btn" class="mt-3 w-full bg-red-600 text-white font-bold py-3 rounded hover:bg-red-700 transition shadow-sm">
+                            CALCULATE DOSES
+                        </button>
+                    </div>
+
+                    <div id="agitated-output" class="hidden space-y-4">
+                        <div class="bg-white border-2 border-red-500 rounded-lg p-4 shadow-md">
+                            <h3 class="text-sm font-bold text-red-500 uppercase tracking-widest mb-1">First Line (IM)</h3>
+                            <div class="flex justify-between items-end">
+                                <span class="text-3xl font-black text-slate-900">Ketamine IM</span>
+                                <span class="text-3xl font-black text-red-600" id="val-ket-im">-- mg</span>
+                            </div>
+                            <p class="text-xs font-bold text-slate-500 mt-1">Dose: 4 mg/kg | Onset: 3-5 mins</p>
+                        </div>
+
+                        <div class="bg-white border-2 border-orange-400 rounded-lg p-4 shadow-md opacity-75">
+                            <h3 class="text-sm font-bold text-orange-500 uppercase tracking-widest mb-1">Alternative (IV/IO)</h3>
+                            <div class="flex justify-between items-end">
+                                <span class="text-xl font-bold text-slate-700">Ketamine IV</span>
+                                <span class="text-xl font-black text-orange-600" id="val-ket-iv">-- mg</span>
+                            </div>
+                            <p class="text-xs font-bold text-slate-500 mt-1">Dose: 0.5 - 1 mg/kg | Onset: 30 secs</p>
+                        </div>
+                        
+                        <div class="p-3 bg-slate-100 rounded text-xs text-slate-600 border border-slate-300">
+                            <strong>Second Line:</strong> Consider Lorazepam / Haloperidol if Ketamine contraindicated (Consult Senior).
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-card border-l-[6px] border-l-blue-600 mt-6">
+                 <div class="section-title text-blue-800">3. Post-Sedation Management</div>
+                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                     <div>
+                         <label class="block mb-2 font-bold text-slate-700 uppercase text-xs border-b pb-1">Immediate Actions</label>
+                         <div class="space-y-2">
+                             <label class="flex items-center gap-2 text-sm font-medium"><input type="checkbox" class="rounded text-blue-600"> Transfer to Resus / Monitored Bay</label>
+                             <label class="flex items-center gap-2 text-sm font-medium"><input type="checkbox" class="rounded text-blue-600"> Apply Full Monitoring (ECG, SpO2, BP, EtCO2)</label>
+                             <label class="flex items-center gap-2 text-sm font-medium"><input type="checkbox" class="rounded text-blue-600"> Secondary Survey (ABCDE)</label>
+                         </div>
+                     </div>
+                     <div>
+                         <label class="block mb-2 font-bold text-slate-700 uppercase text-xs border-b pb-1">Investigations Required</label>
+                         <div class="grid grid-cols-2 gap-2">
+                             <label class="flex items-center gap-2 text-xs font-bold bg-blue-50 p-2 rounded border border-blue-100"><input type="checkbox" class="rounded"> Blood Gas</label>
+                             <label class="flex items-center gap-2 text-xs font-bold bg-blue-50 p-2 rounded border border-blue-100"><input type="checkbox" class="rounded"> FBC / U&E / LFT</label>
+                             <label class="flex items-center gap-2 text-xs font-bold bg-blue-50 p-2 rounded border border-blue-100"><input type="checkbox" class="rounded"> CK / Troponin</label>
+                             <label class="flex items-center gap-2 text-xs font-bold bg-blue-50 p-2 rounded border border-blue-100"><input type="checkbox" class="rounded"> Clotting</label>
+                             <label class="flex items-center gap-2 text-xs font-bold bg-blue-50 p-2 rounded border border-blue-100"><input type="checkbox" class="rounded"> ECG (12 Lead)</label>
+                             <label class="flex items-center gap-2 text-xs font-bold bg-blue-50 p-2 rounded border border-blue-100"><input type="checkbox" class="rounded"> CT Head (if indicated)</label>
+                         </div>
+                     </div>
+                 </div>
+                 <div class="mt-4 pt-4 border-t border-slate-200">
+                     <p class="text-sm font-bold text-red-600">🚩 ICU Referral Threshold:</p>
+                     <p class="text-xs text-slate-700">Consider ICU if: Inadequate sedation after 2 doses, Airway compromise, or unmanageable haemodynamic instability.</p>
+                 </div>
+            </div>
+
+        </div>
+
     </main>
 
     <div id="discharge-letter-view" class="hidden bg-white p-6 max-w-3xl mx-auto border shadow-2xl mt-8 mb-8 text-slate-900 print:p-0 print:shadow-none print:border-none print:mt-0 print:mb-0">
@@ -691,8 +837,7 @@
             </div>
 
             <div class="mb-4 text-sm">
-                <p class="mb-1"><strong>Patient Name:</strong> <span id="letter-patient-name" class="border-b border-dotted border-slate-400 px-2 min-w-[200px] inline-block font-mono"></span></p>
-                <p><strong>Procedure:</strong> <span id="letter-procedure"></span></p>
+                <p><strong>Procedure / Indication:</strong> <span id="letter-procedure"></span></p>
             </div>
 
             <p class="mb-2 text-sm font-bold">Dear Patient,</p>
@@ -783,6 +928,43 @@
             const val = (id) => $(id)?.value || '';
             const isChecked = (id) => $(id)?.checked;
             
+            // --- TABS LOGIC ---
+            const tabProc = $('tab-procedural');
+            const tabAgit = $('tab-agitated');
+            const btnProc = $('btn-tab-procedural');
+            const btnAgit = $('btn-tab-agitated');
+
+            btnProc.onclick = () => {
+                tabProc.classList.remove('hidden');
+                tabAgit.classList.add('hidden');
+                btnProc.classList.add('active');
+                btnAgit.classList.remove('active');
+            };
+
+            btnAgit.onclick = () => {
+                tabAgit.classList.remove('hidden');
+                tabProc.classList.add('hidden');
+                btnAgit.classList.add('active');
+                btnProc.classList.remove('active');
+            };
+
+            // --- AGITATED CALCULATOR ---
+            $('calc-agitated-btn').onclick = () => {
+                const w = parseFloat($('agitated-weight').value);
+                if(!w || w <= 0) return alert("Please enter a valid weight.");
+                
+                // Ketamine IM: 4mg/kg
+                const kIM = (4 * w).toFixed(0);
+                // Ketamine IV: 0.5 - 1 mg/kg
+                const kIVLow = (0.5 * w).toFixed(0);
+                const kIVHigh = (1 * w).toFixed(0);
+
+                $('val-ket-im').textContent = `${kIM} mg`;
+                $('val-ket-iv').textContent = `${kIVLow} - ${kIVHigh} mg`;
+                
+                $('agitated-output').classList.remove('hidden');
+            };
+
             // --- State ---
             let sedationInterval = null;
             let secondsElapsed = 0;
@@ -883,7 +1065,7 @@
             };
             document.getElementsByName('capacity').forEach(r => r.addEventListener('change', () => { toggleCapacity(); saveState(); }));
 
-            // --- EPR LOG GENERATOR (UPDATED FOR FULL GRANULARITY) ---
+            // --- EPR LOG GENERATOR ---
             function generateEPRLog() {
                 if (!$('epr-log-output')) return; 
 
@@ -895,20 +1077,16 @@
                     log += `----------------------------------------------------------<br>`;
                     
                     log += `<strong>1. Staff & Patient</strong><br>`;
-                    log += `Patient: ${val('patient-name') || '...'}<br>`;
                     
-                    // FIXED: Added Procedure and Indication
                     log += `Procedure: <strong>${val('procedure') || 'Not specified'}</strong><br>`;
                     log += `Indication: ${val('indication') || 'Not specified'}<br>`;
                     
                     log += `Sedationist: ${val('sedationist') || '...'} (${val('sedationist-grade') || 'Grade'})<br>`;
                     log += `Proc. Dr: ${val('procedure-doctor') || '...'} | Nurse: ${val('nurse') || '...'}<br>`;
                     
-                    // FIXED: Added Estimated Weight flag
                     const weightEst = isChecked('weight-estimated') ? '(Est)' : '';
                     log += `Weight: ${val('weight') || '--'} kg ${weightEst} | Age: ${val('age') || '--'} yrs<br>`;
                     
-                    // FIXED: Added Frail/Elderly Flag
                     if(isChecked('frail-elderly')) log += `<em>Patient flagged as Frail / >65</em><br>`;
 
                     log += `Allergies: <strong>${val('allergies') || 'None Known'}</strong><br>`;
@@ -967,7 +1145,6 @@
                     log += `<br><strong>3. Plan & Safety</strong><br>`;
                     log += `Target: ${val('plan-target') || '...'} | Agent: ${val('plan-agent') || '...'}<br>`;
                     
-                    // FIXED: Added RR to Pre-vitals
                     log += `Pre-Vitals: HR ${val('pre-vital-hr') || '-'} | BP ${val('pre-vital-bp') || '-'} | SpO2 ${val('pre-vital-spo2') || '-'}% | RR ${val('pre-vital-rr') || '-'} <br>`;
                     
                     // -- SOAP-ME Explicit List --
@@ -990,7 +1167,6 @@
                     log += `Safety Time Out: ${timeOut.length ? timeOut.join(', ') : 'None Recorded'}<br>`;
                     
                     log += `<br><strong>4. Intra-Procedure Log</strong><br>`;
-                    // FIXED: Added Awake time
                     log += `Proc Start: ${$('procedure-start-output')?.textContent || '--:--'} | End: ${$('procedure-end-output')?.textContent || '--:--'} | Awake: ${$('patient-awake-output')?.textContent || '--:--'}<br>`;
                     
                     const drugRows = $('drug-table-body').querySelectorAll('tr');
@@ -1049,7 +1225,6 @@
                     if(isChecked('di-decisions')) di.push('No Legal Decisions');
                     if(di.length > 0) log += `Instructions Given: ${di.join(', ')}<br>`;
                     
-                    // FIXED: Added Sign off details
                     if(val('signoff-name') || val('signoff-gmc')) {
                         log += `<br><strong>Signed Off By:</strong> ${val('signoff-name')} (GMC: ${val('signoff-gmc')}) @ ${val('signoff-time')}`;
                     }
@@ -1066,8 +1241,10 @@
                 const now = new Date();
                 const nowStr = now.toLocaleDateString('en-GB', {day:'numeric', month:'long', year:'numeric'});
                 $('letter-date').textContent = nowStr;
-                $('letter-patient-name').textContent = val('patient-name') || '______________________';
-                $('letter-procedure').textContent = val('procedure') || 'Procedure';
+                
+                const proc = val('procedure') || 'Sedation';
+                const indic = val('indication');
+                $('letter-procedure').textContent = indic ? `${proc} for ${indic}` : proc;
 
                 // --- 1. Drug Extraction & Side Effect Logic ---
                 const drugRows = document.querySelectorAll('#drug-table-body tr td:nth-child(2)');
@@ -1093,16 +1270,29 @@
                 addEffect("You may not remember much about the procedure (Amnesia). This is normal.");
 
                 // Specific Effects
-                const hasKetamine = drugsArray.some(d => d.toLowerCase().includes('ketamine'));
-                const hasOpioid = drugsArray.some(d => d.toLowerCase().includes('fentanyl') || d.toLowerCase().includes('morphine'));
-                
+                const dList = drugsArray.map(d => d.toLowerCase());
+                const hasKetamine = dList.some(d => d.includes('ketamine'));
+                const hasOpioid = dList.some(d => d.includes('fentanyl') || d.includes('morphine'));
+                const hasPropofol = dList.some(d => d.includes('propofol'));
+                const hasMidazolam = dList.some(d => d.includes('midazolam'));
+
+                // UPDATED: More specific advice
                 if (hasKetamine) {
-                    addEffect("Ketamine can cause vivid dreams or 'daydreams' as it wears off. A quiet, calm environment helps this pass naturally.");
+                    addEffect("Ketamine can sometimes cause vivid dreams or 'daydreams' as it wears off. Resting in a quiet, low-light room helps.");
                 }
+                
+                if (hasPropofol) {
+                    addEffect("Propofol can leave you feeling a bit groggy or 'foggy' headed for a few hours.");
+                }
+
+                if (hasMidazolam) {
+                    addEffect("Midazolam is strong at making you forget the event. Don't worry if your memory of the hospital visit is patchy.");
+                }
+
                 if (hasOpioid) {
-                    addEffect("You may feel a little nauseous or itchy. This usually settles quickly.");
-                } else {
-                    addEffect("You may feel a little nauseous. Eat light meals and drink plenty of water.");
+                    addEffect("Strong painkillers (like Fentanyl/Morphine) can make you feel nauseous or itchy. This usually settles quickly.");
+                } else if (!hasOpioid) {
+                    addEffect("You may feel a little nauseous from the sedation. Eat light meals and drink plenty of water.");
                 }
                 
                 addEffect("If your cannula site (where the needle was) becomes red, hot, or swollen, please seek medical advice.");
