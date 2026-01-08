@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sedation & Agitation Management Tool</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -66,8 +66,9 @@
         .chk-label {
             @apply flex items-center gap-2 p-2 rounded hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer text-xs font-bold text-slate-700 dark:text-slate-300 transition;
         }
+        /* With the forms plugin, these classes will now correctly style the checkbox */
         .chk-input {
-            @apply w-5 h-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500 dark:bg-slate-600 dark:border-slate-500;
+            @apply w-5 h-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500 dark:bg-slate-600 dark:border-slate-500 dark:checked:bg-blue-600 dark:checked:border-blue-600;
         }
 
         /* Buttons */
@@ -123,6 +124,8 @@
             .dark { color-scheme: light; } 
             .dark .section-card { background: white !important; color: black !important; }
             #sticky-footer { display: none !important; }
+            /* Reset heights for print */
+            .transition-height { max-height: none !important; opacity: 1 !important; }
         }
     </style>
 </head>
@@ -169,10 +172,29 @@
         <div id="tab-procedural" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
             <div class="lg:col-span-8 flex flex-col gap-4">
+                
+                <div class="sticky top-[105px] z-40 bg-slate-100/95 dark:bg-slate-900/95 backdrop-blur-sm py-2 -mt-2 mb-2 flex gap-2 overflow-x-auto no-print border-b border-slate-200 dark:border-slate-700 hide-scrollbar" style="top: 105px;">
+                    <button onclick="scrollToSection('section-1-content')" class="flex-shrink-0 px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-full shadow-sm text-[10px] font-black uppercase text-slate-600 dark:text-slate-300 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-300 transition-colors">
+                        1. Patient
+                    </button>
+                    <button onclick="scrollToSection('section-2-content')" class="flex-shrink-0 px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-full shadow-sm text-[10px] font-black uppercase text-slate-600 dark:text-slate-300 hover:bg-orange-50 hover:text-orange-600 hover:border-orange-300 transition-colors">
+                        2. Assessment
+                    </button>
+                    <button onclick="scrollToSection('section-3-content')" class="flex-shrink-0 px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-full shadow-sm text-[10px] font-black uppercase text-slate-600 dark:text-slate-300 hover:bg-green-50 hover:text-green-600 hover:border-green-300 transition-colors">
+                        3. Plan
+                    </button>
+                    <button onclick="scrollToSection('section-4')" class="flex-shrink-0 px-3 py-1.5 bg-slate-800 dark:bg-slate-700 border border-slate-900 rounded-full shadow-sm text-[10px] font-black uppercase text-white hover:bg-slate-700 transition-colors">
+                        ⏱️ Timer
+                    </button>
+                     <button onclick="scrollToSection('section-5')" class="flex-shrink-0 px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-full shadow-sm text-[10px] font-black uppercase text-slate-600 dark:text-slate-300 hover:bg-purple-50 hover:text-purple-600 hover:border-purple-300 transition-colors">
+                        5. Discharge
+                    </button>
+                </div>
+
                 <form id="sedation-form" onsubmit="return false;">
                     <div class="flex flex-col gap-4">
 
-                        <div id="section-1" class="section-card bg-white dark:bg-slate-800 border-l-[6px] border-l-blue-600 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 p-4 transition-all">
+                        <div id="section-1" class="section-card bg-white dark:bg-slate-800 border-l-[6px] border-l-blue-600 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 p-4 transition-all scroll-mt-36">
                             <div class="flex justify-between items-center mb-2 cursor-pointer" onclick="toggleSection('section-1-content')">
                                 <h2 class="text-lg font-black text-blue-800 dark:text-blue-400">1. Patient & Procedure</h2>
                                 <span class="text-xs text-slate-400 toggle-icon">▼</span>
@@ -237,7 +259,7 @@
                             </div>
                         </div>
 
-                        <div id="section-2" class="section-card bg-white dark:bg-slate-800 border-l-[6px] border-l-orange-500 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 p-4">
+                        <div id="section-2" class="section-card bg-white dark:bg-slate-800 border-l-[6px] border-l-orange-500 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 p-4 scroll-mt-36">
                             <div class="flex justify-between items-center mb-2 cursor-pointer" onclick="toggleSection('section-2-content')">
                                 <h2 class="text-lg font-black text-orange-800 dark:text-orange-400">2. Assessment & Risks</h2>
                                 <span class="text-xs text-slate-400 toggle-icon">▼</span>
@@ -355,7 +377,7 @@
                             </div>
                         </div>
 
-                        <div id="section-3" class="section-card bg-white dark:bg-slate-800 border-l-[6px] border-l-green-500 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 p-4">
+                        <div id="section-3" class="section-card bg-white dark:bg-slate-800 border-l-[6px] border-l-green-500 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 p-4 scroll-mt-36">
                             <div class="flex justify-between items-center mb-2 cursor-pointer" onclick="toggleSection('section-3-content')">
                                 <h2 class="text-lg font-black text-green-800 dark:text-green-400">3. Plan & Safety</h2>
                                 <span class="text-xs text-slate-400 toggle-icon">▼</span>
@@ -393,7 +415,7 @@
                             </div>
                         </div>
 
-                        <div id="section-4" class="bg-slate-800 dark:bg-black rounded-xl p-4 text-white shadow-lg border-2 border-slate-900 page-break">
+                        <div id="section-4" class="bg-slate-800 dark:bg-black rounded-xl p-4 text-white shadow-lg border-2 border-slate-900 page-break scroll-mt-36">
                             
                             <div class="flex flex-col items-center justify-center gap-4 mb-4">
                                 <div class="w-full flex justify-between items-center mb-2">
@@ -449,7 +471,7 @@
                             </div>
                         </div>
 
-                        <div id="section-5" class="section-card bg-white dark:bg-slate-800 border-l-[6px] border-l-purple-600 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 p-4">
+                        <div id="section-5" class="section-card bg-white dark:bg-slate-800 border-l-[6px] border-l-purple-600 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 p-4 scroll-mt-36">
                             <h2 class="text-lg font-black text-purple-800 dark:text-purple-400 mb-4">5. Discharge & Checklist</h2>
                             
                             <div class="grid grid-cols-2 gap-4 mb-4">
@@ -667,6 +689,25 @@
                 el.style.maxHeight = el.scrollHeight + "px";
                 el.classList.remove('opacity-50');
                 icon.style.transform = 'rotate(0deg)';
+            }
+        };
+        
+        // FIX: Helper to force open a section and scroll to it
+        window.scrollToSection = (id) => {
+            const el = document.getElementById(id);
+            // If the element is an accordion content, open it
+            if(el.classList.contains('transition-height')) {
+                el.style.maxHeight = el.scrollHeight + "px";
+                el.classList.remove('opacity-50');
+                const header = el.previousElementSibling;
+                const icon = header.querySelector('.toggle-icon');
+                if(icon) icon.style.transform = 'rotate(0deg)';
+                
+                // Scroll the header into view
+                header.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } else {
+                // Regular element (like timer)
+                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
         };
 
