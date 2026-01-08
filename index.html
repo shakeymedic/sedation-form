@@ -5,22 +5,89 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sedation & Agitation Management Tool</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        slate: { 850: '#1e293b' } 
+                    }
+                }
+            }
+        }
+    </script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         /* --- CORE STYLES --- */
         body { font-family: 'Inter', sans-serif; }
+        html { scroll-behavior: smooth; }
+        
+        /* Transitions */
+        .transition-height { transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out; }
         
         /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
         ::-webkit-scrollbar-thumb { background: #64748b; border-radius: 4px; }
-        html { scroll-behavior: smooth; }
-        
-        /* Inputs & Controls */
-        input, textarea, select { border-color: #94a3b8; outline: none; transition: all 0.2s; }
-        input:focus, textarea:focus, select:focus { border-color: #2563eb; ring: 2px; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2); }
+        .dark ::-webkit-scrollbar-track { background: #1e293b; }
+        .dark ::-webkit-scrollbar-thumb { background: #475569; }
 
-        /* Rich Text Output Styles */
+        /* Inputs */
+        input, textarea, select { outline: none; transition: all 0.2s; }
+        input:focus, textarea:focus, select:focus { ring: 2px; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2); border-color: #2563eb; }
+        
+        .dark input, .dark textarea, .dark select { 
+            background-color: #334155; 
+            border-color: #475569; 
+            color: #f8fafc; 
+        }
+        .dark input::placeholder { color: #94a3b8; }
+
+        /* Touch Targets (Fat Finger Optimization) */
+        .touch-group-label {
+            @apply flex items-center justify-center p-3 border-2 rounded-lg cursor-pointer transition-all select-none font-bold text-sm text-center bg-white text-slate-600 border-slate-200 hover:bg-slate-50;
+        }
+        .touch-group-label.dark-mode-target {
+            @apply dark:bg-slate-800 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700;
+        }
+        
+        /* Active States for Button Groups */
+        .peer:checked + .touch-group-label {
+            @apply bg-blue-600 text-white border-blue-700 shadow-md transform scale-[1.02];
+        }
+        .peer:checked + .touch-group-label-red {
+            @apply bg-red-600 text-white border-red-700 shadow-md transform scale-[1.02];
+        }
+        .peer:checked + .touch-group-label-amber {
+            @apply bg-amber-500 text-white border-amber-600 shadow-md transform scale-[1.02];
+        }
+
+        /* Checkbox Custom Style */
+        .chk-label {
+            @apply flex items-center gap-2 p-2 rounded hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer text-xs font-bold text-slate-700 dark:text-slate-300 transition;
+        }
+        .chk-input {
+            @apply w-5 h-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500 dark:bg-slate-600 dark:border-slate-500;
+        }
+
+        /* Buttons */
+        .std-btn { 
+            @apply transition-all border border-slate-300 bg-slate-50 text-slate-700 rounded-lg font-bold px-4 py-2 text-xs inline-flex items-center justify-center hover:bg-slate-200 active:translate-y-px;
+        }
+        .dark .std-btn {
+            @apply bg-slate-700 border-slate-600 text-slate-200 hover:bg-slate-600;
+        }
+
+        .drug-btn {
+            @apply bg-white border border-slate-300 text-slate-600 font-bold text-xs px-3 py-3 rounded-lg shadow-sm transition-all hover:bg-slate-50 active:scale-95 flex-grow text-center min-w-[80px];
+        }
+        .dark .drug-btn {
+            @apply bg-slate-800 border-slate-600 text-slate-300 hover:bg-slate-700;
+        }
+
+        /* Rich Text Output */
         .rich-output {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             font-size: 0.85rem;
@@ -34,944 +101,596 @@
             overflow-y: auto;
             white-space: pre-wrap; 
         }
-        .rich-output strong { font-weight: 800; color: #0f172a; }
-        .rich-output u { text-decoration: underline; }
-        .rich-output em { color: #64748b; font-style: italic; }
+        .dark .rich-output {
+            background-color: #1e293b;
+            color: #cbd5e1;
+            border-color: #475569;
+        }
+        .rich-output strong { font-weight: 800; }
+        .dark .rich-output strong { color: white; }
 
-        /* Buttons */
-        .std-btn { 
-            transition: all 0.1s; 
-            border: 1px solid #cbd5e1; 
-            background-color: #f8fafc; 
-            color: #334155; 
-            border-radius: 0.5rem;
-            font-weight: 700;
-            padding: 0.5rem 1rem;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.75rem;
-            cursor: pointer;
-        }
-        .std-btn:hover { background-color: #e2e8f0; }
-        .std-btn:active { transform: translateY(1px); }
-
-        .btn-primary { 
-            background-color: #2563eb; 
-            color: white; 
-            border: 1px solid #1d4ed8; 
-            box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3);
-        }
-        .btn-primary:hover { background-color: #1d4ed8; }
-
-        .drug-btn {
-            background-color: white;
-            border: 1px solid #cbd5e1;
-            color: #475569;
-            font-weight: 700;
-            font-size: 0.75rem;
-            padding: 0.5rem 0.75rem;
-            border-radius: 0.5rem;
-            transition: all 0.1s;
-        }
-        .drug-btn:hover { background-color: #f1f5f9; border-color: #94a3b8; }
-        .drug-btn:active { transform: scale(0.95); }
-
-        /* Cards */
-        .section-card {
-            background-color: white;
-            border-radius: 0.75rem;
-            box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-            border: 2px solid #cbd5e1; 
-            overflow: hidden;
-            margin-bottom: 1.5rem;
-            padding: 1.25rem;
-        }
-
-        .section-title {
-            font-size: 1.5rem;
-            font-weight: 900;
-            margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid #e2e8f0;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .sub-card {
-            background-color: #f8fafc;
-            border: 1px solid #cbd5e1;
-            border-radius: 0.5rem;
-            padding: 1rem;
-            margin-top: 1rem;
-        }
-
-        label {
-            display: block;
-            font-size: 0.75rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            color: #475569; 
-            margin-bottom: 0.25rem;
-        }
-
-        input[type="text"], input[type="number"], input[type="time"], select {
-            width: 100%;
-            padding: 0.5rem;
-            font-size: 0.875rem;
-            border-radius: 0.375rem;
-            border: 1px solid #94a3b8; 
-            font-weight: 600;
-        }
-
-        /* Modal */
-        #custom-modal-backdrop {
-            background-color: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(2px);
-        }
-
-        /* Tabs */
-        .tab-btn {
-            padding: 0.75rem 1.5rem;
-            font-weight: 800;
-            font-size: 0.875rem;
-            border-bottom: 3px solid transparent;
-            color: #64748b;
-            transition: all 0.2s;
-            cursor: pointer;
-        }
-        .tab-btn.active {
-            color: #0f172a;
-            border-bottom-color: #0f172a;
-        }
-        .tab-btn:hover:not(.active) {
-            color: #334155;
-            border-bottom-color: #cbd5e1;
-        }
-        
-        /* Agitated Specifics */
+        /* Agitated Stripes */
         .agitated-warning {
-            background: repeating-linear-gradient(
-              45deg,
-              #fffbeb,
-              #fffbeb 10px,
-              #fef3c7 10px,
-              #fef3c7 20px
-            );
+            background: repeating-linear-gradient(45deg, #fffbeb, #fffbeb 10px, #fef3c7 10px, #fef3c7 20px);
+        }
+        .dark .agitated-warning {
+            background: repeating-linear-gradient(45deg, #450a0a, #450a0a 10px, #7f1d1d 10px, #7f1d1d 20px);
         }
 
-        /* --- PRINT STYLES --- */
+        /* Print Hiding */
         @media print {
-            @page { margin: 0.5cm; size: A4 portrait; }
-            body { background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             .no-print { display: none !important; }
-            
-            /* Logic to switch between printing Form vs Letter */
-            body.printing-letter header, 
-            body.printing-letter main,
-            body.printing-letter .print-header,
-            body.printing-letter #tabs-container { 
-                display: none !important; 
-            }
-            
-            body.printing-letter #discharge-letter-view {
-                display: block !important;
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                margin: 0;
-                padding: 0;
-                border: none;
-                box-shadow: none;
-            }
-
-            body:not(.printing-letter) #discharge-letter-view {
-                display: none !important;
-            }
-
-            /* Standard Form Print Styles */
-            body:not(.printing-letter) .section-card { 
-                box-shadow: none !important; 
-                border: 1px solid #ccc !important;
-                break-inside: avoid;
-                margin-bottom: 1rem;
-                padding: 0.5rem;
-            }
-            body:not(.printing-letter) header { display: none; }
-            body:not(.printing-letter) .print-header { display: block !important; }
-            body:not(.printing-letter) .container { max-width: 100% !important; padding: 0 !important; }
-            body:not(.printing-letter) .lg\:col-span-8 { width: 100% !important; }
-            body:not(.printing-letter) .lg\:col-span-4 { display: none !important; }
-
-            /* Tab Handling for Print */
-            #tab-agitated.hidden, #tab-procedural.hidden { display: none !important; }
-            /* Force visible whichever is active on screen */
+            body { background: white !important; color: black !important; }
+            .section-card { break-inside: avoid; border: 1px solid #ccc !important; box-shadow: none !important; }
+            .dark { color-scheme: light; } 
+            .dark .section-card { background: white !important; color: black !important; }
+            #sticky-footer { display: none !important; }
         }
     </style>
 </head>
-<body class="bg-slate-100 text-slate-900 antialiased pb-10">
+<body class="bg-slate-100 text-slate-900 dark:bg-slate-900 dark:text-slate-100 antialiased pb-24 transition-colors duration-200">
 
-    <header class="bg-white shadow-sm sticky top-0 z-50 border-b border-slate-300 no-print">
-        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="flex items-center gap-4">
-                <img src="https://iili.io/KGQOvkl.md.png" alt="Logo" class="h-16 md:h-20 w-auto object-contain" onerror="this.style.display='none'">
+    <header class="bg-white dark:bg-slate-800 shadow-sm sticky top-0 z-50 border-b border-slate-300 dark:border-slate-700 no-print">
+        <div class="container mx-auto px-4 py-2 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <img src="https://iili.io/KGQOvkl.md.png" alt="Logo" class="h-10 md:h-12 w-auto object-contain" onerror="this.style.display='none'">
                 <div>
-                    <h1 class="text-xl md:text-2xl font-black text-slate-900 leading-tight">Sedation Record</h1>
-                    <p class="text-xs text-green-600 font-bold flex items-center gap-1">
+                    <h1 class="text-lg md:text-xl font-black leading-tight">Sedation Record</h1>
+                    <p class="text-[10px] text-green-600 font-bold flex items-center gap-1">
                         <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> Auto-save enabled
                     </p>
                 </div>
             </div>
+            
             <div class="flex items-center gap-2">
-                 <a href="https://drive.google.com/file/d/1nI7EvvR_6Pg1l_L7c0Z5PevoseCy7Qia/view?usp=sharing" target="_blank" class="hidden sm:inline-flex items-center gap-2 px-3 py-1 text-xs font-bold text-blue-700 bg-blue-50 rounded border border-blue-200 hover:bg-blue-100 transition">
-                    Paper Form
-                </a>
-                <button id="header-print-letter-btn" class="hidden sm:block px-4 py-2 bg-purple-600 text-white text-xs font-bold rounded hover:bg-purple-700 transition border-2 border-purple-800">
-                    DISCHARGE LETTER
+                <button id="dark-mode-toggle" class="p-2 rounded-full bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 transition" title="Toggle Dark Mode">
+                    <span class="dark:hidden">🌙</span>
+                    <span class="hidden dark:inline">☀️</span>
                 </button>
-                <button id="header-print-btn" class="px-4 py-2 bg-slate-800 text-white text-xs font-bold rounded hover:bg-slate-700 transition border-2 border-slate-900">
-                    PRINT RECORD
+
+                <button id="header-print-letter-btn" class="hidden sm:inline-flex px-3 py-2 bg-purple-600 text-white text-xs font-bold rounded hover:bg-purple-700 transition">
+                    LETTER
+                </button>
+                <button id="header-print-btn" class="px-3 py-2 bg-slate-800 dark:bg-slate-700 text-white text-xs font-bold rounded hover:bg-slate-700 dark:hover:bg-slate-600 transition">
+                    PRINT
+                </button>
+                <button id="reset-btn" class="px-3 py-2 bg-red-100 text-red-700 text-xs font-bold rounded hover:bg-red-200 transition">
+                    RESET
                 </button>
             </div>
         </div>
         
-        <div id="tabs-container" class="container mx-auto px-4 flex gap-4 border-t border-slate-100 bg-white">
-            <button id="btn-tab-procedural" class="tab-btn active">Procedural Sedation</button>
-            <button id="btn-tab-agitated" class="tab-btn text-red-700 hover:text-red-900">🚨 Agitated Patient (Emergency)</button>
+        <div id="tabs-container" class="container mx-auto px-4 flex gap-4 border-t border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800">
+            <button id="btn-tab-procedural" class="flex-1 py-3 text-sm font-black text-center border-b-4 border-blue-600 text-blue-800 dark:text-blue-400">Standard Sedation</button>
+            <button id="btn-tab-agitated" class="flex-1 py-3 text-sm font-black text-center border-b-4 border-transparent text-slate-500 hover:text-red-600 dark:text-slate-400">🚨 Agitated Patient</button>
         </div>
     </header>
 
-    <main id="main-app-container" class="container mx-auto px-4 py-6"> 
+    <main id="main-app-container" class="container mx-auto px-4 py-4 max-w-7xl"> 
         
-        <div id="tab-procedural" class="grid grid-cols-1 lg:grid-cols-12 gap-6 transition-opacity duration-300">
+        <div id="tab-procedural" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-            <div class="lg:col-span-8 flex flex-col gap-6">
-
-                <div class="hidden print-header mb-6 text-center border-b-2 border-slate-800 pb-4">
-                     <h1 class="text-3xl font-black text-slate-900">Procedural Sedation Record</h1>
-                     <p class="text-sm text-slate-500 font-bold">RCEM Best Practice Guidelines (2022)</p>
-                </div>
-
+            <div class="lg:col-span-8 flex flex-col gap-4">
                 <form id="sedation-form" onsubmit="return false;">
-                    
-                    <div class="flex flex-col gap-6">
+                    <div class="flex flex-col gap-4">
 
-                        <div class="section-card border-l-[8px] border-l-blue-600">
-                            <div class="section-title text-blue-800">1. Patient & Procedure</div>
+                        <div id="section-1" class="section-card bg-white dark:bg-slate-800 border-l-[6px] border-l-blue-600 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 p-4 transition-all">
+                            <div class="flex justify-between items-center mb-2 cursor-pointer" onclick="toggleSection('section-1-content')">
+                                <h2 class="text-lg font-black text-blue-800 dark:text-blue-400">1. Patient & Procedure</h2>
+                                <span class="text-xs text-slate-400 toggle-icon">▼</span>
+                            </div>
                             
-                            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                                <div class="md:col-span-2">
-                                    <label for="age">Age</label>
-                                    <input type="number" id="age" placeholder="Yr" class="font-bold border-slate-400 rounded-md">
-                                </div>
-                                <div class="md:col-span-2">
-                                    <label for="weight">Weight (kg) <span class="text-red-500">*</span></label>
-                                    <div class="flex items-center gap-2">
-                                        <input type="number" id="weight" placeholder="kg" class="font-bold border-slate-400 rounded-md">
-                                        <label class="flex items-center gap-1 bg-slate-100 px-2 py-2 rounded border border-slate-400 cursor-pointer h-[42px] mt-[1px] hover:bg-slate-200">
-                                            <input type="checkbox" id="weight-estimated" class="w-4 h-4 text-blue-600 rounded border-slate-400">
-                                            <span class="text-[10px] uppercase font-bold text-slate-600">Est</span>
-                                        </label>
+                            <div id="section-1-content" class="transition-height overflow-hidden">
+                                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-2">
+                                    <div class="md:col-span-2">
+                                        <label class="text-xs font-bold text-slate-500 uppercase">Age</label>
+                                        <input type="number" id="age" placeholder="Yr" class="p-2 border rounded-lg w-full font-bold dark:bg-slate-700 dark:border-slate-600">
+                                    </div>
+                                    <div class="md:col-span-2">
+                                        <label class="text-xs font-bold text-slate-500 uppercase">Weight (kg) <span class="text-red-500">*</span></label>
+                                        <div class="flex gap-2">
+                                            <input type="number" id="weight" placeholder="kg" class="p-2 border rounded-lg w-full font-bold dark:bg-slate-700 dark:border-slate-600">
+                                            <label class="cursor-pointer relative min-w-[60px]">
+                                                <input type="checkbox" id="weight-estimated" class="peer sr-only">
+                                                <div class="h-full flex items-center justify-center border rounded-lg bg-slate-50 text-slate-500 font-bold text-[10px] uppercase peer-checked:bg-blue-600 peer-checked:text-white dark:bg-slate-700 dark:border-slate-600 transition">Est</div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="md:col-span-4">
+                                        <label class="text-xs font-bold text-slate-500 uppercase">Allergies</label>
+                                        <div id="allergy-container" class="transition-colors rounded-lg">
+                                            <input type="text" id="allergies" placeholder="Reaction details..." class="w-full p-2 border rounded-lg font-bold text-red-700 dark:text-red-400 border-slate-300 dark:bg-slate-700 dark:border-slate-600">
+                                        </div>
+                                    </div>
+                                    <div class="md:col-span-2">
+                                        <label class="text-xs font-bold text-slate-500 uppercase">Procedure</label>
+                                        <input type="text" id="procedure" class="w-full p-2 border rounded-lg dark:bg-slate-700 dark:border-slate-600">
+                                    </div>
+                                    <div class="md:col-span-2">
+                                        <label class="text-xs font-bold text-slate-500 uppercase">Indication</label>
+                                        <input type="text" id="indication" class="w-full p-2 border rounded-lg dark:bg-slate-700 dark:border-slate-600">
+                                    </div>
+                                    <div class="md:col-span-4">
+                                        <label class="text-xs font-bold text-slate-500 uppercase">Pre-Sedation Analgesia</label>
+                                        <input type="text" id="pre-analgesia" placeholder="e.g. IV Morphine" class="w-full p-2 border rounded-lg dark:bg-slate-700 dark:border-slate-600">
+                                    </div>
+                                    
+                                    <div class="md:col-span-4 grid grid-cols-2 gap-4 border-t pt-2 dark:border-slate-600 mt-2">
+                                        <div><label class="text-[10px] font-bold uppercase">Sedationist</label><input type="text" id="sedationist" class="w-full p-1 border rounded text-xs dark:bg-slate-700 dark:border-slate-600"></div>
+                                        <div><label class="text-[10px] font-bold uppercase">Grade</label><input type="text" id="sedationist-grade" class="w-full p-1 border rounded text-xs dark:bg-slate-700 dark:border-slate-600"></div>
+                                        <div><label class="text-[10px] font-bold uppercase">Proc. Doctor</label><input type="text" id="procedure-doctor" class="w-full p-1 border rounded text-xs dark:bg-slate-700 dark:border-slate-600"></div>
+                                        <div><label class="text-[10px] font-bold uppercase">Nurse</label><input type="text" id="nurse" class="w-full p-1 border rounded text-xs dark:bg-slate-700 dark:border-slate-600"></div>
                                     </div>
                                 </div>
-                                <div class="md:col-span-4">
-                                    <label for="allergies">Allergies</label>
-                                    <input type="text" id="allergies" placeholder="Reaction details..." class="text-red-700 font-bold border-slate-400 rounded-md">
-                                </div>
-                                <div class="md:col-span-4">
-                                    <label for="pre-analgesia">Pre-Sedation Analgesia</label>
-                                    <input type="text" id="pre-analgesia" placeholder="e.g. IV Morphine 10mg @ 14:00" class="border-slate-400 rounded-md">
-                                </div>
-                                <div class="md:col-span-2">
-                                    <label for="procedure">Procedure</label>
-                                    <input type="text" id="procedure" class="border-slate-400 rounded-md">
-                                </div>
-                                <div class="md:col-span-2">
-                                    <label for="indication">Indication</label>
-                                    <input type="text" id="indication" class="border-slate-400 rounded-md">
-                                </div>
                                 
-                                <div class="md:col-span-4 mt-2 pt-2 border-t border-slate-200 grid grid-cols-1 md:grid-cols-4 gap-4">
-                                    <div><label>Sedationist</label><input type="text" id="sedationist" class="border-slate-400 rounded-md"></div>
-                                    <div><label>Grade</label><input type="text" id="sedationist-grade" placeholder="e.g. SpR / EM-ACPs" class="border-slate-400 rounded-md"></div>
-                                    <div><label>Procedure Dr</label><input type="text" id="procedure-doctor" class="border-slate-400 rounded-md"></div>
-                                    <div><label>Nurse</label><input type="text" id="nurse" class="border-slate-400 rounded-md"></div>
+                                <div class="mt-4 p-3 bg-blue-50 dark:bg-slate-700/50 rounded-lg border border-blue-100 dark:border-slate-600">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="text-xs font-black text-blue-900 dark:text-blue-300">Standard Dose Guide</span>
+                                        <label class="flex items-center gap-2 cursor-pointer">
+                                            <input type="checkbox" id="frail-elderly" class="peer sr-only">
+                                            <div class="px-2 py-1 bg-white border rounded text-[10px] font-bold text-slate-500 peer-checked:bg-blue-600 peer-checked:text-white transition">Frail / >65</div>
+                                        </label>
+                                    </div>
+                                    <button type="button" id="calculate-doses-button" class="w-full py-2 bg-white dark:bg-slate-600 border border-blue-200 dark:border-slate-500 rounded font-bold text-blue-700 dark:text-blue-200 shadow-sm text-xs">
+                                        CALCULATE RANGES
+                                    </button>
+                                    <div id="dose-output" class="hidden mt-2 pt-2 border-t border-blue-200 dark:border-slate-600 text-sm font-mono text-slate-800 dark:text-slate-200"></div>
                                 </div>
-                            </div>
-
-                            <div class="sub-card bg-blue-50 border-blue-200 mt-4 no-print">
-                                <div class="flex justify-between items-center mb-2">
-                                    <label class="text-blue-900 font-black">Estimated Dose Guide (Adults)</label>
-                                    <label class="flex items-center gap-2 cursor-pointer">
-                                        <input type="checkbox" id="frail-elderly" class="rounded text-blue-600 border-blue-400">
-                                        <span class="text-xs text-blue-800 font-bold">Frail / >65?</span>
-                                    </label>
-                                </div>
-                                <button type="button" id="calculate-doses-button" class="w-full std-btn bg-white border-blue-300 text-blue-700 hover:bg-blue-100">
-                                    Calculate Ranges
-                                </button>
-                                <div id="dose-output" class="mt-2 p-2 bg-white rounded border border-blue-200 text-sm font-mono hidden text-blue-900"></div>
                             </div>
                         </div>
 
-                        <div class="section-card border-l-[8px] border-l-orange-500">
-                            <div class="section-title text-orange-800">2. Pre-Sedation Assessment</div>
-                            
-                            <div class="flex flex-col gap-4">
-                                
-                                <div class="sub-card mt-0 border-orange-200 bg-orange-50/50">
-                                    <label class="border-b border-orange-200 pb-1 mb-3 text-orange-900">Consent & Capacity</label>
-                                    <div class="flex flex-col gap-3">
-                                        <div class="flex items-center justify-between">
-                                            <span class="text-sm font-bold text-slate-700">Does patient have capacity?</span>
-                                            <div class="flex bg-white rounded p-1 border border-slate-300">
-                                                <label class="cursor-pointer px-3 py-1"><input type="radio" name="capacity" value="Yes" checked class="hidden peer"><span class="text-xs font-bold text-slate-400 peer-checked:text-blue-600 peer-checked:underline">Yes</span></label>
-                                                <label class="cursor-pointer px-3 py-1"><input type="radio" name="capacity" value="No" class="hidden peer"><span class="text-xs font-bold text-slate-400 peer-checked:text-red-600 peer-checked:underline">No</span></label>
-                                            </div>
-                                        </div>
-                                        
-                                        <div id="capacity-no-options" class="hidden pl-4 border-l-4 border-red-300 ml-1 bg-red-50 p-2 rounded-r">
-                                             <label class="flex items-center gap-2 font-bold cursor-pointer text-xs mb-1"><input type="radio" name="consent-type" value="Best Interests" class="rounded text-red-600 border-red-400"> Best Interests Form Completed</label>
-                                             <label class="flex items-center gap-2 font-bold cursor-pointer text-xs"><input type="radio" name="consent-type" value="Emergency" class="rounded text-red-600 border-red-400"> Emergency Doctrine</label>
-                                        </div>
+                        <div id="section-2" class="section-card bg-white dark:bg-slate-800 border-l-[6px] border-l-orange-500 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 p-4">
+                            <div class="flex justify-between items-center mb-2 cursor-pointer" onclick="toggleSection('section-2-content')">
+                                <h2 class="text-lg font-black text-orange-800 dark:text-orange-400">2. Assessment & Risks</h2>
+                                <span class="text-xs text-slate-400 toggle-icon">▼</span>
+                            </div>
 
-                                        <div id="capacity-yes-options" class="pl-0">
-                                             <div class="flex gap-4 mb-3">
-                                                <label class="flex items-center gap-2 font-bold text-slate-700 cursor-pointer text-xs"><input type="radio" name="consent-type" value="Written" class="text-blue-600 border-slate-400 focus:ring-blue-500 w-4 h-4"> Written Consent</label>
-                                                <label class="flex items-center gap-2 font-bold text-slate-700 cursor-pointer text-xs"><input type="radio" name="consent-type" value="Verbal" class="text-blue-600 border-slate-400 focus:ring-blue-500 w-4 h-4"> Verbal Consent</label>
-                                             </div>
-                                             <div class="grid grid-cols-2 gap-2 border-t border-slate-200 pt-2">
-                                                <label class="flex items-center gap-2 font-medium cursor-pointer text-xs text-slate-600"><input type="checkbox" id="consent-leaflet" class="rounded text-green-600 border-slate-400"> Information Leaflet Given</label>
-                                                <label class="flex items-center gap-2 font-medium cursor-pointer text-xs text-slate-600"><input type="checkbox" id="consent-questions" class="rounded text-green-600 border-slate-400"> Questions Answered</label>
-                                            </div>
-                                        </div>
+                            <div id="section-2-content" class="transition-height overflow-hidden">
+                                <div class="mb-4">
+                                    <label class="text-xs font-bold text-slate-500 uppercase mb-1">Has Capacity?</label>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <label class="cursor-pointer">
+                                            <input type="radio" name="capacity" value="Yes" checked class="peer sr-only">
+                                            <div class="touch-group-label dark-mode-target">YES</div>
+                                        </label>
+                                        <label class="cursor-pointer">
+                                            <input type="radio" name="capacity" value="No" class="peer sr-only">
+                                            <div class="touch-group-label text-red-700 dark-mode-target">NO</div>
+                                        </label>
                                     </div>
+                                    <div id="capacity-options" class="hidden mt-2"><input type="radio" name="consent-type" value="Best Interests" checked></div>
                                 </div>
 
-                                <div class="sub-card mt-0 border-slate-300">
-                                    <label class="border-b border-slate-200 pb-1 mb-2">Risk Discussion & Frequency (RCEM)</label>
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 px-2">
-                                        <div>
-                                            <span class="text-[10px] font-black text-slate-500 uppercase mb-1 block">Common (>1 in 100)</span>
-                                            <div class="space-y-1">
-                                                <label class="flex items-center gap-2 font-medium text-xs text-slate-700"><input id="risk-nausea" type="checkbox" class="rounded border-slate-400"> Nausea / Vomiting</label>
-                                                <label class="flex items-center gap-2 font-medium text-xs text-slate-700"><input id="risk-drowsy" type="checkbox" class="rounded border-slate-400"> Drowsiness / Ataxia</label>
-                                                <label class="flex items-center gap-2 font-medium text-xs text-slate-700"><input id="risk-hypotension" type="checkbox" class="rounded border-slate-400"> Hypotension (~1 in 50)</label>
-                                                <label class="flex items-center gap-2 font-medium text-xs text-slate-700"><input id="risk-resp-depress" type="checkbox" class="rounded border-slate-400"> Resp. Depression/Hypoxia (~1 in 50)</label>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <span class="text-[10px] font-black text-red-700 uppercase mb-1 block">Rare (~1 in 1000)</span>
-                                            <div class="space-y-1">
-                                                <label class="flex items-center gap-2 font-bold text-xs text-red-900"><input id="risk-laryngospasm" type="checkbox" class="rounded border-red-300"> Laryngospasm (1:1000)</label>
-                                                <label class="flex items-center gap-2 font-bold text-xs text-red-900"><input id="risk-aspiration" type="checkbox" class="rounded border-red-300"> Aspiration (1:1000 - 1:3000)</label>
-                                                <label class="flex items-center gap-2 font-bold text-xs text-red-900"><input id="risk-allergy" type="checkbox" class="rounded border-red-300"> Anaphylaxis</label>
-                                            </div>
-                                        </div>
-                                        <div class="md:col-span-2 border-t border-slate-200 pt-2">
-                                            <span class="text-[10px] font-black text-slate-500 uppercase mb-1 block">Procedure Outcomes</span>
-                                            <div class="flex flex-wrap gap-4">
-                                                <label class="flex items-center gap-2 font-medium text-xs text-slate-700"><input id="risk-failure" type="checkbox" class="rounded border-slate-400"> Failure of Procedure (May need GA)</label>
-                                                <label class="flex items-center gap-2 font-medium text-xs text-slate-700"><input id="risk-treatment" type="checkbox" class="rounded border-slate-400"> Need for further treatment / admission</label>
-                                                <label class="flex items-center gap-2 font-medium text-xs text-slate-700"><input id="risk-emergence" type="checkbox" class="rounded border-slate-400"> Emergence Reaction (Ketamine)</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="sub-card mt-0 border-slate-300">
-                                    <label>Fasting Status</label>
-                                    <div class="grid grid-cols-2 gap-4">
-                                        <div><span class="text-[10px] uppercase font-bold text-slate-500">Food</span><input type="time" id="last-food" class="border-slate-400 rounded-md"></div>
-                                        <div><span class="text-[10px] uppercase font-bold text-slate-500">Clear Fluid</span><input type="time" id="last-fluid" class="border-slate-400 rounded-md"></div>
-                                    </div>
-                                </div>
-                                
-                                <div class="sub-card mt-0 border-slate-300">
-                                    <label class="border-b border-slate-200 pb-1 mb-2">Airway Assessment</label>
+                                <div id="airway-card" class="p-3 border rounded-lg mb-4 bg-slate-50 dark:bg-slate-700/30 dark:border-slate-600 transition-colors duration-300">
+                                    <label class="text-xs font-black text-slate-600 dark:text-slate-400 uppercase border-b border-slate-300 dark:border-slate-600 pb-1 mb-2 block">Airway Assessment</label>
+                                    
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div class="border-r md:border-slate-200 pr-2">
-                                            <span class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Mallampati Score</span>
-                                            <div class="flex items-start gap-2">
-                                                 <img src="images/Mallampati.jpg" alt="Mallampati" class="w-16 h-auto object-contain border rounded cursor-pointer hover:scale-150 transition origin-top-left bg-white">
-                                                 <div class="flex-1 grid grid-cols-2 gap-1">
-                                                     <label class="cursor-pointer text-center"><input type="radio" name="airway-mallampati" value="I" class="sr-only peer"><div class="px-2 py-1 border border-slate-300 rounded text-xs peer-checked:bg-blue-600 peer-checked:text-white transition">Class I</div></label>
-                                                     <label class="cursor-pointer text-center"><input type="radio" name="airway-mallampati" value="II" class="sr-only peer"><div class="px-2 py-1 border border-slate-300 rounded text-xs peer-checked:bg-blue-600 peer-checked:text-white transition">Class II</div></label>
-                                                     <label class="cursor-pointer text-center"><input type="radio" name="airway-mallampati" value="III" class="sr-only peer"><div class="px-2 py-1 border border-amber-300 bg-amber-50 rounded text-xs peer-checked:bg-amber-600 peer-checked:text-white transition">Class III</div></label>
-                                                     <label class="cursor-pointer text-center"><input type="radio" name="airway-mallampati" value="IV" class="sr-only peer"><div class="px-2 py-1 border border-red-300 bg-red-50 rounded text-xs peer-checked:bg-red-600 peer-checked:text-white transition">Class IV</div></label>
-                                                 </div>
+                                        <div>
+                                            <span class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Mallampati</span>
+                                            <div class="flex items-center gap-2 mb-2">
+                                                <img src="https://iili.io/KGQOvkl.md.png" alt="Mallampati" class="h-10 w-auto rounded border" onerror="this.style.display='none'"> 
+                                                <div class="flex-1 flex gap-1">
+                                                    <label class="flex-1 cursor-pointer"><input type="radio" name="airway-mallampati" value="I" class="peer sr-only"><div class="touch-group-label dark-mode-target py-2">I</div></label>
+                                                    <label class="flex-1 cursor-pointer"><input type="radio" name="airway-mallampati" value="II" class="peer sr-only"><div class="touch-group-label dark-mode-target py-2">II</div></label>
+                                                    <label class="flex-1 cursor-pointer"><input type="radio" name="airway-mallampati" value="III" class="peer sr-only"><div class="touch-group-label-amber dark-mode-target py-2">III</div></label>
+                                                    <label class="flex-1 cursor-pointer"><input type="radio" name="airway-mallampati" value="IV" class="peer sr-only"><div class="touch-group-label-red dark-mode-target py-2">IV</div></label>
+                                                </div>
                                             </div>
                                         </div>
-                                
                                         <div>
-                                            <span class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Upper Lip Bite Test</span>
-                                            <div class="flex items-start gap-2">
-                                                 <img src="images/upperlipbitetest.png" alt="ULBT" class="w-16 h-auto object-contain border rounded cursor-pointer hover:scale-150 transition origin-top-left bg-white">
-                                                 <div class="flex-1 grid grid-cols-1 gap-1">
-                                                     <label class="cursor-pointer"><input type="radio" name="airway-ulbt" value="1" class="sr-only peer"><div class="px-2 py-1 border border-slate-300 rounded text-xs peer-checked:bg-blue-600 peer-checked:text-white transition text-center">Class 1 (Lower incisors bite upper lip)</div></label>
-                                                     <label class="cursor-pointer"><input type="radio" name="airway-ulbt" value="2" class="sr-only peer"><div class="px-2 py-1 border border-slate-300 rounded text-xs peer-checked:bg-blue-600 peer-checked:text-white transition text-center">Class 2 (Can bite mucosa only)</div></label>
-                                                     <label class="cursor-pointer"><input type="radio" name="airway-ulbt" value="3" class="sr-only peer"><div class="px-2 py-1 border border-red-300 bg-red-50 rounded text-xs peer-checked:bg-red-600 peer-checked:text-white transition text-center">Class 3 (Cannot bite upper lip)</div></label>
-                                                 </div>
+                                            <span class="text-[10px] font-bold text-slate-500 uppercase block mb-1">ULBT (Upper Lip Bite)</span>
+                                            <div class="flex items-center gap-2 mb-2">
+                                                <img src="https://iili.io/2d8S5X.png" alt="ULBT" class="h-10 w-auto rounded border" onerror="this.style.display='none'">
+                                                <div class="flex-1 flex gap-1">
+                                                     <label class="flex-1 cursor-pointer"><input type="radio" name="airway-ulbt" value="1" class="peer sr-only"><div class="touch-group-label dark-mode-target py-2">1</div></label>
+                                                     <label class="flex-1 cursor-pointer"><input type="radio" name="airway-ulbt" value="2" class="peer sr-only"><div class="touch-group-label dark-mode-target py-2">2</div></label>
+                                                     <label class="flex-1 cursor-pointer"><input type="radio" name="airway-ulbt" value="3" class="peer sr-only"><div class="touch-group-label-red dark-mode-target py-2">3</div></label>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                     
-                                    <div class="mt-3 pt-2 border-t border-slate-200">
+                                    <div class="mt-2">
                                         <span class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Difficult Airway Predictors</span>
                                         <div class="flex flex-wrap gap-3">
-                                             <label class="flex items-center gap-2 font-medium text-xs text-slate-700 cursor-pointer"><input id="airway-mouth" type="checkbox" class="rounded text-red-600 border-slate-400"> Mouth Opening &lt;3cm</label>
-                                             <label class="flex items-center gap-2 font-medium text-xs text-slate-700 cursor-pointer"><input id="airway-tmd" type="checkbox" class="rounded text-red-600 border-slate-400"> Thyromental &lt;6cm</label>
-                                             <label class="flex items-center gap-2 font-medium text-xs text-slate-700 cursor-pointer"><input id="airway-neck" type="checkbox" class="rounded text-red-600 border-slate-400"> Limited Neck Mobility</label>
-                                             <label class="flex items-center gap-2 font-medium text-xs text-slate-700 cursor-pointer"><input id="airway-bmi" type="checkbox" class="rounded text-red-600 border-slate-400"> BMI &gt;35</label>
+                                            <label class="chk-label"><input type="checkbox" id="airway-mouth" class="chk-input"> Mouth &lt;3cm</label>
+                                            <label class="chk-label"><input type="checkbox" id="airway-tmd" class="chk-input"> Thyromental &lt;6cm</label>
+                                            <label class="chk-label"><input type="checkbox" id="airway-neck" class="chk-input"> Neck Immobile</label>
+                                            <label class="chk-label"><input type="checkbox" id="airway-bmi" class="chk-input"> BMI &gt;35</label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mt-2 pt-2 border-t border-slate-200 dark:border-slate-600">
+                                         <div class="flex justify-between items-center mb-1">
+                                             <span class="text-[10px] font-bold text-slate-500 uppercase">ASA Grade</span>
+                                             <button type="button" onclick="document.getElementById('asa-help').classList.toggle('hidden')" class="text-[10px] bg-slate-200 dark:bg-slate-600 px-2 rounded">?</button>
+                                         </div>
+                                         <div id="asa-help" class="hidden text-xs text-slate-500 mb-2 italic">I:Healthy II:Mild III:Severe IV:Threat to Life</div>
+                                         <div class="flex gap-1">
+                                                <label class="flex-1 cursor-pointer"><input type="radio" name="asa-grade" value="I" class="peer sr-only"><div class="touch-group-label dark-mode-target py-2">I</div></label>
+                                                <label class="flex-1 cursor-pointer"><input type="radio" name="asa-grade" value="II" class="peer sr-only"><div class="touch-group-label dark-mode-target py-2">II</div></label>
+                                                <label class="flex-1 cursor-pointer"><input type="radio" name="asa-grade" value="III" class="peer sr-only"><div class="touch-group-label-amber dark-mode-target py-2">III</div></label>
+                                                <label class="flex-1 cursor-pointer"><input type="radio" name="asa-grade" value="IV" class="peer sr-only"><div class="touch-group-label-red dark-mode-target py-2">IV</div></label>
+                                         </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-4 bg-slate-50 dark:bg-slate-700/30 p-3 rounded-lg border border-slate-200 dark:border-slate-600">
+                                    <label class="text-xs font-black text-slate-600 dark:text-slate-400 uppercase border-b border-slate-300 dark:border-slate-600 pb-1 mb-2 block">Risk Discussion</label>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div>
+                                            <span class="text-[10px] font-bold text-slate-500 uppercase">Common (>1:100)</span>
+                                            <div class="space-y-1">
+                                                <label class="chk-label"><input type="checkbox" id="risk-nausea" class="chk-input"> Nausea/Vomiting</label>
+                                                <label class="chk-label"><input type="checkbox" id="risk-drowsy" class="chk-input"> Drowsiness</label>
+                                                <label class="chk-label"><input type="checkbox" id="risk-hypotension" class="chk-input"> Hypotension</label>
+                                                <label class="chk-label"><input type="checkbox" id="risk-resp-depress" class="chk-input"> Hypoxia/Resp. Dep</label>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <span class="text-[10px] font-bold text-red-500 uppercase">Rare (~1:1000)</span>
+                                            <div class="space-y-1">
+                                                <label class="chk-label text-red-700"><input type="checkbox" id="risk-laryngospasm" class="chk-input"> Laryngospasm</label>
+                                                <label class="chk-label text-red-700"><input type="checkbox" id="risk-aspiration" class="chk-input"> Aspiration</label>
+                                                <label class="chk-label text-red-700"><input type="checkbox" id="risk-allergy" class="chk-input"> Anaphylaxis</label>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="sub-card border-slate-300 mt-0">
-                                    <div class="flex justify-between items-center mb-2">
-                                        <label class="mb-0">ASA Grade</label>
-                                        <button type="button" id="asa-guide-button" class="text-[10px] bg-slate-200 px-2 rounded font-bold hover:bg-slate-300 no-print">?</button>
+
+                                <div class="grid grid-cols-2 gap-4 mb-2">
+                                    <div>
+                                        <label class="text-[10px] uppercase font-bold text-slate-500">Last Food</label>
+                                        <div class="flex gap-1">
+                                            <input type="time" id="last-food" class="w-full p-2 border rounded-lg dark:bg-slate-700 dark:border-slate-600">
+                                            <button type="button" onclick="setNow('last-food')" class="bg-slate-200 dark:bg-slate-600 text-xs font-bold px-2 rounded hover:bg-slate-300">NOW</button>
+                                        </div>
                                     </div>
-                                    <div id="asa-guide-content" class="hidden text-xs text-slate-600 mb-2 p-2 bg-slate-100 rounded border border-slate-300">
-                                        I:Healthy, II:Mild, III:Severe, IV:Threat to life
+                                    <div>
+                                        <label class="text-[10px] uppercase font-bold text-slate-500">Last Fluid</label>
+                                        <div class="flex gap-1">
+                                            <input type="time" id="last-fluid" class="w-full p-2 border rounded-lg dark:bg-slate-700 dark:border-slate-600">
+                                            <button type="button" onclick="setNow('last-fluid')" class="bg-slate-200 dark:bg-slate-600 text-xs font-bold px-2 rounded hover:bg-slate-300">NOW</button>
+                                        </div>
                                     </div>
-                                    <div class="flex justify-between gap-1">
-                                        <label class="cursor-pointer text-center flex-1"><input type="radio" name="asa-grade" value="I" class="sr-only peer"><div class="py-2 border-2 border-slate-300 rounded-md peer-checked:bg-blue-600 peer-checked:text-white peer-checked:border-blue-700 text-xs font-bold transition hover:bg-slate-50">I</div></label>
-                                        <label class="cursor-pointer text-center flex-1"><input type="radio" name="asa-grade" value="II" class="sr-only peer"><div class="py-2 border-2 border-slate-300 rounded-md peer-checked:bg-blue-600 peer-checked:text-white peer-checked:border-blue-700 text-xs font-bold transition hover:bg-slate-50">II</div></label>
-                                        <label class="cursor-pointer text-center flex-1"><input type="radio" name="asa-grade" value="III" class="sr-only peer"><div class="py-2 border-2 border-amber-200 bg-amber-50 text-amber-800 rounded-md peer-checked:bg-amber-600 peer-checked:text-white peer-checked:border-amber-700 text-xs font-bold transition hover:bg-amber-100">III</div></label>
-                                        <label class="cursor-pointer text-center flex-1"><input type="radio" name="asa-grade" value="IV" class="sr-only peer"><div class="py-2 border-2 border-red-200 bg-red-50 text-red-800 rounded-md peer-checked:bg-red-600 peer-checked:text-white peer-checked:border-red-700 text-xs font-bold transition hover:bg-red-100">IV</div></label>
-                                        <label class="cursor-pointer text-center flex-1"><input type="radio" name="asa-grade" value="V" class="sr-only peer"><div class="py-2 border-2 border-red-200 bg-red-50 text-red-800 rounded-md peer-checked:bg-red-600 peer-checked:text-white peer-checked:border-red-700 text-xs font-bold transition hover:bg-red-100">V</div></label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="section-3" class="section-card bg-white dark:bg-slate-800 border-l-[6px] border-l-green-500 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 p-4">
+                            <div class="flex justify-between items-center mb-2 cursor-pointer" onclick="toggleSection('section-3-content')">
+                                <h2 class="text-lg font-black text-green-800 dark:text-green-400">3. Plan & Safety</h2>
+                                <span class="text-xs text-slate-400 toggle-icon">▼</span>
+                            </div>
+                            
+                            <div id="section-3-content" class="transition-height overflow-hidden">
+                                <label class="text-xs font-bold text-slate-500 uppercase mb-1">SOAP-ME Checklist</label>
+                                <div class="grid grid-cols-5 gap-1 mb-4">
+                                    <label class="cursor-pointer"><input type="checkbox" id="soap-s" class="peer sr-only"><div class="touch-group-label dark-mode-target text-xs p-2">SUCT</div></label>
+                                    <label class="cursor-pointer"><input type="checkbox" id="soap-o" class="peer sr-only"><div class="touch-group-label dark-mode-target text-xs p-2">OXYG</div></label>
+                                    <label class="cursor-pointer"><input type="checkbox" id="soap-a" class="peer sr-only"><div class="touch-group-label dark-mode-target text-xs p-2">AIRW</div></label>
+                                    <label class="cursor-pointer"><input type="checkbox" id="soap-m" class="peer sr-only"><div class="touch-group-label dark-mode-target text-xs p-2">MONI</div></label>
+                                    <label class="cursor-pointer"><input type="checkbox" id="soap-e" class="peer sr-only"><div class="touch-group-label dark-mode-target text-xs p-2">ENV</div></label>
+                                </div>
+                                
+                                <div id="timeout-container" class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 p-3 rounded-lg">
+                                    <label class="text-xs font-black text-yellow-800 dark:text-yellow-500 uppercase mb-2 block">🛑 Safety Time Out</label>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <label class="cursor-pointer"><input type="checkbox" id="to-identity" class="peer sr-only"><div class="touch-group-label dark-mode-target">ID</div></label>
+                                        <label class="cursor-pointer"><input type="checkbox" id="to-role" class="peer sr-only"><div class="touch-group-label dark-mode-target">Roles</div></label>
+                                        <label class="cursor-pointer"><input type="checkbox" id="to-site" class="peer sr-only"><div class="touch-group-label dark-mode-target">Site</div></label>
+                                        <label class="cursor-pointer"><input type="checkbox" id="to-monitoring" class="peer sr-only"><div class="touch-group-label dark-mode-target">Monit</div></label>
                                     </div>
                                 </div>
                                 
-                                <div class="bg-red-50 border border-red-200 p-3 rounded-lg">
-                                    <label class="text-red-800">Contraindications</label>
-                                    <div class="space-y-1 mt-1">
-                                        <label class="flex items-center gap-2 font-bold text-xs text-red-700 cursor-pointer"><input id="ci-allergy" type="checkbox" class="text-red-600 rounded border-red-300"> Known Allergy</label>
-                                        <label class="flex items-center gap-2 font-bold text-xs text-red-700 cursor-pointer"><input id="ci-hemo" type="checkbox" class="text-red-600 rounded border-red-300"> Haemodynamic Instability</label>
-                                        <label class="flex items-center gap-2 font-bold text-xs text-red-700 cursor-pointer"><input id="ci-gcs" type="checkbox" class="text-red-600 rounded border-red-300"> Compromised Airway / GCS</label>
+                                <div class="mt-4">
+                                    <label class="text-xs font-bold text-slate-500 uppercase">Pre-Vitals</label>
+                                    <div class="grid grid-cols-4 gap-2">
+                                        <input type="text" id="pre-vital-hr" placeholder="HR" class="p-2 border rounded text-center dark:bg-slate-700 dark:border-slate-600">
+                                        <input type="text" id="pre-vital-bp" placeholder="BP" class="p-2 border rounded text-center dark:bg-slate-700 dark:border-slate-600">
+                                        <input type="text" id="pre-vital-spo2" placeholder="SpO2" class="p-2 border rounded text-center dark:bg-slate-700 dark:border-slate-600">
+                                        <input type="text" id="pre-vital-rr" placeholder="RR" class="p-2 border rounded text-center dark:bg-slate-700 dark:border-slate-600">
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="section-card border-l-[8px] border-l-green-500">
-                            <div class="section-title text-green-800">3. Plan & Preparation</div>
+                        <div id="section-4" class="bg-slate-800 dark:bg-black rounded-xl p-4 text-white shadow-lg border-2 border-slate-900 page-break">
                             
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <label>Target Level</label>
-                                    <select id="plan-target" class="border-slate-400 rounded-md">
-                                        <option>Minimal (Anxiolysis)</option>
-                                        <option>Moderate (Conscious)</option>
-                                        <option>Deep</option>
-                                        <option>Dissociation</option>
-                                    </select>
+                            <div class="flex flex-col items-center justify-center gap-4 mb-4">
+                                <div class="w-full flex justify-between items-center mb-2">
+                                    <span class="text-xs uppercase font-bold text-slate-400">Sedation Timer</span>
+                                    <button type="button" onclick="document.getElementById('complications-guide').classList.toggle('hidden')" class="text-xs bg-slate-700 px-2 py-1 rounded hover:bg-slate-600">Emergency Guide</button>
                                 </div>
-                                <div>
-                                    <label>Primary Agent(s)</label>
-                                    <input type="text" id="plan-agent" placeholder="e.g. Propofol" class="border-slate-400 rounded-md">
+                                
+                                <div id="complications-guide" class="hidden w-full text-xs text-yellow-300 bg-slate-700 p-2 rounded mb-2 border border-yellow-600">
+                                    <strong>TROOPS/SIVA Quick Ref:</strong><br>
+                                    • Laryngospasm: 100% O₂ / Jaw Thrust / Succinylcholine<br>
+                                    • Hypotension: Fluids / Metaraminol<br>
+                                    • Apnoea: BVM / Airway adjuncts
                                 </div>
+
+                                <div id="timer-display" class="text-6xl md:text-7xl font-mono font-black tracking-widest text-white tabular-nums">00:00</div>
+                                <button type="button" id="sedation-timer-button" class="w-full py-4 bg-green-600 hover:bg-green-500 text-white font-black text-xl rounded-lg shadow-lg border-b-4 border-green-800 active:border-b-0 active:translate-y-1 transition-all">
+                                    START SEDATION TIMER
+                                </button>
                             </div>
 
-                            <div class="sub-card mt-4 border-slate-300">
-                                <label class="mb-2 block">SOAP-ME Checklist</label>
-                                <div class="flex flex-wrap gap-3">
-                                    <label class="flex items-center gap-2 p-2 bg-white border border-slate-300 rounded cursor-pointer hover:bg-green-50"><input id="soap-s" type="checkbox" class="rounded text-green-600 border-slate-400"> <span class="font-semibold text-sm">Suction</span></label>
-                                    <label class="flex items-center gap-2 p-2 bg-white border border-slate-300 rounded cursor-pointer hover:bg-green-50"><input id="soap-o" type="checkbox" class="rounded text-green-600 border-slate-400"> <span class="font-semibold text-sm">Oxygen/BVM</span></label>
-                                    <label class="flex items-center gap-2 p-2 bg-white border border-slate-300 rounded cursor-pointer hover:bg-green-50"><input id="soap-a" type="checkbox" class="rounded text-green-600 border-slate-400"> <span class="font-semibold text-sm">Airway</span></label>
-                                    <label class="flex items-center gap-2 p-2 bg-white border border-slate-300 rounded cursor-pointer hover:bg-green-50"><input id="soap-m" type="checkbox" class="rounded text-green-600 border-slate-400"> <span class="font-semibold text-sm">Monitoring</span></label>
-                                    <label class="flex items-center gap-2 p-2 bg-white border border-slate-300 rounded cursor-pointer hover:bg-green-50"><input id="soap-e" type="checkbox" class="rounded text-green-600 border-slate-400"> <span class="font-semibold text-sm">Env/IV</span></label>
+                            <div class="grid grid-cols-3 gap-2 border-t border-slate-700 pt-4">
+                                <div class="text-center">
+                                    <button type="button" id="procedure-start-button" class="w-full py-2 bg-slate-700 rounded text-slate-300 font-bold text-xs border border-slate-600 hover:bg-slate-600">PROC START</button>
+                                    <span id="procedure-start-output" class="text-xs font-mono text-green-400 block h-4 mt-1"></span>
                                 </div>
-                            </div>
-
-                            <div class="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg flex items-start gap-3">
-                                <input id="plan-aagbi" type="checkbox" class="mt-1 w-5 h-5 rounded text-blue-600 focus:ring-blue-500 border-blue-400">
-                                <div>
-                                    <span class="block text-sm font-black text-blue-900">AAGBI Standard Monitoring Confirmed</span>
-                                    <span class="text-xs text-blue-700 font-bold">ECG, NIBP, SpO2 & <strong>Waveform Capnography</strong> (Continuous)</span>
+                                <div class="text-center">
+                                    <button type="button" id="procedure-end-button" class="w-full py-2 bg-slate-700 rounded text-slate-300 font-bold text-xs border border-slate-600 hover:bg-slate-600">PROC END</button>
+                                    <span id="procedure-end-output" class="text-xs font-mono text-green-400 block h-4 mt-1"></span>
                                 </div>
-                            </div>
-
-                            <div class="mt-4">
-                                <label>Pre-Sedation Vitals</label>
-                                <div class="grid grid-cols-4 gap-2">
-                                    <input type="text" id="pre-vital-hr" placeholder="HR" class="text-center font-mono font-bold border-slate-400 rounded-md">
-                                    <input type="text" id="pre-vital-bp" placeholder="BP" class="text-center font-mono font-bold border-slate-400 rounded-md">
-                                    <input type="text" id="pre-vital-spo2" placeholder="SpO2" class="text-center font-mono font-bold border-slate-400 rounded-md">
-                                    <input type="text" id="pre-vital-rr" placeholder="RR" class="text-center font-mono font-bold border-slate-400 rounded-md">
+                                <div class="text-center">
+                                    <button type="button" id="patient-awake-button" class="w-full py-2 bg-slate-700 rounded text-slate-300 font-bold text-xs border border-slate-600 hover:bg-slate-600">AWAKE</button>
+                                    <span id="patient-awake-output" class="text-xs font-mono text-green-400 block h-4 mt-1"></span>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="section-card border-l-[8px] border-l-yellow-400 bg-yellow-50/50">
-                            <div class="section-title text-yellow-800 border-yellow-200 flex items-center gap-2">
-                                <span>🛑 Safety Time Out</span>
-                            </div>
-                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                 <label class="flex items-center gap-2 font-bold text-slate-800 cursor-pointer border border-yellow-200 bg-white p-3 rounded shadow-sm hover:bg-yellow-50 transition"><input id="to-identity" type="checkbox" class="w-5 h-5 text-yellow-600 rounded border-yellow-400 focus:ring-yellow-500"> Patient ID Confirmed</label>
-                                 <label class="flex items-center gap-2 font-bold text-slate-800 cursor-pointer border border-yellow-200 bg-white p-3 rounded shadow-sm hover:bg-yellow-50 transition"><input id="to-role" type="checkbox" class="w-5 h-5 text-yellow-600 rounded border-yellow-400 focus:ring-yellow-500"> Roles Assigned</label>
-                                 <label class="flex items-center gap-2 font-bold text-slate-800 cursor-pointer border border-yellow-200 bg-white p-3 rounded shadow-sm hover:bg-yellow-50 transition"><input id="to-site" type="checkbox" class="w-5 h-5 text-yellow-600 rounded border-yellow-400 focus:ring-yellow-500"> Site/Proc Confirmed</label>
-                                 <label class="flex items-center gap-2 font-bold text-slate-800 cursor-pointer border border-yellow-200 bg-white p-3 rounded shadow-sm hover:bg-yellow-50 transition"><input id="to-monitoring" type="checkbox" class="w-5 h-5 text-yellow-600 rounded border-yellow-400 focus:ring-yellow-500"> Monitoring Active</label>
-                            </div>
-                        </div>
-
-                        <div class="section-card border-l-[8px] border-l-slate-800 page-break">
-                            <div class="section-title text-slate-800">
-                                4. Intra-Sedation Record
-                                <button type="button" id="complications-guide-button" class="text-[10px] bg-slate-200 px-2 py-1 rounded hover:bg-slate-300 no-print">Guide</button>
-                            </div>
+                        <div class="section-card bg-white dark:bg-slate-800 border-l-[6px] border-l-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 p-4">
                             
-                            <div id="complications-guide-content" class="hidden mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded text-xs">
-                                 <strong class="block mb-1 text-sm text-yellow-900">Quick Reference - Adverse Events & Intervention (TROOPS/SIVA):</strong>
-                                 <ul class="list-disc ml-4 space-y-1 text-slate-700">
-                                    <li><strong>Apnoea:</strong> Stimulate/Airway/BVM.</li>
-                                    <li><strong>Laryngospasm:</strong> 100% O₂ / Jaw Thrust (Larson's) / Succinylcholine if refractory.</li>
-                                    <li><strong>Hypotension:</strong> IV Fluids / Vasoactive drugs (e.g., Metaraminol).</li>
-                                    <li><strong>Agitation:</strong> Reassurance / Benzodiazepine.</li>
-                                 </ul>
-                            </div>
-
-                            <div class="bg-slate-800 rounded-xl p-5 text-white shadow-md mb-6 no-print border-2 border-slate-900">
-                                <div class="flex flex-col md:flex-row items-center justify-between gap-4">
-                                    <div class="text-center md:text-left">
-                                        <div class="text-xs font-bold text-slate-400 uppercase">Sedation Timer</div>
-                                        <div id="timer-display" class="text-5xl font-mono font-black tracking-widest text-white">00:00:00</div>
-                                    </div>
-                                    <button type="button" id="sedation-timer-button" class="std-btn bg-green-600 text-white border-green-700 hover:bg-green-700 w-full md:w-auto text-lg py-3 shadow-lg">
-                                        START TIMER
-                                    </button>
-                                </div>
-                                <div class="grid grid-cols-3 gap-2 mt-4 pt-4 border-t border-slate-700">
-                                    <div class="text-center">
-                                        <button type="button" id="procedure-start-button" class="w-full py-2 text-xs bg-slate-700 hover:bg-slate-600 rounded text-slate-200 font-bold mb-1 border border-slate-600">Proc Start</button>
-                                        <span id="procedure-start-output" class="text-xs font-mono text-green-400 block h-4 font-bold"></span>
-                                    </div>
-                                    <div class="text-center">
-                                        <button type="button" id="procedure-end-button" class="w-full py-2 text-xs bg-slate-700 hover:bg-slate-600 rounded text-slate-200 font-bold mb-1 border border-slate-600">Proc End</button>
-                                        <span id="procedure-end-output" class="text-xs font-mono text-green-400 block h-4 font-bold"></span>
-                                    </div>
-                                    <div class="text-center">
-                                        <button type="button" id="patient-awake-button" class="w-full py-2 text-xs bg-slate-700 hover:bg-slate-600 rounded text-slate-200 font-bold mb-1 border border-slate-600">Awake</button>
-                                        <span id="patient-awake-output" class="text-xs font-mono text-green-400 block h-4 font-bold"></span>
-                                    </div>
-                                </div>
-                            </div>
-
                             <div class="mb-6">
-                                <label class="mb-2 block">Drug Administration</label>
-                                <div id="drug-admin-container" class="flex flex-wrap gap-2 mb-3 no-print">
-                                    <button type="button" class="drug-btn text-indigo-700 border-indigo-200 bg-indigo-50" data-drug="Propofol">Propofol</button>
-                                    <button type="button" class="drug-btn text-orange-700 border-orange-200 bg-orange-50" data-drug="Ketamine">Ketamine</button>
-                                    <button type="button" class="drug-btn text-blue-700 border-blue-200 bg-blue-50" data-drug="Midazolam">Midazolam</button>
-                                    <button type="button" class="drug-btn text-purple-700 border-purple-200 bg-purple-50" data-drug="Fentanyl">Fentanyl</button>
-                                    <button type="button" class="drug-btn" data-drug="Other">Other</button>
-                                </div>
-                                <div class="overflow-x-auto border-2 border-slate-300 rounded-lg">
-                                    <table class="min-w-full divide-y divide-slate-200">
-                                        <thead class="bg-slate-100">
-                                            <tr>
-                                                <th class="px-3 py-2 text-left text-[10px] font-bold text-slate-600 uppercase">Time</th>
-                                                <th class="px-3 py-2 text-left text-[10px] font-bold text-slate-600 uppercase">Drug</th>
-                                                <th class="px-3 py-2 text-left text-[10px] font-bold text-slate-600 uppercase">Dose (mg)</th>
-                                                <th class="px-3 py-2 text-left text-[10px] font-bold text-slate-600 uppercase">Given By</th>
-                                                <th class="px-3 py-2 w-8 no-print"></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="drug-table-body" class="divide-y divide-slate-100 bg-white text-sm"></tbody>
-                                    </table>
-                                </div>
+                                <label class="text-xs font-bold text-slate-500 uppercase mb-2 block">Drugs Given</label>
+                                <div id="drug-table-container" class="space-y-2"></div> 
+                                <div id="empty-drugs-msg" class="text-sm text-slate-400 italic text-center py-2">No drugs recorded yet</div>
                             </div>
 
                             <div>
-                                 <div class="flex justify-between items-end mb-2">
-                                    <label>Monitoring Log (q5min)</label>
-                                    <button type="button" id="add-obs-button" class="std-btn py-1 text-xs bg-green-50 text-green-700 border-green-200 hover:bg-green-100 no-print">+ Add Obs</button>
-                                 </div>
-                                 
-                                 <div id="obs-toast" class="hidden bg-yellow-100 text-yellow-800 p-2 rounded mb-2 text-xs flex justify-between items-center border border-yellow-300">
-                                    <span>&#9200; <strong>5 Minute Alert</strong></span>
-                                    <button id="dismiss-toast-button" class="font-bold underline">OK</button>
-                                 </div>
-
-                                 <div class="overflow-x-auto border-2 border-slate-300 rounded-lg">
-                                    <table class="min-w-full divide-y divide-slate-200">
-                                        <thead class="bg-slate-100">
-                                            <tr>
-                                                <th class="px-2 py-2 text-[10px] font-bold text-slate-600 uppercase">Time</th>
-                                                <th class="px-2 py-2 text-[10px] font-bold text-slate-600 uppercase">HR</th>
-                                                <th class="px-2 py-2 text-[10px] font-bold text-slate-600 uppercase">BP</th>
-                                                <th class="px-2 py-2 text-[10px] font-bold text-slate-600 uppercase">SpO2</th>
-                                                <th class="px-2 py-2 text-[10px] font-bold text-slate-600 uppercase">RR</th>
-                                                <th class="px-2 py-2 text-[10px] font-bold text-slate-600 uppercase">EtCO2</th>
-                                                <th class="px-2 py-2 text-[10px] font-bold text-slate-600 uppercase w-24">Score</th>
-                                                <th class="px-2 py-2 w-8 no-print"></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="monitoring-log-body" class="divide-y divide-slate-100 bg-white text-sm"></tbody>
-                                    </table>
-                                </div>
+                                <label class="text-xs font-bold text-slate-500 uppercase mb-2 block">Observations (q5min)</label>
+                                <div id="obs-table-container" class="space-y-2"></div>
                             </div>
                             
                             <div class="mt-4">
-                                <label>Notes / Adverse Events <span class="text-xs font-normal text-slate-500">(Consider TROOPS Intermediate/Sentinel reporting)</span></label>
-                                <textarea id="general-notes" rows="5" class="w-full p-2 border border-slate-400 rounded-md text-sm font-medium"></textarea>
+                                <label class="text-xs font-bold text-slate-500 uppercase mb-1 block">Notes</label>
+                                <textarea id="general-notes" rows="3" class="w-full p-2 border rounded dark:bg-slate-700 dark:border-slate-600"></textarea>
                             </div>
                         </div>
 
-                        <div class="section-card border-l-[8px] border-l-purple-600">
-                            <div class="section-title text-purple-800">5. Outcome & Discharge</div>
+                        <div id="section-5" class="section-card bg-white dark:bg-slate-800 border-l-[6px] border-l-purple-600 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 p-4">
+                            <h2 class="text-lg font-black text-purple-800 dark:text-purple-400 mb-4">5. Discharge & Checklist</h2>
                             
-                            <div class="flex flex-col gap-4">
-                                <div class="sub-card bg-white mt-0 border-slate-300">
-                                    <label>Procedure Outcome</label>
-                                    <div class="flex gap-4 mt-2">
-                                        <label class="flex items-center gap-2 font-bold text-slate-700 cursor-pointer"><input type="radio" name="outcome-proc" value="Successful" class="text-blue-600 border-slate-400 w-5 h-5"> Successful</label>
-                                        <label class="flex items-center gap-2 font-bold text-slate-700 cursor-pointer"><input type="radio" name="outcome-proc" value="Unsuccessful" class="text-blue-600 border-slate-400 w-5 h-5"> Unsuccessful</label>
-                                    </div>
-                                </div>
-                                <div class="sub-card bg-white mt-0 border-slate-300">
-                                    <label>Discharge Criteria (RCEM Box 3)</label>
-                                    <div class="space-y-2 mt-2 text-sm text-slate-700">
-                                        <label class="flex items-center gap-2 font-medium cursor-pointer"><input type="checkbox" id="dc-vitals" class="rounded text-blue-600 border-slate-400"> Vital signs returned to baseline (No supplementary O₂)</label>
-                                        <label class="flex items-center gap-2 font-medium cursor-pointer"><input type="checkbox" id="dc-aao" class="rounded text-blue-600 border-slate-400"> Alert & Orientated (Baseline GCS)</label>
-                                        <label class="flex items-center gap-2 font-medium cursor-pointer"><input type="checkbox" id="dc-oral" class="rounded text-blue-600 border-slate-400"> Able to tolerate oral fluids (No vomiting)</label>
-                                        <label class="flex items-center gap-2 font-medium cursor-pointer"><input type="checkbox" id="dc-pain" class="rounded text-blue-600 border-slate-400"> Adequate analgesia / minimal nausea</label>
-                                        <label class="flex items-center gap-2 font-medium cursor-pointer"><input type="checkbox" id="dc-home" class="rounded text-blue-600 border-slate-400"> Appropriate care available at home</label>
-                                        <label class="flex items-center gap-2 font-medium cursor-pointer"><input type="checkbox" id="dc-reversal-time" class="rounded text-red-600 border-red-400"> 2 hours elapsed since use of reversal agent</label>
-                                    </div>
-                                    <label class="mt-4 pt-2 border-t border-slate-200 block text-xs font-bold text-slate-500">Post-Discharge Instructions Given (48h)</label>
-                                    <div class="space-y-1 mt-1 text-sm text-slate-700">
-                                        <label class="flex items-center gap-2 font-medium cursor-pointer"><input type="checkbox" id="di-drive" class="rounded text-purple-600 border-slate-400"> No driving / operating heavy machinery</label>
-                                        <label class="flex items-center gap-2 font-medium cursor-pointer"><input type="checkbox" id="di-adult" class="rounded text-purple-600 border-slate-400"> Accompanied home by responsible person / 24h care</label>
-                                        <label class="flex items-center gap-2 font-medium cursor-pointer"><input type="checkbox" id="di-alcohol" class="rounded text-purple-600 border-slate-400"> No alcohol / avoid strenuous exercise</label>
-                                        <label class="flex items-center gap-2 font-medium cursor-pointer"><input type="checkbox" id="di-decisions" class="rounded text-purple-600 border-slate-400"> No legal decisions or document signing</label>
-                                    </div>
-                                </div>
-                                
-                                <div class="sub-card bg-slate-50 mt-0 border-slate-300">
-                                    <label class="border-b border-slate-200 pb-1 mb-3">Disposal</label>
-                                    <div class="flex gap-4">
-                                        <label class="flex items-center gap-2 font-bold text-slate-700 cursor-pointer"><input type="radio" name="disposal" value="Home" class="text-purple-600 border-slate-400 w-5 h-5"> Home</label>
-                                        <label class="flex items-center gap-2 font-bold text-slate-700 cursor-pointer"><input type="radio" name="disposal" value="CDU" class="text-purple-600 border-slate-400 w-5 h-5"> CDU</label>
-                                        <label class="flex items-center gap-2 font-bold text-slate-700 cursor-pointer"><input type="radio" name="disposal" value="Ward" class="text-purple-600 border-slate-400 w-5 h-5"> Admit to Ward</label>
-                                    </div>
-                                </div>
-
-                                <div class="sub-card bg-slate-50 mt-0 border-slate-300">
-                                    <label class="border-b border-slate-200 pb-1 mb-3">Sign Off</label>
-                                    <div class="space-y-3">
-                                        <div><label>Name</label><input type="text" id="signoff-name" class="border-slate-400 rounded-md"></div>
-                                        <div><label>GMC No</label><input type="text" id="signoff-gmc" class="border-slate-400 rounded-md"></div>
-                                        <div><label>Time</label><input type="time" id="signoff-time" class="border-slate-400 rounded-md"></div>
-                                    </div>
-                                </div>
-                                
-                                <button type="button" id="create-discharge-letter-btn" class="w-full std-btn bg-purple-600 text-white border-purple-800 hover:bg-purple-700 py-3 text-sm shadow-md">
-                                    📝 Create Patient Discharge Letter (Print)
-                                </button>
+                            <div class="grid grid-cols-2 gap-4 mb-4">
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="outcome-proc" value="Successful" class="peer sr-only">
+                                    <div class="touch-group-label dark-mode-target py-4">SUCCESSFUL</div>
+                                </label>
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="outcome-proc" value="Unsuccessful" class="peer sr-only">
+                                    <div class="touch-group-label text-red-700 dark-mode-target py-4">FAILED</div>
+                                </label>
                             </div>
-                        </div>
-                        
-                    </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mb-4 p-3 bg-purple-50 dark:bg-purple-900/20 rounded">
+                                <label class="chk-label"><input type="checkbox" id="dc-vitals" class="chk-input"> Baseline Vitals</label>
+                                <label class="chk-label"><input type="checkbox" id="dc-aao" class="chk-input"> Alert & Orientated</label>
+                                <label class="chk-label"><input type="checkbox" id="dc-oral" class="chk-input"> Tolerating Fluids</label>
+                                <label class="chk-label"><input type="checkbox" id="dc-pain" class="chk-input"> Pain Managed</label>
+                                <label class="chk-label"><input type="checkbox" id="dc-home" class="chk-input"> Carer / Home</label>
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-4 mb-4">
+                                <div><label class="text-[10px] uppercase font-bold">Sign-off Name</label><input type="text" id="signoff-name" class="w-full p-2 border rounded dark:bg-slate-700 dark:border-slate-600"></div>
+                                <div><label class="text-[10px] uppercase font-bold">Time</label>
+                                    <div class="flex gap-1">
+                                        <input type="time" id="signoff-time" class="w-full p-2 border rounded dark:bg-slate-700 dark:border-slate-600">
+                                        <button type="button" onclick="setNow('signoff-time')" class="bg-slate-200 dark:bg-slate-600 text-xs font-bold px-2 rounded">NOW</button>
+                                    </div>
+                                </div>
+                            </div>
 
+                            <button type="button" id="create-discharge-letter-btn" class="w-full py-4 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-lg shadow-md mb-8">
+                                📝 GENERATE DISCHARGE LETTER
+                            </button>
+                        </div>
+                    </div>
                 </form>
             </div> 
 
-            <div class="lg:col-span-4 relative">
-                <div class="sticky top-24 h-fit no-print space-y-4">
-                    <div id="epr-log-container" class="bg-white p-4 rounded-xl shadow-lg border border-slate-300">
+            <div class="lg:col-span-4 relative no-print">
+                <div class="sticky top-24 h-fit space-y-4">
+                    <div id="epr-log-container" class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-lg border border-slate-300 dark:border-slate-700">
                         <div class="flex justify-between items-center mb-3">
-                            <h2 class="text-sm font-bold text-slate-700 uppercase tracking-wide">EPR Quick Log</h2>
+                            <h2 class="text-sm font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wide">EPR Quick Log</h2>
                             <button type="button" id="copy-log-button" class="px-3 py-1 text-xs font-bold bg-blue-600 text-white rounded hover:bg-blue-700 transition shadow-sm">
                                 Copy Rich Text
                             </button>
                         </div>
-                        <div id="epr-log-output" class="rich-output focus:ring-2 ring-blue-500 ring-offset-2" contenteditable="true">
+                        <div id="epr-log-output" class="rich-output focus:ring-2 ring-blue-500 ring-offset-2 text-xs" contenteditable="true">
                             </div>
-                    </div>
-
-                    <div class="text-center mt-4">
-                         <button type="button" id="print-button" class="w-full std-btn bg-slate-800 text-white text-sm py-3 shadow-lg hover:bg-slate-900 border-2 border-slate-900">
-                            Print Medical Record
-                         </button>
-                         <p class="mt-4 text-xs text-slate-500">
-                             <a href="#" id="clear-form-button" class="text-red-500 underline font-bold">Reset Form</a>
-                         </p>
                     </div>
                 </div>
             </div>
 
         </div>
 
-        <div id="tab-agitated" class="hidden container mx-auto max-w-4xl transition-opacity duration-300">
-            
-            <div class="agitated-warning border-l-[10px] border-l-red-600 shadow-lg rounded-r-xl p-6 mb-8">
-                <h1 class="text-3xl font-black text-red-900 uppercase">Sedation of the Severely Agitated Patient</h1>
-                <p class="text-red-800 font-bold mt-2">Emergency Protocol Checklist</p>
-                <div class="mt-4 flex gap-3">
-                    <span class="bg-red-600 text-white px-3 py-1 text-xs font-bold rounded uppercase">Immediate Threat Only</span>
-                    <span class="bg-red-600 text-white px-3 py-1 text-xs font-bold rounded uppercase">Senior Input</span>
-                </div>
+        <div id="tab-agitated" class="hidden">
+            <div class="agitated-warning border-l-[10px] border-l-red-600 shadow-lg rounded-r-xl p-6 mb-6">
+                <h1 class="text-2xl md:text-4xl font-black text-red-900 uppercase leading-none">Agitated Patient Protocol</h1>
+                <p class="text-red-800 font-bold mt-2 text-sm uppercase">Immediate Threat to Safety</p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="section-card border-l-[6px] border-l-slate-700">
-                    <div class="section-title text-slate-800">1. Call for Help & Prep</div>
-                    <div class="space-y-3">
-                        <label class="flex items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded cursor-pointer">
-                            <input type="checkbox" class="w-6 h-6 text-red-600 focus:ring-red-500 rounded border-slate-300">
-                            <span class="font-bold text-slate-700">Security / Police called</span>
-                        </label>
-                        <label class="flex items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded cursor-pointer">
-                            <input type="checkbox" class="w-6 h-6 text-red-600 focus:ring-red-500 rounded border-slate-300">
-                            <span class="font-bold text-slate-700">Senior Clinician informed (Cons/Reg)</span>
-                        </label>
-                        <label class="flex items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded cursor-pointer">
-                            <input type="checkbox" class="w-6 h-6 text-red-600 focus:ring-red-500 rounded border-slate-300">
-                            <span class="font-bold text-slate-700">Capacity Assessed / Verbal De-escalation Failed</span>
-                        </label>
-                        <label class="flex items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded cursor-pointer">
-                            <input type="checkbox" class="w-6 h-6 text-red-600 focus:ring-red-500 rounded border-slate-300">
-                            <span class="font-bold text-slate-700">'Emergency Sedation' notice posted</span>
-                        </label>
-                        <label class="flex items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded cursor-pointer">
-                            <input type="checkbox" class="w-6 h-6 text-red-600 focus:ring-red-500 rounded border-slate-300">
-                            <span class="font-bold text-slate-700">Roles Assigned (Airway, Drugs, Restraint)</span>
-                        </label>
-                    </div>
+            <div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow border border-slate-200 dark:border-slate-700 mb-6">
+                <label class="block text-slate-500 font-bold text-xs uppercase mb-1">Estimated Weight (kg)</label>
+                <div class="flex gap-2 mb-4">
+                    <input type="number" id="agitated-weight" placeholder="kg" class="text-3xl font-black w-full p-3 border-2 border-slate-300 rounded-lg dark:bg-slate-700 dark:border-slate-600 dark:text-white focus:border-red-500">
+                    <button id="calc-agitated-btn" class="bg-red-600 text-white font-black px-6 rounded-lg shadow-lg active:scale-95 transition">CALC</button>
                 </div>
 
-                <div class="section-card border-l-[6px] border-l-red-600">
-                    <div class="section-title text-red-800">2. Emergency Dose Calc</div>
-                    
-                    <div class="bg-red-50 p-4 rounded-lg border border-red-200 mb-4">
-                        <label class="text-red-900 mb-2">Patient Estimated Weight (kg)</label>
-                        <div class="flex gap-2">
-                            <input type="number" id="agitated-weight" placeholder="e.g. 80" class="text-2xl font-black text-red-900 w-full p-3 rounded border-red-300">
-                        </div>
-                        <button id="calc-agitated-btn" class="mt-3 w-full bg-red-600 text-white font-bold py-3 rounded hover:bg-red-700 transition shadow-sm">
-                            CALCULATE DOSES
-                        </button>
+                <div id="agitated-output" class="hidden grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-red-50 dark:bg-red-900/30 border-2 border-red-500 rounded-xl p-4 text-center">
+                        <span class="block text-xs font-black text-red-600 dark:text-red-400 uppercase tracking-widest mb-2">IM Ketamine (4mg/kg)</span>
+                        <span id="val-ket-im" class="block text-6xl md:text-7xl font-black text-slate-900 dark:text-white leading-none tracking-tighter my-2">--</span>
+                        <span class="text-sm font-bold text-slate-500 dark:text-slate-400">milligrams</span>
                     </div>
-
-                    <div id="agitated-output" class="hidden space-y-4">
-                        <div class="bg-white border-2 border-red-500 rounded-lg p-4 shadow-md">
-                            <h3 class="text-sm font-bold text-red-500 uppercase tracking-widest mb-1">First Line (IM)</h3>
-                            <div class="flex justify-between items-end">
-                                <span class="text-3xl font-black text-slate-900">Ketamine IM</span>
-                                <span class="text-3xl font-black text-red-600" id="val-ket-im">-- mg</span>
-                            </div>
-                            <p class="text-xs font-bold text-slate-500 mt-1">Dose: 4 mg/kg | Onset: 3-5 mins</p>
-                        </div>
-
-                        <div class="bg-white border-2 border-orange-400 rounded-lg p-4 shadow-md opacity-75">
-                            <h3 class="text-sm font-bold text-orange-500 uppercase tracking-widest mb-1">Alternative (IV/IO)</h3>
-                            <div class="flex justify-between items-end">
-                                <span class="text-xl font-bold text-slate-700">Ketamine IV</span>
-                                <span class="text-xl font-black text-orange-600" id="val-ket-iv">-- mg</span>
-                            </div>
-                            <p class="text-xs font-bold text-slate-500 mt-1">Dose: 0.5 - 1 mg/kg | Onset: 30 secs</p>
-                        </div>
-                        
-                        <div class="p-3 bg-slate-100 rounded text-xs text-slate-600 border border-slate-300">
-                            <strong>Second Line:</strong> Consider Lorazepam / Haloperidol if Ketamine contraindicated (Consult Senior).
-                        </div>
+                    <div class="bg-orange-50 dark:bg-orange-900/30 border-2 border-orange-400 rounded-xl p-4 text-center opacity-75">
+                         <span class="block text-xs font-black text-orange-600 dark:text-orange-400 uppercase tracking-widest mb-2">IV Ketamine (1mg/kg)</span>
+                         <span id="val-ket-iv" class="block text-5xl font-black text-slate-900 dark:text-white leading-none tracking-tighter my-2">--</span>
+                         <span class="text-sm font-bold text-slate-500 dark:text-slate-400">milligrams</span>
                     </div>
                 </div>
             </div>
 
-            <div class="section-card border-l-[6px] border-l-blue-600 mt-6">
-                 <div class="section-title text-blue-800">3. Post-Sedation Management</div>
-                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                     <div>
-                         <label class="block mb-2 font-bold text-slate-700 uppercase text-xs border-b pb-1">Immediate Actions</label>
-                         <div class="space-y-2">
-                             <label class="flex items-center gap-2 text-sm font-medium"><input type="checkbox" class="rounded text-blue-600"> Transfer to Resus / Monitored Bay</label>
-                             <label class="flex items-center gap-2 text-sm font-medium"><input type="checkbox" class="rounded text-blue-600"> Apply Full Monitoring (ECG, SpO2, BP, EtCO2)</label>
-                             <label class="flex items-center gap-2 text-sm font-medium"><input type="checkbox" class="rounded text-blue-600"> Secondary Survey (ABCDE)</label>
-                         </div>
-                     </div>
-                     <div>
-                         <label class="block mb-2 font-bold text-slate-700 uppercase text-xs border-b pb-1">Investigations Required</label>
-                         <div class="grid grid-cols-2 gap-2">
-                             <label class="flex items-center gap-2 text-xs font-bold bg-blue-50 p-2 rounded border border-blue-100"><input type="checkbox" class="rounded"> Blood Gas</label>
-                             <label class="flex items-center gap-2 text-xs font-bold bg-blue-50 p-2 rounded border border-blue-100"><input type="checkbox" class="rounded"> FBC / U&E / LFT</label>
-                             <label class="flex items-center gap-2 text-xs font-bold bg-blue-50 p-2 rounded border border-blue-100"><input type="checkbox" class="rounded"> CK / Troponin</label>
-                             <label class="flex items-center gap-2 text-xs font-bold bg-blue-50 p-2 rounded border border-blue-100"><input type="checkbox" class="rounded"> Clotting</label>
-                             <label class="flex items-center gap-2 text-xs font-bold bg-blue-50 p-2 rounded border border-blue-100"><input type="checkbox" class="rounded"> ECG (12 Lead)</label>
-                             <label class="flex items-center gap-2 text-xs font-bold bg-blue-50 p-2 rounded border border-blue-100"><input type="checkbox" class="rounded"> CT Head (if indicated)</label>
-                         </div>
-                     </div>
-                 </div>
-                 <div class="mt-4 pt-4 border-t border-slate-200">
-                     <p class="text-sm font-bold text-red-600">🚩 ICU Referral Threshold:</p>
-                     <p class="text-xs text-slate-700">Consider ICU if: Inadequate sedation after 2 doses, Airway compromise, or unmanageable haemodynamic instability.</p>
-                 </div>
+            <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+                <h3 class="font-bold text-slate-700 dark:text-slate-200 mb-3 border-b pb-2">Post-Sedation Checklist</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <label class="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-700 rounded-lg border border-slate-200 dark:border-slate-600 cursor-pointer">
+                        <input type="checkbox" class="w-6 h-6 text-blue-600 rounded">
+                        <span class="font-bold text-sm">Full Monitoring Applied</span>
+                    </label>
+                    <label class="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-700 rounded-lg border border-slate-200 dark:border-slate-600 cursor-pointer">
+                        <input type="checkbox" class="w-6 h-6 text-blue-600 rounded">
+                        <span class="font-bold text-sm">Transfer to Resus</span>
+                    </label>
+                    <label class="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-700 rounded-lg border border-slate-200 dark:border-slate-600 cursor-pointer">
+                        <input type="checkbox" class="w-6 h-6 text-blue-600 rounded">
+                        <span class="font-bold text-sm">ECG (12 Lead)</span>
+                    </label>
+                    <label class="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-700 rounded-lg border border-slate-200 dark:border-slate-600 cursor-pointer">
+                        <input type="checkbox" class="w-6 h-6 text-blue-600 rounded">
+                        <span class="font-bold text-sm">Blood Gas / Labs</span>
+                    </label>
+                </div>
             </div>
-
         </div>
 
     </main>
 
-    <div id="discharge-letter-view" class="hidden bg-white p-6 max-w-3xl mx-auto border shadow-2xl mt-8 mb-8 text-slate-900 print:p-0 print:shadow-none print:border-none print:mt-0 print:mb-0">
-        <div class="no-print flex justify-between items-center mb-6 border-b pb-4">
-            <h2 class="text-xl font-bold text-slate-700">Preview: Patient Discharge Letter</h2>
-            <div class="flex gap-2">
-                <button id="close-letter-btn" class="px-4 py-2 border rounded hover:bg-slate-100">Back to Form</button>
-                <button id="print-letter-btn" class="px-4 py-2 bg-blue-600 text-white font-bold rounded hover:bg-blue-700 shadow">🖨️ Print Letter</button>
+    <div id="sticky-footer" class="fixed bottom-0 left-0 w-full bg-white dark:bg-slate-800 border-t border-slate-300 dark:border-slate-700 p-3 z-40 sticky-footer transform translate-y-full transition-transform duration-300 flex items-center gap-2 no-print">
+        <div class="flex-shrink-0 w-20 text-center border-r border-slate-200 dark:border-slate-600 pr-2">
+            <div class="text-[10px] uppercase font-bold text-slate-400">Timer</div>
+            <div id="footer-timer" class="text-xl font-mono font-black text-slate-800 dark:text-white">00:00</div>
+        </div>
+        
+        <button id="footer-drug-btn" class="flex-1 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-200 border border-blue-200 dark:border-blue-700 rounded-lg font-bold py-3 active:scale-95 transition">
+            + DRUG
+        </button>
+        <button id="footer-obs-btn" class="flex-1 bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-200 border border-green-200 dark:border-green-700 rounded-lg font-bold py-3 active:scale-95 transition">
+            + OBS
+        </button>
+    </div>
+
+    <div id="drug-modal" class="fixed inset-0 hidden bg-black/50 z-50 flex items-end sm:items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-sm rounded-xl shadow-2xl overflow-hidden animate-in slide-in-from-bottom duration-200">
+            <div class="p-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center">
+                <h3 class="font-black text-lg">Add Drug</h3>
+                <button id="close-drug-modal" class="text-slate-400 hover:text-slate-600 text-2xl font-bold">&times;</button>
+            </div>
+            <div class="p-4 grid grid-cols-2 gap-3">
+                <button class="drug-select-btn drug-btn h-16 text-lg border-indigo-200 bg-indigo-50 text-indigo-800" data-drug="Propofol">Propofol</button>
+                <button class="drug-select-btn drug-btn h-16 text-lg border-orange-200 bg-orange-50 text-orange-800" data-drug="Ketamine">Ketamine</button>
+                <button class="drug-select-btn drug-btn h-16 text-lg border-blue-200 bg-blue-50 text-blue-800" data-drug="Midazolam">Midazolam</button>
+                <button class="drug-select-btn drug-btn h-16 text-lg border-purple-200 bg-purple-50 text-purple-800" data-drug="Fentanyl">Fentanyl</button>
+            </div>
+            <div class="p-4 bg-slate-50 dark:bg-slate-700">
+                 <input type="number" id="quick-drug-dose" placeholder="Dose (mg)" class="w-full p-3 text-xl font-bold rounded-lg border-slate-300 dark:bg-slate-600 dark:border-slate-500 mb-3">
+                 <button id="confirm-drug-btn" class="w-full bg-blue-600 text-white font-bold py-3 rounded-lg">CONFIRM</button>
             </div>
         </div>
+    </div>
 
+    <div id="discharge-letter-view" class="hidden bg-white p-8 max-w-3xl mx-auto border shadow-2xl my-8 text-slate-900 print:block print:p-0 print:shadow-none print:border-none print:my-0 print:absolute print:top-0 print:left-0 print:w-full">
+        <div class="no-print flex justify-between items-center mb-6 border-b pb-4">
+            <h2 class="text-xl font-bold text-slate-700">Preview: Discharge Letter</h2>
+            <div class="flex gap-2">
+                <button onclick="document.getElementById('discharge-letter-view').classList.add('hidden'); document.getElementById('main-app-container').classList.remove('hidden');" class="px-4 py-2 border rounded hover:bg-slate-100">Back</button>
+                <button onclick="window.print()" class="px-4 py-2 bg-blue-600 text-white font-bold rounded hover:bg-blue-700 shadow">Print</button>
+            </div>
+        </div>
         <div class="font-[Inter] leading-snug">
-            <div class="border-b-2 border-slate-800 pb-3 mb-4 flex justify-between items-start">
+             <div class="border-b-2 border-slate-800 pb-3 mb-4 flex justify-between items-start">
                 <div>
                     <h1 class="text-xl font-black uppercase tracking-tight">Emergency Department</h1>
                     <p class="text-base font-bold text-slate-600">Discharge Advice Following Procedural Sedation</p>
                 </div>
                 <div class="text-right text-xs">
                     <p class="font-bold">Date: <span id="letter-date"></span></p>
-                    <p class="text-slate-500">Trust Ref: RCEM/SED/2022</p>
                 </div>
             </div>
-
-            <div class="mb-4 text-sm">
-                <p><strong>Procedure / Indication:</strong> <span id="letter-procedure"></span></p>
-            </div>
-
+            <div class="mb-4 text-sm"><p><strong>Procedure:</strong> <span id="letter-procedure"></span></p></div>
             <p class="mb-2 text-sm font-bold">Dear Patient,</p>
-            <p class="mb-4 text-sm text-slate-800">
-                Today you received the following medication(s): <span id="letter-drugs-given" class="font-bold"></span>.
-                These medicines make you sleepy and relaxed. Even if you feel wide awake now, the medication can stay in your body for up to 24 hours and may affect your judgment, memory, and coordination.
-            </p>
-
+            <p class="mb-4 text-sm text-slate-800">Today you received: <span id="letter-drugs-given" class="font-bold"></span>.</p>
             <div class="bg-blue-50 border-l-4 border-blue-600 p-3 mb-4">
                 <h3 class="font-bold text-blue-900 mb-1 uppercase text-sm">⚠️ The 24-Hour Safety Rules</h3>
-                
                 <div class="mb-2 text-sm font-semibold text-blue-800">
-                    <p>You received sedation at <span id="letter-time-start" class="border-b border-blue-400 border-dotted font-bold"></span> on <span id="letter-date-start" class="border-b border-blue-400 border-dotted font-bold"></span>.</p>
-                    
-                    <p class="mt-2 text-slate-900">For your safety, you <strong class="text-red-600 text-base">MUST NOT</strong> do any of the following until <span id="letter-time-end" class="font-black bg-yellow-200 px-1 rounded"></span> on <span id="letter-date-end" class="font-black bg-yellow-200 px-1 rounded"></span> (24 hours later):</p>
+                    <p>No driving, operating machinery, signing documents, or alcohol until: <br><span id="letter-time-end" class="text-lg font-black bg-yellow-200 px-1"></span> on <span id="letter-date-end" class="font-bold"></span>.</p>
                 </div>
-
-                <ul class="list-disc ml-5 space-y-1 text-sm text-slate-900 font-bold">
-                    <li>Drive a car, ride a bicycle, or operate any machinery.</li>
-                    <li>Drink alcohol or take sleeping tablets.</li>
-                    <li>Sign legal documents or make important financial decisions.</li>
-                    <li>Cook or use sharp implements/kettles without supervision (risk of burns/injury).</li>
-                    <li>Be in sole charge of young children.</li>
-                </ul>
             </div>
-
-            <div class="mb-4">
-                <h3 class="font-bold text-slate-900 border-b border-slate-300 mb-1 pb-1 text-sm">Supervision</h3>
-                <p class="text-sm">
-                    You have been discharged because you are awake and safe, but you <strong>must be accompanied home by a responsible adult</strong> 
-                    who can stay with you for the next 24 hours. Do not go home to an empty house.
-                </p>
-            </div>
-
-            <div class="mb-4">
-                <h3 class="font-bold text-slate-900 border-b border-slate-300 mb-1 pb-1 text-sm">Common Side Effects</h3>
-                <ul id="letter-side-effects-list" class="list-disc ml-5 space-y-1 text-sm text-slate-700">
-                </ul>
-            </div>
-
-            <div class="bg-red-50 border-l-4 border-red-600 p-3 mb-4">
-                <h3 class="font-bold text-red-900 mb-1 uppercase text-sm">🛑 When to Seek Help</h3>
-                <p class="mb-1 text-sm text-red-900">Please return to the Emergency Department or call 111 immediately if you experience:</p>
-                <ul class="list-disc ml-5 space-y-1 text-sm text-red-900 font-medium">
-                    <li>Severe pain that is not improved by simple painkillers.</li>
-                    <li>Persistent vomiting or inability to keep fluids down.</li>
-                    <li>Difficulty breathing or chest pain.</li>
-                    <li>Fainting or severe drowsiness where you cannot be woken easily.</li>
-                </ul>
-            </div>
-
-            <div class="mt-4 pt-4 border-t border-slate-200 text-xs text-slate-500">
-                <p>This advice sheet is based on RCEM Best Practice Guidelines (2022). If you have any non-urgent concerns, please contact your GP.</p>
-                <p class="mt-4">Clinician Signature: __________________________</p>
-            </div>
+            <div class="mb-4"><h3 class="font-bold text-slate-900 border-b border-slate-300 mb-1 pb-1 text-sm">Supervision</h3><p class="text-sm">You must be accompanied home by a responsible adult who can stay with you for 24 hours.</p></div>
+            <div class="mb-4"><h3 class="font-bold text-slate-900 border-b border-slate-300 mb-1 pb-1 text-sm">Side Effects</h3><ul id="letter-side-effects-list" class="list-disc ml-5 space-y-1 text-sm text-slate-700"></ul></div>
+            <div class="mt-4 pt-4 border-t border-slate-200 text-xs text-slate-500"><p>Clinician Signature: __________________________</p></div>
         </div>
     </div>
 
-    <div id="custom-modal-backdrop" class="fixed inset-0 hidden items-center justify-center z-50">
-        <div id="custom-modal" class="bg-white rounded-xl shadow-2xl p-6 w-full max-w-sm mx-4 transform transition-all scale-95 opacity-0 border border-slate-200">
-            <h3 id="custom-modal-title" class="text-lg font-black text-slate-900 mb-4">Input</h3>
-            <div>
-                <label id="custom-modal-label" class="block text-sm font-bold text-slate-600 mb-2">Value:</label>
-                <input type="text" id="custom-modal-input" class="w-full rounded-md border-slate-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 p-3 text-lg font-bold">
-            </div>
-            <div class="mt-6 flex gap-3">
-                <button id="custom-modal-ok" class="flex-1 btn-primary py-2 rounded-lg font-bold">OK</button>
-                <button id="custom-modal-cancel" class="flex-1 std-btn py-2 rounded-lg">Cancel</button>
-            </div>
+    <template id="obs-row-template">
+        <div class="grid grid-cols-6 gap-1 items-center bg-slate-50 dark:bg-slate-700/50 p-2 rounded border border-slate-200 dark:border-slate-600 text-xs mb-1">
+            <div class="col-span-1 font-mono font-bold text-slate-500 row-time">--:--</div>
+            <input type="number" placeholder="HR" class="col-span-1 p-1 text-center font-bold rounded border dark:bg-slate-600 dark:border-slate-500 obs-input">
+            <input type="number" placeholder="BP" class="col-span-1 p-1 text-center font-bold rounded border dark:bg-slate-600 dark:border-slate-500 obs-input">
+            <input type="number" placeholder="SpO2" class="col-span-1 p-1 text-center font-bold rounded border dark:bg-slate-600 dark:border-slate-500 obs-input">
+            <input type="number" placeholder="RR" class="col-span-1 p-1 text-center font-bold rounded border dark:bg-slate-600 dark:border-slate-500 obs-input">
+            <div class="col-span-1 text-center"><button class="text-red-500 font-bold px-2 py-1 bg-red-50 rounded hover:bg-red-100 dark:bg-slate-800 remove-btn">×</button></div>
         </div>
-    </div>
+    </template>
 
-    <template id="obs-score-template">
-        <select class="w-full text-xs border-none bg-transparent focus:ring-0 p-0 font-medium">
-            <option value="">-</option>
-            <option value="1">1 (Awake)</option>
-            <option value="2">2 (Drowsy)</option>
-            <option value="3">3 (Eyes clsd/Voice)</option>
-            <option value="4">4 (Eyes clsd/Shake)</option>
-            <option value="5">5 (Pain only)</option>
-            <option value="6">6 (Unresp)</option>
-        </select>
+    <template id="drug-row-template">
+        <div class="flex justify-between items-center bg-blue-50 dark:bg-blue-900/20 p-2 rounded border border-blue-100 dark:border-blue-800 text-sm mb-1">
+            <div class="flex gap-3 items-center">
+                <span class="font-mono text-xs text-blue-400 row-time">--:--</span>
+                <span class="font-bold text-blue-900 dark:text-blue-100 row-drug">Drug</span>
+                <span class="font-black text-slate-800 dark:text-white row-dose">0mg</span>
+            </div>
+            <button class="text-red-400 hover:text-red-600 font-bold px-2 remove-btn">×</button>
+        </div>
     </template>
 
     <script>
+        // --- HELPERS ---
+        window.setNow = (id) => {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+            document.getElementById(id).value = timeStr;
+            saveState();
+        };
+
+        window.toggleSection = (id) => {
+            const el = document.getElementById(id);
+            const header = el.previousElementSibling;
+            const icon = header.querySelector('.toggle-icon');
+            if (el.style.maxHeight) {
+                el.style.maxHeight = null;
+                el.classList.add('opacity-50');
+                icon.style.transform = 'rotate(-90deg)';
+            } else {
+                el.style.maxHeight = el.scrollHeight + "px";
+                el.classList.remove('opacity-50');
+                icon.style.transform = 'rotate(0deg)';
+            }
+        };
+
+        const val = (id) => document.getElementById(id)?.value || '';
+        const isChecked = (id) => document.getElementById(id)?.checked;
+        const findCheckedRadio = (name) => {
+            const el = document.querySelector(`input[name="${name}"]:checked`);
+            return el ? el.value : '';
+        };
+
         document.addEventListener('DOMContentLoaded', () => {
             const $ = (id) => document.getElementById(id);
-            const val = (id) => $(id)?.value || '';
-            const isChecked = (id) => $(id)?.checked;
-            
-            // --- TABS LOGIC ---
-            const tabProc = $('tab-procedural');
-            const tabAgit = $('tab-agitated');
-            const btnProc = $('btn-tab-procedural');
-            const btnAgit = $('btn-tab-agitated');
 
-            btnProc.onclick = () => {
-                tabProc.classList.remove('hidden');
-                tabAgit.classList.add('hidden');
-                btnProc.classList.add('active');
-                btnAgit.classList.remove('active');
-            };
+            // --- STATE & AUTO-SAVE ---
+            let timerInterval = null;
+            // We store startTime (timestamp) instead of elapsed seconds for robustness
+            let startTime = null; 
+            let elapsedWhenPaused = 0; 
 
-            btnAgit.onclick = () => {
-                tabAgit.classList.remove('hidden');
-                tabProc.classList.add('hidden');
-                btnAgit.classList.add('active');
-                btnProc.classList.remove('active');
-            };
-
-            // --- AGITATED CALCULATOR ---
-            $('calc-agitated-btn').onclick = () => {
-                const w = parseFloat($('agitated-weight').value);
-                if(!w || w <= 0) return alert("Please enter a valid weight.");
-                
-                // Ketamine IM: 4mg/kg
-                const kIM = (4 * w).toFixed(0);
-                // Ketamine IV: 0.5 - 1 mg/kg
-                const kIVLow = (0.5 * w).toFixed(0);
-                const kIVHigh = (1 * w).toFixed(0);
-
-                $('val-ket-im').textContent = `${kIM} mg`;
-                $('val-ket-iv').textContent = `${kIVLow} - ${kIVHigh} mg`;
-                
-                $('agitated-output').classList.remove('hidden');
-            };
-
-            // --- State ---
-            let sedationInterval = null;
-            let secondsElapsed = 0;
-            
-            // --- Persistence (Auto-Save) Logic ---
             function saveState() {
                 const data = {};
+                // Inputs
                 document.querySelectorAll('input, textarea, select').forEach(el => {
                     if (el.type === 'checkbox' || el.type === 'radio') {
                         if (el.checked) data[el.id || el.name + ':' + el.value] = true;
@@ -979,28 +698,31 @@
                         data[el.id] = el.value;
                     }
                 });
-                data['drug-table-html'] = $('drug-table-body').innerHTML;
-                data['obs-table-html'] = $('monitoring-log-body').innerHTML;
-                data['dose-output-html'] = $('dose-output').innerHTML;
-                data['dose-output-visible'] = !$('dose-output').classList.contains('hidden');
+                // Dynamic HTML
+                data['drug-html'] = $('drug-table-container').innerHTML;
+                data['obs-html'] = $('obs-table-container').innerHTML;
                 
-                data['timer-display'] = $('timer-display').textContent;
-                data['seconds-elapsed'] = secondsElapsed;
-                data['timer-running'] = !!sedationInterval;
-                data['btn-start-text'] = $('procedure-start-output').textContent;
-                data['btn-end-text'] = $('procedure-end-output').textContent;
-                data['btn-awake-text'] = $('patient-awake-output').textContent;
+                // Timer State
+                data['timer-start-time'] = startTime;
+                data['timer-running'] = !!timerInterval;
+                data['timer-elapsed-paused'] = elapsedWhenPaused;
                 
-                localStorage.setItem('sedation_record_data', JSON.stringify(data));
+                data['btn-proc-start'] = $('procedure-start-output').textContent;
+                data['btn-proc-end'] = $('procedure-end-output').textContent;
+                data['btn-awake'] = $('patient-awake-output').textContent;
+                data['dose-output'] = $('dose-output').innerHTML;
+                data['dose-visible'] = !$('dose-output').classList.contains('hidden');
+                
+                localStorage.setItem('sedation_v3_data', JSON.stringify(data));
                 generateEPRLog();
             }
 
             function loadState() {
-                const saved = localStorage.getItem('sedation_record_data');
-                if (!saved) { generateEPRLog(); return; } 
-                
+                const saved = localStorage.getItem('sedation_v3_data');
+                if(!saved) return;
                 try {
                     const data = JSON.parse(saved);
+                    // Inputs
                     document.querySelectorAll('input, textarea, select').forEach(el => {
                         if (el.type === 'checkbox') {
                             if (data[el.id]) el.checked = true;
@@ -1010,347 +732,92 @@
                             el.value = data[el.id];
                         }
                     });
-
-                    if(data['drug-table-html']) $('drug-table-body').innerHTML = data['drug-table-html'];
-                    if(data['obs-table-html']) $('monitoring-log-body').innerHTML = data['obs-table-html'];
-                    if(data['dose-output-html']) $('dose-output').innerHTML = data['dose-output-html'];
-                    if(data['dose-output-visible']) $('dose-output').classList.remove('hidden');
-
-                    if(data['timer-display']) $('timer-display').textContent = data['timer-display'];
-                    if(data['seconds-elapsed']) secondsElapsed = parseInt(data['seconds-elapsed']);
                     
-                    if(data['btn-start-text']) {
-                        $('procedure-start-output').textContent = data['btn-start-text'];
-                        $('procedure-start-button').classList.add('opacity-50', 'cursor-not-allowed');
-                        $('procedure-start-button').disabled = true;
-                    }
-                    if(data['btn-end-text']) {
-                        $('procedure-end-output').textContent = data['btn-end-text'];
-                        $('procedure-end-button').classList.add('opacity-50', 'cursor-not-allowed');
-                        $('procedure-end-button').disabled = true;
-                    }
-                    if(data['btn-awake-text']) {
-                        $('patient-awake-output').textContent = data['btn-awake-text'];
-                        $('patient-awake-button').classList.add('opacity-50', 'cursor-not-allowed');
-                        $('patient-awake-button').disabled = true;
-                    }
+                    if(data['drug-html']) $('drug-table-container').innerHTML = data['drug-html'];
+                    if(data['obs-html']) $('obs-table-container').innerHTML = data['obs-html'];
+                    
+                    // Re-attach listeners to dynamic elements
+                    document.querySelectorAll('.remove-btn').forEach(btn => btn.onclick = (e) => { e.target.closest('div.flex, div.grid').remove(); saveState(); });
+                    document.querySelectorAll('.obs-input').forEach(inp => inp.oninput = saveState);
 
-                    toggleCapacity();
+                    // Restore Timer Logic
+                    elapsedWhenPaused = data['timer-elapsed-paused'] || 0;
+                    if(data['timer-running'] && data['timer-start-time']) {
+                         startTime = data['timer-start-time'];
+                         startTimerUI();
+                    } else if (elapsedWhenPaused > 0) {
+                         // Was paused, show the time
+                         updateTimerDisplay(elapsedWhenPaused);
+                         $('sticky-footer').classList.replace('translate-y-full', 'translate-y-0');
+                    }
+                    
+                    if(data['btn-proc-start']) $('procedure-start-output').textContent = data['btn-proc-start'];
+                    if(data['btn-proc-end']) $('procedure-end-output').textContent = data['btn-proc-end'];
+                    if(data['btn-awake']) $('patient-awake-output').textContent = data['btn-awake'];
+                    
+                    if(data['dose-output']) $('dose-output').innerHTML = data['dose-output'];
+                    if(data['dose-visible']) $('dose-output').classList.remove('hidden');
+                    
                     generateEPRLog();
-                } catch (e) { console.error("Load Error", e); }
+                } catch(e) { console.error(e); }
             }
 
-            // --- Utility Functions ---
-            function findCheckedRadio(name) {
-                const radios = document.getElementsByName(name);
-                for (let i = 0; i < radios.length; i++) {
-                    if (radios[i].checked) return radios[i].value;
-                }
-                return '';
-            }
+            // --- LISTENERS FOR AUTO-SAVE ---
+            document.body.addEventListener('input', (e) => { if(e.target.matches('input, textarea')) saveState(); });
+            document.body.addEventListener('change', (e) => { if(e.target.matches('input, select')) saveState(); });
 
-            const toggleCapacity = () => {
-                const cap = findCheckedRadio('capacity');
-                const yesDiv = $('capacity-yes-options');
-                const noDiv = $('capacity-no-options');
-                
-                if(cap === 'No') {
-                    yesDiv.classList.add('hidden');
-                    noDiv.classList.remove('hidden');
-                } else {
-                    yesDiv.classList.remove('hidden');
-                    noDiv.classList.add('hidden');
-                }
-                generateEPRLog();
-            };
-            document.getElementsByName('capacity').forEach(r => r.addEventListener('change', () => { toggleCapacity(); saveState(); }));
-
-            // --- EPR LOG GENERATOR ---
-            function generateEPRLog() {
-                if (!$('epr-log-output')) return; 
-
-                try {
-                    let log = '';
-                    const date = new Date().toLocaleDateString('en-GB', {year:'numeric', month:'short', day:'2-digit'});
-                    
-                    log += `<strong>PROCEDURAL SEDATION RECORD (${date})</strong><br>`;
-                    log += `----------------------------------------------------------<br>`;
-                    
-                    log += `<strong>1. Staff & Patient</strong><br>`;
-                    
-                    log += `Procedure: <strong>${val('procedure') || 'Not specified'}</strong><br>`;
-                    log += `Indication: ${val('indication') || 'Not specified'}<br>`;
-                    
-                    log += `Sedationist: ${val('sedationist') || '...'} (${val('sedationist-grade') || 'Grade'})<br>`;
-                    log += `Proc. Dr: ${val('procedure-doctor') || '...'} | Nurse: ${val('nurse') || '...'}<br>`;
-                    
-                    const weightEst = isChecked('weight-estimated') ? '(Est)' : '';
-                    log += `Weight: ${val('weight') || '--'} kg ${weightEst} | Age: ${val('age') || '--'} yrs<br>`;
-                    
-                    if(isChecked('frail-elderly')) log += `<em>Patient flagged as Frail / >65</em><br>`;
-
-                    log += `Allergies: <strong>${val('allergies') || 'None Known'}</strong><br>`;
-                    log += `Pre-Analgesia: ${val('pre-analgesia') || 'None'}<br>`;
-                    log += `Fasting: Food (${val('last-food') || '--:--'}) | Fluid (${val('last-fluid') || '--:--'})<br><br>`;
-
-                    log += `<strong>2. Assessment & Consent</strong><br>`;
-                    
-                    // -- Airway --
-                    const mallampati = findCheckedRadio('airway-mallampati');
-                    const ulbt = findCheckedRadio('airway-ulbt');
-                    let airwayFlags = [];
-                    if(isChecked('airway-mouth')) airwayFlags.push('Mouth Opening <3cm');
-                    if(isChecked('airway-tmd')) airwayFlags.push('TMD <6cm');
-                    if(isChecked('airway-neck')) airwayFlags.push('Neck Mobility Reduced');
-                    if(isChecked('airway-bmi')) airwayFlags.push('High BMI');
-
-                    if(mallampati || ulbt || airwayFlags.length > 0) {
-                        log += `Airway: Mallampati ${mallampati || '-'} | ULBT ${ulbt || '-'} | Flags: ${airwayFlags.length ? airwayFlags.join(', ') : 'None'}<br>`;
-                    }
-
-                    // -- ASA & Contraindications --
-                    log += `ASA Grade: ${findCheckedRadio('asa-grade') || '-'}<br>`;
-                    
-                    let ci = [];
-                    if(isChecked('ci-allergy')) ci.push('Allergy');
-                    if(isChecked('ci-hemo')) ci.push('Haemodynamic Instability');
-                    if(isChecked('ci-gcs')) ci.push('Compromised Airway/GCS');
-                    if(ci.length > 0) log += `<strong>CONTRAINDICATIONS NOTED: ${ci.join(', ')}</strong><br>`;
-
-                    // -- Risks & Consent --
-                    log += `Capacity: ${findCheckedRadio('capacity') || 'Yes'}<br>`;
-                    
-                    let risks = [];
-                    if(isChecked('risk-nausea')) risks.push('Nausea');
-                    if(isChecked('risk-drowsy')) risks.push('Drowsiness');
-                    if(isChecked('risk-hypotension')) risks.push('Hypotension');
-                    if(isChecked('risk-resp-depress')) risks.push('Hypoxia');
-                    if(isChecked('risk-laryngospasm')) risks.push('Laryngospasm');
-                    if(isChecked('risk-aspiration')) risks.push('Aspiration');
-                    if(isChecked('risk-allergy')) risks.push('Anaphylaxis');
-                    
-                    if(isChecked('risk-failure')) risks.push('Proc Failure');
-                    if(isChecked('risk-treatment')) risks.push('Further Tx/Admission');
-                    if(isChecked('risk-emergence')) risks.push('Emergence Reaction');
-
-                    if(risks.length === 0) risks.push('None documented');
-                    log += `Risks Discussed: ${risks.join(', ')}<br>`;
-                    log += `Consent: ${findCheckedRadio('consent-type') || '...'}<br>`;
-                    
-                    let consentExtras = [];
-                    if(isChecked('consent-leaflet')) consentExtras.push('Leaflet Given');
-                    if(isChecked('consent-questions')) consentExtras.push('Questions Answered');
-                    if(consentExtras.length > 0) log += `Consent Notes: ${consentExtras.join(', ')}<br>`;
-
-                    log += `<br><strong>3. Plan & Safety</strong><br>`;
-                    log += `Target: ${val('plan-target') || '...'} | Agent: ${val('plan-agent') || '...'}<br>`;
-                    
-                    log += `Pre-Vitals: HR ${val('pre-vital-hr') || '-'} | BP ${val('pre-vital-bp') || '-'} | SpO2 ${val('pre-vital-spo2') || '-'}% | RR ${val('pre-vital-rr') || '-'} <br>`;
-                    
-                    // -- SOAP-ME Explicit List --
-                    let soap = [];
-                    if(isChecked('soap-s')) soap.push('Suction');
-                    if(isChecked('soap-o')) soap.push('Oxygen/BVM');
-                    if(isChecked('soap-a')) soap.push('Airway Equipment');
-                    if(isChecked('soap-m')) soap.push('Monitoring');
-                    if(isChecked('soap-e')) soap.push('Environment/IV');
-                    if(soap.length > 0) log += `Checklist (SOAP-ME): ${soap.join(', ')}<br>`;
-
-                    if(isChecked('plan-aagbi')) log += `Monitoring: AAGBI Standards + Waveform Capnography Confirmed<br>`;
-
-                    // -- Time Out Explicit List --
-                    let timeOut = [];
-                    if(isChecked('to-identity')) timeOut.push('Patient ID');
-                    if(isChecked('to-role')) timeOut.push('Roles Assigned');
-                    if(isChecked('to-site')) timeOut.push('Site/Side');
-                    if(isChecked('to-monitoring')) timeOut.push('Monitoring Active');
-                    log += `Safety Time Out: ${timeOut.length ? timeOut.join(', ') : 'None Recorded'}<br>`;
-                    
-                    log += `<br><strong>4. Intra-Procedure Log</strong><br>`;
-                    log += `Proc Start: ${$('procedure-start-output')?.textContent || '--:--'} | End: ${$('procedure-end-output')?.textContent || '--:--'} | Awake: ${$('patient-awake-output')?.textContent || '--:--'}<br>`;
-                    
-                    const drugRows = $('drug-table-body').querySelectorAll('tr');
-                    if (drugRows.length > 0) {
-                        log += `<u>Drugs Given:</u><br>`;
-                        drugRows.forEach(row => {
-                            const cells = row.querySelectorAll('td');
-                            const inputVal = cells[0].querySelector('input').value;
-                            const dTime = inputVal.match(/\((.*?)\)/)?.[1]?.trim() || inputVal.trim();
-                            const drugName = cells[1].textContent;
-                            const drugDose = cells[2].textContent;
-                            log += `- ${dTime}: ${drugName} ${drugDose} mg<br>`;
-                        });
-                    } else {
-                        log += `<em>No drugs recorded yet.</em><br>`;
-                    }
-
-                    const obsRows = $('monitoring-log-body').querySelectorAll('tr');
-                    if (obsRows.length > 0) {
-                        log += `<u>Observations:</u><br>`;
-                        obsRows.forEach(row => {
-                            const cells = row.querySelectorAll('td');
-                            const oTime = cells[0].querySelector('input').value;
-                            const hr = cells[1].querySelector('input').value;
-                            const bp = cells[2].querySelector('input').value;
-                            const spo2 = cells[3].querySelector('input').value;
-                            const rr = cells[4].querySelector('input').value;
-                            if(hr || bp || spo2 || rr) {
-                                log += `- ${oTime}: HR ${hr}, BP ${bp}, SpO2 ${spo2}%, RR ${rr}<br>`;
-                            }
-                        });
-                    }
-                    
-                    if(val('general-notes')) log += `<br><strong>Notes:</strong> ${val('general-notes')}<br>`;
-                    log += `<br>`;
-
-                    log += `<strong>5. Outcome & Discharge</strong><br>`;
-                    log += `Outcome: ${findCheckedRadio('outcome-proc') || '...'}<br>`;
-                    log += `Disposal: ${findCheckedRadio('disposal') || '...'}<br>`;
-                    
-                    // -- Discharge Criteria Explicit List --
-                    let dc = [];
-                    if(isChecked('dc-vitals')) dc.push('Vitals Baseline');
-                    if(isChecked('dc-aao')) dc.push('Alert/Orientated');
-                    if(isChecked('dc-oral')) dc.push('Tol. Fluids');
-                    if(isChecked('dc-pain')) dc.push('Pain Managed');
-                    if(isChecked('dc-home')) dc.push('Home Care');
-                    if(isChecked('dc-reversal-time')) dc.push('Reversal Wait OK');
-                    log += `Discharge Checks: ${dc.length ? dc.join(', ') : 'None Checked'}<br>`;
-
-                    // -- Instructions Explicit List --
-                    let di = [];
-                    if(isChecked('di-drive')) di.push('No Driving');
-                    if(isChecked('di-adult')) di.push('Accompanied');
-                    if(isChecked('di-alcohol')) di.push('No Alcohol');
-                    if(isChecked('di-decisions')) di.push('No Legal Decisions');
-                    if(di.length > 0) log += `Instructions Given: ${di.join(', ')}<br>`;
-                    
-                    if(val('signoff-name') || val('signoff-gmc')) {
-                        log += `<br><strong>Signed Off By:</strong> ${val('signoff-name')} (GMC: ${val('signoff-gmc')}) @ ${val('signoff-time')}`;
-                    }
-                    
-                    $('epr-log-output').innerHTML = log;
-                } catch (e) {
-                    console.error("Log generation error:", e);
-                }
-            }
-
-            // --- DISCHARGE LETTER LOGIC ---
-            const showDischargeLetter = () => {
-                // Populate Basic Fields
-                const now = new Date();
-                const nowStr = now.toLocaleDateString('en-GB', {day:'numeric', month:'long', year:'numeric'});
-                $('letter-date').textContent = nowStr;
-                
-                const proc = val('procedure') || 'Sedation';
-                const indic = val('indication');
-                $('letter-procedure').textContent = indic ? `${proc} for ${indic}` : proc;
-
-                // --- 1. Drug Extraction & Side Effect Logic ---
-                const drugRows = document.querySelectorAll('#drug-table-body tr td:nth-child(2)');
-                let drugsSet = new Set();
-                drugRows.forEach(td => drugsSet.add(td.textContent.trim()));
-                
-                const drugsArray = Array.from(drugsSet);
-                const drugsString = drugsArray.length > 0 ? drugsArray.join(' & ') : "Sedation";
-                $('letter-drugs-given').textContent = drugsString;
-
-                // Build Side Effects List
-                const sideEffectsList = $('letter-side-effects-list');
-                sideEffectsList.innerHTML = ''; // Clear previous
-
-                const addEffect = (text) => {
-                    const li = document.createElement('li');
-                    li.textContent = text;
-                    sideEffectsList.appendChild(li);
-                };
-
-                // Default Effects
-                addEffect("You may feel tired, dizzy, or unsteady on your feet. Take it easy and rest.");
-                addEffect("You may not remember much about the procedure (Amnesia). This is normal.");
-
-                // Specific Effects
-                const dList = drugsArray.map(d => d.toLowerCase());
-                const hasKetamine = dList.some(d => d.includes('ketamine'));
-                const hasOpioid = dList.some(d => d.includes('fentanyl') || d.includes('morphine'));
-                const hasPropofol = dList.some(d => d.includes('propofol'));
-                const hasMidazolam = dList.some(d => d.includes('midazolam'));
-
-                // UPDATED: More specific advice
-                if (hasKetamine) {
-                    addEffect("Ketamine can sometimes cause vivid dreams or 'daydreams' as it wears off. Resting in a quiet, low-light room helps.");
-                }
-                
-                if (hasPropofol) {
-                    addEffect("Propofol can leave you feeling a bit groggy or 'foggy' headed for a few hours.");
-                }
-
-                if (hasMidazolam) {
-                    addEffect("Midazolam is strong at making you forget the event. Don't worry if your memory of the hospital visit is patchy.");
-                }
-
-                if (hasOpioid) {
-                    addEffect("Strong painkillers (like Fentanyl/Morphine) can make you feel nauseous or itchy. This usually settles quickly.");
-                } else if (!hasOpioid) {
-                    addEffect("You may feel a little nauseous from the sedation. Eat light meals and drink plenty of water.");
-                }
-                
-                addEffect("If your cannula site (where the needle was) becomes red, hot, or swollen, please seek medical advice.");
-
-
-                // --- 2. Time Calculation Logic ---
-                let sedTimeStr = $('procedure-end-output').textContent;
-                if (!sedTimeStr || sedTimeStr.trim() === '') sedTimeStr = val('signoff-time');
-                if (!sedTimeStr || sedTimeStr.trim() === '') sedTimeStr = now.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
-
-                let baseDate = new Date();
-                const parts = sedTimeStr.split(':');
-                if (parts.length === 2) {
-                    baseDate.setHours(parseInt(parts[0]), parseInt(parts[1]), 0, 0);
-                }
-
-                const expiryDate = new Date(baseDate.getTime() + (24 * 60 * 60 * 1000));
-                const timeOpts = {hour:'2-digit', minute:'2-digit'};
-                const dateOpts = {day:'numeric', month:'short'};
-                
-                $('letter-time-start').textContent = baseDate.toLocaleTimeString('en-GB', timeOpts);
-                $('letter-date-start').textContent = baseDate.toLocaleDateString('en-GB', dateOpts);
-                $('letter-time-end').textContent = expiryDate.toLocaleTimeString('en-GB', timeOpts);
-                $('letter-date-end').textContent = expiryDate.toLocaleDateString('en-GB', dateOpts);
-                
-                // Show View
-                $('main-app-container').classList.add('hidden');
-                $('discharge-letter-view').classList.remove('hidden');
-                window.scrollTo(0, 0);
+            // --- DARK MODE ---
+            if(localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark');
+            $('dark-mode-toggle').onclick = () => {
+                document.documentElement.classList.toggle('dark');
+                localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
             };
 
-            $('create-discharge-letter-btn').onclick = showDischargeLetter;
-            $('header-print-letter-btn').onclick = showDischargeLetter;
-
-            $('close-letter-btn').onclick = () => {
-                $('discharge-letter-view').classList.add('hidden');
-                $('main-app-container').classList.remove('hidden');
-            };
-
-            $('print-letter-btn').onclick = () => {
-                document.body.classList.add('printing-letter');
-                window.print();
-                document.body.classList.remove('printing-letter');
-            };
-
-            // --- Event Listeners ---
-            $('print-button').onclick = () => window.print();
-            $('header-print-btn').onclick = () => window.print();
-            
-            $('clear-form-button').onclick = () => {
-                if(confirm("Reset form? This will clear all data.")) {
-                    localStorage.removeItem('sedation_record_data');
+            $('reset-btn').onclick = () => {
+                if(confirm("Clear all data and reset form?")) {
+                    localStorage.removeItem('sedation_v3_data');
                     location.reload();
                 }
             };
-            
+
+            // --- TABS ---
+            $('btn-tab-procedural').onclick = () => {
+                $('tab-procedural').classList.remove('hidden');
+                $('tab-agitated').classList.add('hidden');
+                $('btn-tab-procedural').classList.add('border-blue-600', 'text-blue-800');
+                $('btn-tab-procedural').classList.remove('border-transparent', 'text-slate-500');
+                $('btn-tab-agitated').classList.remove('border-red-600', 'text-red-800');
+                $('btn-tab-agitated').classList.add('border-transparent', 'text-slate-500');
+            };
+            $('btn-tab-agitated').onclick = () => {
+                $('tab-agitated').classList.remove('hidden');
+                $('tab-procedural').classList.add('hidden');
+                $('btn-tab-agitated').classList.add('border-red-600', 'text-red-800');
+                $('btn-tab-agitated').classList.remove('border-transparent', 'text-slate-500');
+                $('btn-tab-procedural').classList.remove('border-blue-600', 'text-blue-800');
+                $('btn-tab-procedural').classList.add('border-transparent', 'text-slate-500');
+            };
+
+            // --- TRAFFIC LIGHTS ---
+            $('allergies').addEventListener('input', (e) => {
+                $('allergy-container').classList.toggle('bg-red-100', e.target.value.length > 0);
+                $('allergy-container').classList.toggle('border-red-300', e.target.value.length > 0);
+            });
+            const updateAirwayColor = () => {
+                const card = $('airway-card');
+                const m = findCheckedRadio('airway-mallampati');
+                const ulbt = findCheckedRadio('airway-ulbt');
+                const a = findCheckedRadio('asa-grade');
+                const risk = m === 'IV' || m === 'III' || ulbt === '3' || a === 'IV' || a === 'III' || isChecked('airway-mouth') || isChecked('airway-neck') || isChecked('airway-tmd') || isChecked('airway-bmi');
+                
+                card.className = "p-3 border rounded-lg mb-4 transition-colors duration-300 " + 
+                    (risk ? 'bg-orange-50 border-orange-300 dark:bg-orange-900/20 dark:border-orange-600' : 'bg-slate-50 border-slate-200 dark:bg-slate-700/30 dark:border-slate-600');
+            };
+            document.querySelectorAll('input[name="airway-mallampati"], input[name="airway-ulbt"], input[name="asa-grade"], .chk-input').forEach(el => el.addEventListener('change', updateAirwayColor));
+
+            // --- CALCULATORS ---
             $('calculate-doses-button').onclick = () => {
-                const w = parseFloat(val('weight'));
+                const w = parseFloat($('weight').value);
                 if(!w) return alert("Enter weight first");
                 const frail = isChecked('frail-elderly');
                 
@@ -1361,190 +828,246 @@
                 
                 const k_diss_low = (1.0 * w).toFixed(0);
                 const k_diss_high = (2.0 * w).toFixed(0); 
-                const k_analgesia_low = (0.3 * w).toFixed(1); 
-                const k_analgesia_high = (0.5 * w).toFixed(1); 
                 
                 const m_initial_low = 1; 
                 const m_initial_high = Math.min(2.0, 0.05 * w).toFixed(1); 
-                
                 const f_initial_max_mcg = (0.5 * w).toFixed(0); 
                 
                 let p_output = frail 
-                    ? `<strong>Propofol (Frail/Elderly):</strong> ${p_frail_low}-${p_frail_high} mg (0.25-0.5 mg/kg IV)`
-                    : `<strong>Propofol (Adult):</strong> ${p_std_low}-${p_std_high} mg (0.5-1.0 mg/kg IV)`;
+                    ? `<strong>Propofol (Frail):</strong> ${p_frail_low}-${p_frail_high} mg`
+                    : `<strong>Propofol (Adult):</strong> ${p_std_low}-${p_std_high} mg`;
                 
                 $('dose-output').innerHTML = `
                     <p class="mb-1">${p_output}</p>
-                    <p class="mb-1"><strong>Ketamine (Dissociative):</strong> ${k_diss_low}-${k_diss_high} mg (1-2 mg/kg IV)</p>
-                    <p class="mb-1"><strong>Ketamine (Analgesia):</strong> ${k_analgesia_low}-${k_analgesia_high} mg (0.3-0.5 mg/kg IV)</p>
-                    <p class="mb-1"><strong>Midazolam (Adjunct):</strong> ${m_initial_low}-${m_initial_high} mg (Initial 1-2 mg; max 2.5 mg single dose)</p>
-                    <p class="mb-1"><strong>Fentanyl (Adjunct):</strong> Up to ${f_initial_max_mcg} mcg (Up to 0.5 mcg/kg IV with sedatives)</p>
-                    <hr class="my-2 border-blue-200">
-                    <span class="text-xs text-slate-600">All doses are initial bolus ranges. Titrate slowly to effect.</span>
+                    <p class="mb-1"><strong>Ketamine:</strong> ${k_diss_low}-${k_diss_high} mg (Dissoc)</p>
+                    <p class="mb-1"><strong>Midazolam:</strong> ${m_initial_low}-${m_initial_high} mg</p>
+                    <p class="mb-1"><strong>Fentanyl:</strong> Max ${f_initial_max_mcg} mcg</p>
                 `;
                 $('dose-output').classList.remove('hidden');
                 saveState();
             };
 
-            const toggle = (btnId, contentId) => {
-                const btn = $(btnId);
-                if(btn) btn.onclick = () => $(contentId).classList.toggle('hidden');
-            };
-            toggle('asa-guide-button', 'asa-guide-content');
-            toggle('complications-guide-button', 'complications-guide-content');
-
-            // --- Timer Logic ---
-            const timerBtn = $('sedation-timer-button');
-            timerBtn.onclick = () => {
-                if(sedationInterval) stopTimer();
-                else {
-                    const safetyChecks = isChecked('to-identity') && isChecked('to-role') && isChecked('to-site') && isChecked('to-monitoring');
-                    if(!safetyChecks) {
-                        if(!confirm("⚠️ SAFETY WARNING: 'Time Out' checks are not fully completed.\n\nAre you sure you want to start sedation?")) return;
-                    }
-                    startTimer();
+            $('calc-agitated-btn').onclick = () => {
+                const w = parseFloat($('agitated-weight').value);
+                if(w > 0) {
+                    $('val-ket-im').textContent = (w * 4).toFixed(0);
+                    $('val-ket-iv').textContent = (w * 1).toFixed(0);
+                    $('agitated-output').classList.remove('hidden');
                 }
             };
 
-            function startTimer() {
-                timerBtn.textContent = "STOP TIMER";
-                timerBtn.classList.remove('bg-green-600', 'hover:bg-green-700', 'border-green-700');
-                timerBtn.classList.add('bg-red-600', 'hover:bg-red-700', 'border-red-700');
-                
-                if(secondsElapsed === 0) addObsRow(); 
-                saveState();
-                
-                sedationInterval = setInterval(() => {
-                    secondsElapsed++;
-                    const h = new Date(secondsElapsed * 1000).toISOString().substr(11, 8);
-                    $('timer-display').textContent = h;
-                    if(secondsElapsed % 300 === 0) $('obs-toast').classList.remove('hidden');
+            // --- TIMER LOGIC (ROBUST) ---
+            function updateTimerDisplay(totalSeconds) {
+                const m = Math.floor(totalSeconds / 60).toString().padStart(2,'0');
+                const s = Math.floor(totalSeconds % 60).toString().padStart(2,'0');
+                $('timer-display').textContent = `${m}:${s}`;
+                $('footer-timer').textContent = `${m}:${s}`;
+            }
+
+            function startTimerUI() {
+                 timerInterval = setInterval(() => {
+                    const now = Date.now();
+                    const diff = Math.floor((now - startTime) / 1000) + elapsedWhenPaused;
+                    updateTimerDisplay(diff);
                 }, 1000);
+                $('sedation-timer-button').textContent = "STOP TIMER";
+                $('sedation-timer-button').classList.replace('bg-green-600', 'bg-red-600');
+                $('sedation-timer-button').classList.replace('border-green-800', 'border-red-800');
+                $('sticky-footer').classList.replace('translate-y-full', 'translate-y-0');
             }
 
-            function stopTimer() {
-                clearInterval(sedationInterval);
-                sedationInterval = null;
-                timerBtn.textContent = "START TIMER";
-                timerBtn.classList.add('bg-green-600', 'hover:bg-green-700', 'border-green-700');
-                timerBtn.classList.remove('bg-red-600', 'hover:bg-red-700', 'border-red-700');
-                $('obs-toast').classList.add('hidden');
+            $('sedation-timer-button').onclick = () => {
+                if(timerInterval) {
+                    // STOP
+                    clearInterval(timerInterval);
+                    timerInterval = null;
+                    const now = Date.now();
+                    elapsedWhenPaused += Math.floor((now - startTime) / 1000);
+                    startTime = null; // Reset current session start
+                    
+                    $('sedation-timer-button').textContent = "RESUME TIMER";
+                    $('sedation-timer-button').classList.replace('bg-red-600', 'bg-green-600');
+                    $('sedation-timer-button').classList.replace('border-red-800', 'border-green-800');
+                } else {
+                    // START
+                    if(elapsedWhenPaused === 0) {
+                        // First start
+                        toggleSection('section-1-content');
+                        toggleSection('section-2-content');
+                        toggleSection('section-3-content');
+                        addObsRow(); 
+                    }
+                    startTime = Date.now();
+                    startTimerUI();
+                }
                 saveState();
-            }
-            
-            $('dismiss-toast-button').onclick = () => $('obs-toast').classList.add('hidden');
+            };
 
+            // Timestamp Buttons
             ['procedure-start', 'procedure-end', 'patient-awake'].forEach(key => {
                 $(`${key}-button`).onclick = function() {
-                    const time = new Date().toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
-                    $(`${key}-output`).textContent = time;
-                    this.disabled = true;
-                    this.classList.add('opacity-50', 'cursor-not-allowed');
+                    $(`${key}-output`).textContent = new Date().toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
                     saveState();
                 }
             });
 
-            $('add-obs-button').onclick = addObsRow;
-            
+            // --- ADDING ROWS ---
             function addObsRow() {
-                const tr = document.createElement('tr');
-                const t = secondsElapsed > 0 ? `T+${Math.floor(secondsElapsed/60)}m` : 'Pre';
-                const time = new Date().toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
-                tr.innerHTML = `
-                    <td class="p-1"><input type="text" value="${t} (${time})" readonly class="text-xs bg-slate-50 border-none px-1 rounded"></td>
-                    <td class="p-1"><input type="text" class="text-center font-bold border-slate-300 rounded" oninput="saveState()"></td>
-                    <td class="p-1"><input type="text" class="text-center font-bold border-slate-300 rounded" oninput="saveState()"></td>
-                    <td class="p-1"><input type="text" class="text-center font-bold border-slate-300 rounded" oninput="saveState()"></td>
-                    <td class="p-1"><input type="text" class="text-center font-bold border-slate-300 rounded" oninput="saveState()"></td>
-                    <td class="p-1"><input type="text" class="text-center font-bold border-slate-300 rounded" oninput="saveState()"></td>
-                    <td class="p-1 border border-slate-300 rounded" onchange="saveState()">${$('obs-score-template').innerHTML}</td>
-                    <td class="p-1 text-center"><button class="text-red-500 font-bold hover:bg-red-50 rounded px-2" onclick="this.closest('tr').remove(); saveState()">x</button></td>
-                `;
-                $('monitoring-log-body').appendChild(tr);
+                const tmpl = $('obs-row-template').content.cloneNode(true);
+                const now = new Date().toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
+                tmpl.querySelector('.row-time').textContent = now;
+                tmpl.querySelector('.remove-btn').onclick = (e) => { e.target.closest('.grid').remove(); saveState(); };
+                tmpl.querySelectorAll('input').forEach(i => i.oninput = saveState);
+                $('obs-table-container').prepend(tmpl);
                 saveState();
             }
+            $('footer-obs-btn').onclick = addObsRow;
 
-            $('drug-admin-container').onclick = async (e) => {
-                if(e.target.tagName !== 'BUTTON') return;
-                let drug = e.target.dataset.drug;
-                if(drug === 'Other') drug = await promptModal("Drug Name:");
-                if(!drug) return;
-                const dose = await promptModal(`Dose for ${drug} (mg):`);
-                if(!dose) return;
-                
-                const tr = document.createElement('tr');
-                const time = new Date().toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
-                tr.innerHTML = `
-                    <td class="p-2"><input type="text" value="${time}" readonly class="text-xs bg-transparent border-none"></td>
-                    <td class="p-2 font-bold text-slate-700">${drug}</td>
-                    <td class="p-2 font-bold">${dose}</td>
-                    <td class="p-2 text-xs">${val('sedationist')}</td>
-                    <td class="p-2 text-center"><button class="text-red-500 font-bold hover:bg-red-50 rounded px-2" onclick="this.closest('tr').remove(); saveState()">x</button></td>
-                `;
-                $('drug-table-body').appendChild(tr);
-                saveState();
-            };
-
-            // --- Modal Logic ---
-            const modal = $('custom-modal-backdrop');
-            const modalContent = $('custom-modal');
-            let modalResolve = null;
-
-            window.promptModal = (label) => {
-                return new Promise(resolve => {
-                    $('custom-modal-label').textContent = label;
-                    $('custom-modal-input').value = '';
-                    modal.classList.remove('hidden');
-                    modal.classList.add('flex');
-                    setTimeout(() => {
-                        modalContent.classList.remove('scale-95', 'opacity-0');
-                        modalContent.classList.add('scale-100', 'opacity-100');
-                        $('custom-modal-input').focus();
-                    }, 10);
-                    modalResolve = resolve;
-                });
-            };
-
-            const closeModal = (val) => {
-                modalContent.classList.remove('scale-100', 'opacity-100');
-                modalContent.classList.add('scale-95', 'opacity-0');
-                setTimeout(() => {
-                    modal.classList.add('hidden');
-                    modal.classList.remove('flex');
-                    if(modalResolve) modalResolve(val);
-                    modalResolve = null;
-                }, 200);
-            };
-
-            $('custom-modal-ok').onclick = () => closeModal($('custom-modal-input').value);
-            $('custom-modal-cancel').onclick = () => closeModal(null);
-            $('custom-modal-input').onkeydown = (e) => { if(e.key === 'Enter') $('custom-modal-ok').click(); };
-
-            const form = $('sedation-form');
-            form.addEventListener('input', saveState);
-            form.addEventListener('change', saveState);
+            // Drug Modal
+            let selectedDrug = null;
+            $('footer-drug-btn').onclick = () => { $('drug-modal').classList.remove('hidden'); $('drug-modal').classList.add('flex'); };
+            $('close-drug-modal').onclick = () => $('drug-modal').classList.add('hidden');
             
-            if ($('epr-log-output')) {
-                loadState();
-                $('copy-log-button').onclick = async () => {
-                    try {
-                        const el = $('epr-log-output');
-                        const htmlBlob = new Blob([el.innerHTML], { type: 'text/html' });
-                        const textBlob = new Blob([el.innerText], { type: 'text/plain' });
-                        await navigator.clipboard.write([new ClipboardItem({ 'text/html': htmlBlob, 'text/plain': textBlob })]);
-                        const btn = $('copy-log-button');
-                        const orig = btn.innerText;
-                        btn.innerText = '✅ Copied!';
-                        btn.classList.add('bg-green-600', 'hover:bg-green-700');
-                        btn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
-                        setTimeout(() => {
-                            btn.innerText = orig;
-                            btn.classList.add('bg-blue-600', 'hover:bg-blue-700');
-                            btn.classList.remove('bg-green-600', 'hover:bg-green-700');
-                        }, 2000);
-                    } catch (err) { alert("Copy failed. Please manually select and copy."); }
-                };
+            document.querySelectorAll('.drug-select-btn').forEach(btn => {
+                btn.onclick = () => {
+                    document.querySelectorAll('.drug-select-btn').forEach(b => b.classList.remove('ring-4', 'ring-blue-400'));
+                    btn.classList.add('ring-4', 'ring-blue-400');
+                    selectedDrug = btn.dataset.drug;
+                    $('quick-drug-dose').focus();
+                }
+            });
+
+            $('confirm-drug-btn').onclick = () => {
+                const dose = $('quick-drug-dose').value;
+                if(!selectedDrug || !dose) return;
+                const tmpl = $('drug-row-template').content.cloneNode(true);
+                tmpl.querySelector('.row-time').textContent = new Date().toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
+                tmpl.querySelector('.row-drug').textContent = selectedDrug;
+                tmpl.querySelector('.row-dose').textContent = dose + 'mg';
+                tmpl.querySelector('.remove-btn').onclick = (e) => { e.target.closest('div.flex').remove(); saveState(); };
+                $('drug-table-container').appendChild(tmpl);
+                $('empty-drugs-msg').classList.add('hidden');
+                $('drug-modal').classList.add('hidden');
+                $('quick-drug-dose').value = '';
+                document.querySelectorAll('.drug-select-btn').forEach(b => b.classList.remove('ring-4', 'ring-blue-400'));
+                selectedDrug = null;
+                saveState();
+            };
+
+            // --- DISCHARGE LETTER ---
+            $('create-discharge-letter-btn').onclick = () => {
+                 const now = new Date();
+                 $('letter-date').textContent = now.toLocaleDateString();
+                 const proc = val('procedure') || 'Sedation';
+                 const indic = val('indication');
+                 $('letter-procedure').textContent = indic ? `${proc} for ${indic}` : proc;
+                 
+                 // Get drugs given for side effects logic
+                 let drugs = [];
+                 document.querySelectorAll('.row-drug').forEach(el => drugs.push(el.textContent));
+                 const uniqueDrugs = [...new Set(drugs)];
+                 $('letter-drugs-given').textContent = uniqueDrugs.join(', ') || 'Sedation Medication';
+                 
+                 // Time Calc
+                 const end = new Date(now.getTime() + 24*60*60*1000);
+                 $('letter-time-end').textContent = end.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+                 $('letter-date-end').textContent = end.toLocaleDateString();
+
+                 // Specific Side Effects Logic (Restored)
+                 const ul = $('letter-side-effects-list');
+                 ul.innerHTML = '';
+                 const addLi = (txt) => { const li = document.createElement('li'); li.textContent = txt; ul.appendChild(li); };
+                 
+                 addLi("You may feel tired, dizzy, or unsteady. Rest today.");
+                 addLi("Amnesia (forgetting the event) is normal.");
+                 
+                 const dStr = uniqueDrugs.join(' ').toLowerCase();
+                 if(dStr.includes('ketamine')) addLi("Ketamine can cause vivid dreams. Rest in a quiet, low-light room.");
+                 if(dStr.includes('propofol')) addLi("Propofol may leave you feeling groggy.");
+                 if(dStr.includes('fentanyl') || dStr.includes('morphine')) addLi("Strong painkillers can cause nausea or itching.");
+                 
+                 $('main-app-container').classList.add('hidden');
+                 $('discharge-letter-view').classList.remove('hidden');
+                 window.scrollTo(0,0);
+            };
+
+            // --- EPR LOG GENERATOR (FULL) ---
+            function generateEPRLog() {
+                let log = `<strong>PROCEDURAL SEDATION RECORD</strong><br>`;
+                log += `Procedure: ${val('procedure')} | Indication: ${val('indication')}<br>`;
+                log += `Staff: ${val('sedationist')} (Sed), ${val('sedationist-grade')}<br>`;
+                log += `Patient: ${val('age')}yrs | ${val('weight')}kg ${isChecked('weight-estimated')?'(Est)':''} | ASA ${findCheckedRadio('asa-grade')}<br>`;
+                log += `Allergies: ${val('allergies') || 'NKDA'} | Fasting: Food ${val('last-food')} Fluid ${val('last-fluid')}<br>`;
+                
+                // Risk/Airway
+                const mall = findCheckedRadio('airway-mallampati');
+                const ulbt = findCheckedRadio('airway-ulbt');
+                const risks = [];
+                if(isChecked('risk-nausea')) risks.push('Nausea');
+                if(isChecked('risk-resp-depress')) risks.push('Hypoxia');
+                if(isChecked('risk-laryngospasm')) risks.push('Laryngospasm');
+                if(isChecked('risk-aspiration')) risks.push('Aspiration');
+                if(isChecked('risk-allergy')) risks.push('Anaphylaxis');
+                
+                let airwayIssues = [];
+                if(mall === 'III' || mall === 'IV') airwayIssues.push(`Mallampati ${mall}`);
+                if(ulbt === '3') airwayIssues.push('ULBT 3');
+                if(isChecked('airway-mouth')) airwayIssues.push('Mouth<3cm');
+                
+                if(airwayIssues.length) log += `<strong>AIRWAY ALERT: ${airwayIssues.join(', ')}</strong><br>`;
+                if(risks.length) log += `Risks Discussed: ${risks.join(', ')}<br>`;
+                
+                // Drugs
+                const drugs = [];
+                document.querySelectorAll('.row-drug').forEach((el, i) => {
+                    const dose = document.querySelectorAll('.row-dose')[i].textContent;
+                    const time = document.querySelectorAll('.row-time')[i].textContent;
+                    drugs.push(`${time} ${el.textContent} ${dose}`);
+                });
+                if(drugs.length) log += `<br><strong>Drugs:</strong><br>${drugs.join('<br>')}<br>`;
+                
+                // Vitals
+                const vitals = [];
+                document.querySelectorAll('.obs-input').forEach((el, i) => {
+                    if(i % 4 === 0 && el.value) { // HR is index 0, 4, 8...
+                        const row = el.closest('.grid');
+                        const t = row.querySelector('.row-time').textContent;
+                        const hr = el.value; 
+                        const bp = row.querySelectorAll('.obs-input')[1].value;
+                        const sp = row.querySelectorAll('.obs-input')[2].value;
+                        const rr = row.querySelectorAll('.obs-input')[3].value;
+                        vitals.push(`${t}: HR${hr} BP${bp} SaO2${sp}% RR${rr}`);
+                    }
+                });
+                if(vitals.length) log += `<br><strong>Vitals:</strong><br>${vitals.join('<br>')}<br>`;
+                
+                // Discharge
+                const dc = [];
+                if(isChecked('dc-vitals')) dc.push('Vitals OK');
+                if(isChecked('dc-aao')) dc.push('A&O');
+                if(isChecked('dc-home')) dc.push('Escort present');
+                
+                log += `<br>Outcome: ${findCheckedRadio('outcome-proc')}<br>`;
+                if(dc.length) log += `DC Criteria: ${dc.join(', ')}<br>`;
+                log += `Signed: ${val('signoff-name')} @ ${val('signoff-time')}`;
+                
+                $('epr-log-output').innerHTML = log;
             }
+            
+            // Start Tabs & Accordions
+            loadState();
+            ['section-1-content', 'section-2-content', 'section-3-content'].forEach(id => {
+               const el = $(id); el.style.maxHeight = el.scrollHeight + "px";
+            });
+            $('header-print-btn').onclick = () => window.print();
+            $('header-print-letter-btn').onclick = $('create-discharge-letter-btn').onclick;
+            $('copy-log-button').onclick = () => {
+                navigator.clipboard.writeText($('epr-log-output').innerText);
+                const btn = $('copy-log-button');
+                const orig = btn.innerText;
+                btn.innerText = "COPIED!";
+                setTimeout(()=>btn.innerText = orig, 1000);
+            };
         });
     </script>
 </body>
