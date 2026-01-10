@@ -43,7 +43,7 @@
         }
         .dark input::placeholder { color: #94a3b8; }
 
-        /* Touch Targets (Fat Finger Optimization) */
+        /* Touch Targets */
         .touch-group-label {
             @apply flex items-center justify-center p-3 border-2 rounded-lg cursor-pointer transition-all select-none font-bold text-sm text-center bg-white text-slate-600 border-slate-200 hover:bg-slate-50;
         }
@@ -66,19 +66,11 @@
         .chk-label {
             @apply flex items-center gap-2 p-2 rounded hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer text-xs font-bold text-slate-700 dark:text-slate-300 transition;
         }
-        /* With the forms plugin, these classes will now correctly style the checkbox */
         .chk-input {
             @apply w-5 h-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500 dark:bg-slate-600 dark:border-slate-500 dark:checked:bg-blue-600 dark:checked:border-blue-600;
         }
 
-        /* Buttons */
-        .std-btn { 
-            @apply transition-all border border-slate-300 bg-slate-50 text-slate-700 rounded-lg font-bold px-4 py-2 text-xs inline-flex items-center justify-center hover:bg-slate-200 active:translate-y-px;
-        }
-        .dark .std-btn {
-            @apply bg-slate-700 border-slate-600 text-slate-200 hover:bg-slate-600;
-        }
-
+        /* Drug Buttons */
         .drug-btn {
             @apply bg-white border border-slate-300 text-slate-600 font-bold text-xs px-3 py-3 rounded-lg shadow-sm transition-all hover:bg-slate-50 active:scale-95 flex-grow text-center min-w-[80px];
         }
@@ -86,7 +78,7 @@
             @apply bg-slate-800 border-slate-600 text-slate-300 hover:bg-slate-700;
         }
 
-        /* Rich Text Output */
+        /* Rich Text Output (Matching Trauma Tool) */
         .rich-output {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             font-size: 0.85rem;
@@ -105,10 +97,10 @@
             color: #cbd5e1;
             border-color: #475569;
         }
-        .rich-output strong { font-weight: 800; }
+        .rich-output strong { font-weight: 800; color: #0f172a; }
         .dark .rich-output strong { color: white; }
 
-        /* Agitated Stripes */
+        /* Agitated Warning */
         .agitated-warning {
             background: repeating-linear-gradient(45deg, #fffbeb, #fffbeb 10px, #fef3c7 10px, #fef3c7 20px);
         }
@@ -124,7 +116,6 @@
             .dark { color-scheme: light; } 
             .dark .section-card { background: white !important; color: black !important; }
             #sticky-footer { display: none !important; }
-            /* Reset heights for print */
             .transition-height { max-height: none !important; opacity: 1 !important; }
         }
     </style>
@@ -134,7 +125,7 @@
     <header class="bg-white dark:bg-slate-800 shadow-sm sticky top-0 z-50 border-b border-slate-300 dark:border-slate-700 no-print">
         <div class="container mx-auto px-4 py-2 flex justify-between items-center">
             <div class="flex items-center gap-3">
-                <img src="images/logo.png" alt="Logo" class="h-10 md:h-12 w-auto object-contain" onerror="this.style.display='none'">
+                <img src="https://iili.io/KGQOvkl.md.png" alt="Logo" class="h-10 md:h-12 w-auto object-contain">
                 <div>
                     <h1 class="text-lg md:text-xl font-black leading-tight">Sedation Record</h1>
                     <p class="text-[10px] text-green-600 font-bold flex items-center gap-1">
@@ -148,22 +139,13 @@
                     <span class="dark:hidden">🌙</span>
                     <span class="hidden dark:inline">☀️</span>
                 </button>
-
-                <button id="header-print-letter-btn" class="hidden sm:inline-flex px-3 py-2 bg-purple-600 text-white text-xs font-bold rounded hover:bg-purple-700 transition">
-                    LETTER
-                </button>
-                <button id="header-print-btn" class="px-3 py-2 bg-slate-800 dark:bg-slate-700 text-white text-xs font-bold rounded hover:bg-slate-700 dark:hover:bg-slate-600 transition">
-                    PRINT
-                </button>
-                <button id="reset-btn" class="px-3 py-2 bg-red-100 text-red-700 text-xs font-bold rounded hover:bg-red-200 transition">
-                    RESET
-                </button>
+                <button id="reset-btn" class="px-3 py-2 bg-red-100 text-red-700 text-xs font-bold rounded hover:bg-red-200 transition">RESET</button>
             </div>
         </div>
         
         <div id="tabs-container" class="container mx-auto px-4 flex gap-4 border-t border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800">
-            <button id="btn-tab-procedural" class="flex-1 py-3 text-sm font-black text-center border-b-4 border-blue-600 text-blue-800 dark:text-blue-400">Standard Sedation</button>
-            <button id="btn-tab-agitated" class="flex-1 py-3 text-sm font-black text-center border-b-4 border-transparent text-slate-500 hover:text-red-600 dark:text-slate-400">🚨 Agitated Patient</button>
+            <button id="btn-tab-procedural" class="flex-1 py-3 text-sm font-black text-center border-b-4 border-blue-600 text-blue-800 dark:text-blue-400 transition-colors">Standard Sedation</button>
+            <button id="btn-tab-agitated" class="flex-1 py-3 text-sm font-black text-center border-b-4 border-transparent text-slate-500 hover:text-red-600 dark:text-slate-400 transition-colors">🚨 Agitated Patient</button>
         </div>
     </header>
 
@@ -174,21 +156,11 @@
             <div class="lg:col-span-8 flex flex-col gap-4">
                 
                 <div class="sticky top-[105px] z-40 bg-slate-100/95 dark:bg-slate-900/95 backdrop-blur-sm py-2 -mt-2 mb-2 flex gap-2 overflow-x-auto no-print border-b border-slate-200 dark:border-slate-700 hide-scrollbar" style="top: 105px;">
-                    <button onclick="scrollToSection('section-1-content')" class="flex-shrink-0 px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-full shadow-sm text-[10px] font-black uppercase text-slate-600 dark:text-slate-300 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-300 transition-colors">
-                        1. Patient
-                    </button>
-                    <button onclick="scrollToSection('section-2-content')" class="flex-shrink-0 px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-full shadow-sm text-[10px] font-black uppercase text-slate-600 dark:text-slate-300 hover:bg-orange-50 hover:text-orange-600 hover:border-orange-300 transition-colors">
-                        2. Assessment
-                    </button>
-                    <button onclick="scrollToSection('section-3-content')" class="flex-shrink-0 px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-full shadow-sm text-[10px] font-black uppercase text-slate-600 dark:text-slate-300 hover:bg-green-50 hover:text-green-600 hover:border-green-300 transition-colors">
-                        3. Plan
-                    </button>
-                    <button onclick="scrollToSection('section-4')" class="flex-shrink-0 px-3 py-1.5 bg-slate-800 dark:bg-slate-700 border border-slate-900 rounded-full shadow-sm text-[10px] font-black uppercase text-white hover:bg-slate-700 transition-colors">
-                        ⏱️ Timer
-                    </button>
-                     <button onclick="scrollToSection('section-5')" class="flex-shrink-0 px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-full shadow-sm text-[10px] font-black uppercase text-slate-600 dark:text-slate-300 hover:bg-purple-50 hover:text-purple-600 hover:border-purple-300 transition-colors">
-                        5. Discharge
-                    </button>
+                    <button onclick="scrollToSection('section-1-content')" class="flex-shrink-0 px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-full shadow-sm text-[10px] font-black uppercase text-slate-600 dark:text-slate-300 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-300 transition-colors">1. Patient</button>
+                    <button onclick="scrollToSection('section-2-content')" class="flex-shrink-0 px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-full shadow-sm text-[10px] font-black uppercase text-slate-600 dark:text-slate-300 hover:bg-orange-50 hover:text-orange-600 hover:border-orange-300 transition-colors">2. Assessment</button>
+                    <button onclick="scrollToSection('section-3-content')" class="flex-shrink-0 px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-full shadow-sm text-[10px] font-black uppercase text-slate-600 dark:text-slate-300 hover:bg-green-50 hover:text-green-600 hover:border-green-300 transition-colors">3. Plan</button>
+                    <button onclick="scrollToSection('section-4')" class="flex-shrink-0 px-3 py-1.5 bg-slate-800 dark:bg-slate-700 border border-slate-900 rounded-full shadow-sm text-[10px] font-black uppercase text-white hover:bg-slate-700 transition-colors">⏱️ Timer</button>
+                    <button onclick="scrollToSection('section-5')" class="flex-shrink-0 px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-full shadow-sm text-[10px] font-black uppercase text-slate-600 dark:text-slate-300 hover:bg-purple-50 hover:text-purple-600 hover:border-purple-300 transition-colors">5. Discharge</button>
                 </div>
 
                 <form id="sedation-form" onsubmit="return false;">
@@ -204,14 +176,14 @@
                                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-2">
                                     <div class="md:col-span-2">
                                         <label class="text-xs font-bold text-slate-500 uppercase">Age</label>
-                                        <input type="number" id="age" placeholder="Yr" class="p-2 border rounded-lg w-full font-bold dark:bg-slate-700 dark:border-slate-600">
+                                        <input type="number" id="pt_age" placeholder="Yr" class="p-2 border rounded-lg w-full font-bold dark:bg-slate-700 dark:border-slate-600">
                                     </div>
                                     <div class="md:col-span-2">
                                         <label class="text-xs font-bold text-slate-500 uppercase">Weight (kg) <span class="text-red-500">*</span></label>
                                         <div class="flex gap-2">
-                                            <input type="number" id="weight" placeholder="kg" class="p-2 border rounded-lg w-full font-bold dark:bg-slate-700 dark:border-slate-600">
+                                            <input type="number" id="pt_weight" placeholder="kg" class="p-2 border rounded-lg w-full font-bold dark:bg-slate-700 dark:border-slate-600">
                                             <label class="cursor-pointer relative min-w-[60px]">
-                                                <input type="checkbox" id="weight-estimated" class="peer sr-only">
+                                                <input type="checkbox" id="pt_estWeight" class="peer sr-only">
                                                 <div class="h-full flex items-center justify-center border rounded-lg bg-slate-50 text-slate-500 font-bold text-[10px] uppercase peer-checked:bg-blue-600 peer-checked:text-white dark:bg-slate-700 dark:border-slate-600 transition">Est</div>
                                             </label>
                                         </div>
@@ -219,42 +191,28 @@
                                     <div class="md:col-span-4">
                                         <label class="text-xs font-bold text-slate-500 uppercase">Allergies</label>
                                         <div id="allergy-container" class="transition-colors rounded-lg">
-                                            <input type="text" id="allergies" placeholder="Reaction details..." class="w-full p-2 border rounded-lg font-bold text-red-700 dark:text-red-400 border-slate-300 dark:bg-slate-700 dark:border-slate-600">
+                                            <input type="text" id="pt_allergies" placeholder="Reaction details..." class="w-full p-2 border rounded-lg font-bold text-red-700 dark:text-red-400 border-slate-300 dark:bg-slate-700 dark:border-slate-600">
                                         </div>
                                     </div>
                                     <div class="md:col-span-2">
                                         <label class="text-xs font-bold text-slate-500 uppercase">Procedure</label>
-                                        <input type="text" id="procedure" class="w-full p-2 border rounded-lg dark:bg-slate-700 dark:border-slate-600">
+                                        <input type="text" id="pt_procedure" class="w-full p-2 border rounded-lg dark:bg-slate-700 dark:border-slate-600">
                                     </div>
                                     <div class="md:col-span-2">
                                         <label class="text-xs font-bold text-slate-500 uppercase">Indication</label>
-                                        <input type="text" id="indication" class="w-full p-2 border rounded-lg dark:bg-slate-700 dark:border-slate-600">
+                                        <input type="text" id="pt_indication" class="w-full p-2 border rounded-lg dark:bg-slate-700 dark:border-slate-600">
                                     </div>
                                     <div class="md:col-span-4">
                                         <label class="text-xs font-bold text-slate-500 uppercase">Pre-Sedation Analgesia</label>
-                                        <input type="text" id="pre-analgesia" placeholder="e.g. IV Morphine" class="w-full p-2 border rounded-lg dark:bg-slate-700 dark:border-slate-600">
+                                        <input type="text" id="pt_preAnalgesia" placeholder="e.g. IV Morphine" class="w-full p-2 border rounded-lg dark:bg-slate-700 dark:border-slate-600">
                                     </div>
                                     
                                     <div class="md:col-span-4 grid grid-cols-2 gap-4 border-t pt-2 dark:border-slate-600 mt-2">
-                                        <div><label class="text-[10px] font-bold uppercase">Sedationist</label><input type="text" id="sedationist" class="w-full p-1 border rounded text-xs dark:bg-slate-700 dark:border-slate-600"></div>
-                                        <div><label class="text-[10px] font-bold uppercase">Grade</label><input type="text" id="sedationist-grade" class="w-full p-1 border rounded text-xs dark:bg-slate-700 dark:border-slate-600"></div>
-                                        <div><label class="text-[10px] font-bold uppercase">Proc. Doctor</label><input type="text" id="procedure-doctor" class="w-full p-1 border rounded text-xs dark:bg-slate-700 dark:border-slate-600"></div>
-                                        <div><label class="text-[10px] font-bold uppercase">Nurse</label><input type="text" id="nurse" class="w-full p-1 border rounded text-xs dark:bg-slate-700 dark:border-slate-600"></div>
+                                        <div><label class="text-[10px] font-bold uppercase">Sedationist</label><input type="text" id="st_sed" class="w-full p-1 border rounded text-xs dark:bg-slate-700 dark:border-slate-600"></div>
+                                        <div><label class="text-[10px] font-bold uppercase">Grade</label><input type="text" id="st_grade" class="w-full p-1 border rounded text-xs dark:bg-slate-700 dark:border-slate-600"></div>
+                                        <div><label class="text-[10px] font-bold uppercase">Proc. Doctor</label><input type="text" id="st_doc" class="w-full p-1 border rounded text-xs dark:bg-slate-700 dark:border-slate-600"></div>
+                                        <div><label class="text-[10px] font-bold uppercase">Nurse</label><input type="text" id="st_nurse" class="w-full p-1 border rounded text-xs dark:bg-slate-700 dark:border-slate-600"></div>
                                     </div>
-                                </div>
-                                
-                                <div class="mt-4 p-3 bg-blue-50 dark:bg-slate-700/50 rounded-lg border border-blue-100 dark:border-slate-600">
-                                    <div class="flex justify-between items-center mb-2">
-                                        <span class="text-xs font-black text-blue-900 dark:text-blue-300">Standard Dose Guide</span>
-                                        <label class="flex items-center gap-2 cursor-pointer">
-                                            <input type="checkbox" id="frail-elderly" class="peer sr-only">
-                                            <div class="px-2 py-1 bg-white border rounded text-[10px] font-bold text-slate-500 peer-checked:bg-blue-600 peer-checked:text-white transition">Frail / >65</div>
-                                        </label>
-                                    </div>
-                                    <button type="button" id="calculate-doses-button" class="w-full py-2 bg-white dark:bg-slate-600 border border-blue-200 dark:border-slate-500 rounded font-bold text-blue-700 dark:text-blue-200 shadow-sm text-xs">
-                                        CALCULATE RANGES
-                                    </button>
-                                    <div id="dose-output" class="hidden mt-2 pt-2 border-t border-blue-200 dark:border-slate-600 text-sm font-mono text-slate-800 dark:text-slate-200"></div>
                                 </div>
                             </div>
                         </div>
@@ -269,16 +227,9 @@
                                 <div class="mb-4">
                                     <label class="text-xs font-bold text-slate-500 uppercase mb-1">Has Capacity?</label>
                                     <div class="grid grid-cols-2 gap-2">
-                                        <label class="cursor-pointer">
-                                            <input type="radio" name="capacity" value="Yes" checked class="peer sr-only">
-                                            <div class="touch-group-label dark-mode-target">YES</div>
-                                        </label>
-                                        <label class="cursor-pointer">
-                                            <input type="radio" name="capacity" value="No" class="peer sr-only">
-                                            <div class="touch-group-label text-red-700 dark-mode-target">NO</div>
-                                        </label>
+                                        <label class="cursor-pointer"><input type="radio" name="ass_capacity" value="Yes" class="peer sr-only"><div class="touch-group-label dark-mode-target">YES</div></label>
+                                        <label class="cursor-pointer"><input type="radio" name="ass_capacity" value="No" class="peer sr-only"><div class="touch-group-label text-red-700 dark-mode-target">NO</div></label>
                                     </div>
-                                    <div id="capacity-options" class="hidden mt-2"><input type="radio" name="consent-type" value="Best Interests" checked></div>
                                 </div>
 
                                 <div id="airway-card" class="p-3 border rounded-lg mb-4 bg-slate-50 dark:bg-slate-700/30 dark:border-slate-600 transition-colors duration-300">
@@ -287,25 +238,19 @@
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div>
                                             <span class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Mallampati</span>
-                                            <div class="flex items-center gap-2 mb-2">
-                                                <img src="images/Mallampati.jpg" alt="Mallampati" class="h-10 w-auto rounded border" onerror="this.style.display='none'"> 
-                                                <div class="flex-1 flex gap-1">
-                                                    <label class="flex-1 cursor-pointer"><input type="radio" name="airway-mallampati" value="I" class="peer sr-only"><div class="touch-group-label dark-mode-target py-2">I</div></label>
-                                                    <label class="flex-1 cursor-pointer"><input type="radio" name="airway-mallampati" value="II" class="peer sr-only"><div class="touch-group-label dark-mode-target py-2">II</div></label>
-                                                    <label class="flex-1 cursor-pointer"><input type="radio" name="airway-mallampati" value="III" class="peer sr-only"><div class="touch-group-label-amber dark-mode-target py-2">III</div></label>
-                                                    <label class="flex-1 cursor-pointer"><input type="radio" name="airway-mallampati" value="IV" class="peer sr-only"><div class="touch-group-label-red dark-mode-target py-2">IV</div></label>
-                                                </div>
+                                            <div class="flex gap-1">
+                                                <label class="flex-1 cursor-pointer"><input type="radio" name="ass_mallampati" value="I" class="peer sr-only"><div class="touch-group-label dark-mode-target py-2">I</div></label>
+                                                <label class="flex-1 cursor-pointer"><input type="radio" name="ass_mallampati" value="II" class="peer sr-only"><div class="touch-group-label dark-mode-target py-2">II</div></label>
+                                                <label class="flex-1 cursor-pointer"><input type="radio" name="ass_mallampati" value="III" class="peer sr-only"><div class="touch-group-label-amber dark-mode-target py-2">III</div></label>
+                                                <label class="flex-1 cursor-pointer"><input type="radio" name="ass_mallampati" value="IV" class="peer sr-only"><div class="touch-group-label-red dark-mode-target py-2">IV</div></label>
                                             </div>
                                         </div>
                                         <div>
                                             <span class="text-[10px] font-bold text-slate-500 uppercase block mb-1">ULBT (Upper Lip Bite)</span>
-                                            <div class="flex items-center gap-2 mb-2">
-                                                <img src="images/upperlipbitetest.png" alt="ULBT" class="h-10 w-auto rounded border" onerror="this.style.display='none'">
-                                                <div class="flex-1 flex gap-1">
-                                                     <label class="flex-1 cursor-pointer"><input type="radio" name="airway-ulbt" value="1" class="peer sr-only"><div class="touch-group-label dark-mode-target py-2">1</div></label>
-                                                     <label class="flex-1 cursor-pointer"><input type="radio" name="airway-ulbt" value="2" class="peer sr-only"><div class="touch-group-label dark-mode-target py-2">2</div></label>
-                                                     <label class="flex-1 cursor-pointer"><input type="radio" name="airway-ulbt" value="3" class="peer sr-only"><div class="touch-group-label-red dark-mode-target py-2">3</div></label>
-                                                </div>
+                                            <div class="flex gap-1">
+                                                 <label class="flex-1 cursor-pointer"><input type="radio" name="ass_ulbt" value="1" class="peer sr-only"><div class="touch-group-label dark-mode-target py-2">1</div></label>
+                                                 <label class="flex-1 cursor-pointer"><input type="radio" name="ass_ulbt" value="2" class="peer sr-only"><div class="touch-group-label dark-mode-target py-2">2</div></label>
+                                                 <label class="flex-1 cursor-pointer"><input type="radio" name="ass_ulbt" value="3" class="peer sr-only"><div class="touch-group-label-red dark-mode-target py-2">3</div></label>
                                             </div>
                                         </div>
                                     </div>
@@ -313,24 +258,22 @@
                                     <div class="mt-2">
                                         <span class="text-[10px] font-bold text-slate-500 uppercase block mb-1">Difficult Airway Predictors</span>
                                         <div class="flex flex-wrap gap-3">
-                                            <label class="chk-label"><input type="checkbox" id="airway-mouth" class="chk-input"> Mouth &lt;3cm</label>
-                                            <label class="chk-label"><input type="checkbox" id="airway-tmd" class="chk-input"> Thyromental &lt;6cm</label>
-                                            <label class="chk-label"><input type="checkbox" id="airway-neck" class="chk-input"> Neck Immobile</label>
-                                            <label class="chk-label"><input type="checkbox" id="airway-bmi" class="chk-input"> BMI &gt;35</label>
+                                            <label class="chk-label"><input type="checkbox" class="chk-input pred-chk" value="Mouth < 3cm"> Mouth &lt;3cm</label>
+                                            <label class="chk-label"><input type="checkbox" class="chk-input pred-chk" value="Thyromental < 6cm"> Thyromental &lt;6cm</label>
+                                            <label class="chk-label"><input type="checkbox" class="chk-input pred-chk" value="Neck Immobile"> Neck Immobile</label>
+                                            <label class="chk-label"><input type="checkbox" class="chk-input pred-chk" value="BMI > 35"> BMI &gt;35</label>
                                         </div>
                                     </div>
                                     
                                     <div class="mt-2 pt-2 border-t border-slate-200 dark:border-slate-600">
                                          <div class="flex justify-between items-center mb-1">
                                              <span class="text-[10px] font-bold text-slate-500 uppercase">ASA Grade</span>
-                                             <button type="button" onclick="document.getElementById('asa-help').classList.toggle('hidden')" class="text-[10px] bg-slate-200 dark:bg-slate-600 px-2 rounded">?</button>
                                          </div>
-                                         <div id="asa-help" class="hidden text-xs text-slate-500 mb-2 italic">I:Healthy II:Mild III:Severe IV:Threat to Life</div>
                                          <div class="flex gap-1">
-                                                <label class="flex-1 cursor-pointer"><input type="radio" name="asa-grade" value="I" class="peer sr-only"><div class="touch-group-label dark-mode-target py-2">I</div></label>
-                                                <label class="flex-1 cursor-pointer"><input type="radio" name="asa-grade" value="II" class="peer sr-only"><div class="touch-group-label dark-mode-target py-2">II</div></label>
-                                                <label class="flex-1 cursor-pointer"><input type="radio" name="asa-grade" value="III" class="peer sr-only"><div class="touch-group-label-amber dark-mode-target py-2">III</div></label>
-                                                <label class="flex-1 cursor-pointer"><input type="radio" name="asa-grade" value="IV" class="peer sr-only"><div class="touch-group-label-red dark-mode-target py-2">IV</div></label>
+                                                <label class="flex-1 cursor-pointer"><input type="radio" name="ass_asa" value="I" class="peer sr-only"><div class="touch-group-label dark-mode-target py-2">I</div></label>
+                                                <label class="flex-1 cursor-pointer"><input type="radio" name="ass_asa" value="II" class="peer sr-only"><div class="touch-group-label dark-mode-target py-2">II</div></label>
+                                                <label class="flex-1 cursor-pointer"><input type="radio" name="ass_asa" value="III" class="peer sr-only"><div class="touch-group-label-amber dark-mode-target py-2">III</div></label>
+                                                <label class="flex-1 cursor-pointer"><input type="radio" name="ass_asa" value="IV" class="peer sr-only"><div class="touch-group-label-red dark-mode-target py-2">IV</div></label>
                                          </div>
                                     </div>
                                 </div>
@@ -341,38 +284,26 @@
                                         <div>
                                             <span class="text-[10px] font-bold text-slate-500 uppercase">Common (>1:100)</span>
                                             <div class="space-y-1">
-                                                <label class="chk-label"><input type="checkbox" id="risk-nausea" class="chk-input"> Nausea/Vomiting</label>
-                                                <label class="chk-label"><input type="checkbox" id="risk-drowsy" class="chk-input"> Drowsiness</label>
-                                                <label class="chk-label"><input type="checkbox" id="risk-hypotension" class="chk-input"> Hypotension</label>
-                                                <label class="chk-label"><input type="checkbox" id="risk-resp-depress" class="chk-input"> Hypoxia/Resp. Dep</label>
+                                                <label class="chk-label"><input type="checkbox" class="chk-input risk-chk" value="Nausea/Vomiting"> Nausea/Vomiting</label>
+                                                <label class="chk-label"><input type="checkbox" class="chk-input risk-chk" value="Drowsiness"> Drowsiness</label>
+                                                <label class="chk-label"><input type="checkbox" class="chk-input risk-chk" value="Hypotension"> Hypotension</label>
+                                                <label class="chk-label"><input type="checkbox" class="chk-input risk-chk" value="Hypoxia/Resp Dep"> Hypoxia/Resp. Dep</label>
                                             </div>
                                         </div>
                                         <div>
                                             <span class="text-[10px] font-bold text-red-500 uppercase">Rare (~1:1000)</span>
                                             <div class="space-y-1">
-                                                <label class="chk-label text-red-700"><input type="checkbox" id="risk-laryngospasm" class="chk-input"> Laryngospasm</label>
-                                                <label class="chk-label text-red-700"><input type="checkbox" id="risk-aspiration" class="chk-input"> Aspiration</label>
-                                                <label class="chk-label text-red-700"><input type="checkbox" id="risk-allergy" class="chk-input"> Anaphylaxis</label>
+                                                <label class="chk-label text-red-700"><input type="checkbox" class="chk-input risk-chk" value="Laryngospasm"> Laryngospasm</label>
+                                                <label class="chk-label text-red-700"><input type="checkbox" class="chk-input risk-chk" value="Aspiration"> Aspiration</label>
+                                                <label class="chk-label text-red-700"><input type="checkbox" class="chk-input risk-chk" value="Anaphylaxis"> Anaphylaxis</label>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="grid grid-cols-2 gap-4 mb-2">
-                                    <div>
-                                        <label class="text-[10px] uppercase font-bold text-slate-500">Last Food</label>
-                                        <div class="flex gap-1">
-                                            <input type="time" id="last-food" class="w-full p-2 border rounded-lg dark:bg-slate-700 dark:border-slate-600">
-                                            <button type="button" onclick="setNow('last-food')" class="bg-slate-200 dark:bg-slate-600 text-xs font-bold px-2 rounded hover:bg-slate-300">NOW</button>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <label class="text-[10px] uppercase font-bold text-slate-500">Last Fluid</label>
-                                        <div class="flex gap-1">
-                                            <input type="time" id="last-fluid" class="w-full p-2 border rounded-lg dark:bg-slate-700 dark:border-slate-600">
-                                            <button type="button" onclick="setNow('last-fluid')" class="bg-slate-200 dark:bg-slate-600 text-xs font-bold px-2 rounded hover:bg-slate-300">NOW</button>
-                                        </div>
-                                    </div>
+                                    <div><label class="text-[10px] uppercase font-bold text-slate-500">Last Food</label><input type="time" id="ass_lastFood" class="w-full p-2 border rounded-lg dark:bg-slate-700 dark:border-slate-600"></div>
+                                    <div><label class="text-[10px] uppercase font-bold text-slate-500">Last Fluid</label><input type="time" id="ass_lastFluid" class="w-full p-2 border rounded-lg dark:bg-slate-700 dark:border-slate-600"></div>
                                 </div>
                             </div>
                         </div>
@@ -386,126 +317,92 @@
                             <div id="section-3-content" class="transition-height overflow-hidden">
                                 <label class="text-xs font-bold text-slate-500 uppercase mb-1">SOAP-ME Checklist</label>
                                 <div class="grid grid-cols-5 gap-1 mb-4">
-                                    <label class="cursor-pointer"><input type="checkbox" id="soap-s" class="peer sr-only"><div class="touch-group-label dark-mode-target text-xs p-2">SUCT</div></label>
-                                    <label class="cursor-pointer"><input type="checkbox" id="soap-o" class="peer sr-only"><div class="touch-group-label dark-mode-target text-xs p-2">OXYG</div></label>
-                                    <label class="cursor-pointer"><input type="checkbox" id="soap-a" class="peer sr-only"><div class="touch-group-label dark-mode-target text-xs p-2">AIRW</div></label>
-                                    <label class="cursor-pointer"><input type="checkbox" id="soap-m" class="peer sr-only"><div class="touch-group-label dark-mode-target text-xs p-2">MONI</div></label>
-                                    <label class="cursor-pointer"><input type="checkbox" id="soap-e" class="peer sr-only"><div class="touch-group-label dark-mode-target text-xs p-2">ENV</div></label>
+                                    <label class="cursor-pointer"><input type="checkbox" class="peer sr-only soap-chk" value="Suction"><div class="touch-group-label dark-mode-target text-xs p-2">SUCT</div></label>
+                                    <label class="cursor-pointer"><input type="checkbox" class="peer sr-only soap-chk" value="Oxygen"><div class="touch-group-label dark-mode-target text-xs p-2">OXYG</div></label>
+                                    <label class="cursor-pointer"><input type="checkbox" class="peer sr-only soap-chk" value="Airway"><div class="touch-group-label dark-mode-target text-xs p-2">AIRW</div></label>
+                                    <label class="cursor-pointer"><input type="checkbox" class="peer sr-only soap-chk" value="Monitoring"><div class="touch-group-label dark-mode-target text-xs p-2">MONI</div></label>
+                                    <label class="cursor-pointer"><input type="checkbox" class="peer sr-only soap-chk" value="Equipment"><div class="touch-group-label dark-mode-target text-xs p-2">ENV</div></label>
                                 </div>
                                 
-                                <div id="timeout-container" class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 p-3 rounded-lg">
+                                <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 p-3 rounded-lg">
                                     <label class="text-xs font-black text-yellow-800 dark:text-yellow-500 uppercase mb-2 block">🛑 Safety Time Out</label>
                                     <div class="grid grid-cols-2 gap-2">
-                                        <label class="cursor-pointer"><input type="checkbox" id="to-identity" class="peer sr-only"><div class="touch-group-label dark-mode-target">ID</div></label>
-                                        <label class="cursor-pointer"><input type="checkbox" id="to-role" class="peer sr-only"><div class="touch-group-label dark-mode-target">Roles</div></label>
-                                        <label class="cursor-pointer"><input type="checkbox" id="to-site" class="peer sr-only"><div class="touch-group-label dark-mode-target">Site</div></label>
-                                        <label class="cursor-pointer"><input type="checkbox" id="to-monitoring" class="peer sr-only"><div class="touch-group-label dark-mode-target">Monit</div></label>
+                                        <label class="cursor-pointer"><input type="checkbox" class="peer sr-only time-chk" value="Identity"><div class="touch-group-label dark-mode-target">ID</div></label>
+                                        <label class="cursor-pointer"><input type="checkbox" class="peer sr-only time-chk" value="Roles"><div class="touch-group-label dark-mode-target">Roles</div></label>
+                                        <label class="cursor-pointer"><input type="checkbox" class="peer sr-only time-chk" value="Site"><div class="touch-group-label dark-mode-target">Site</div></label>
+                                        <label class="cursor-pointer"><input type="checkbox" class="peer sr-only time-chk" value="Monitoring"><div class="touch-group-label dark-mode-target">Monit</div></label>
                                     </div>
                                 </div>
                                 
                                 <div class="mt-4">
                                     <label class="text-xs font-bold text-slate-500 uppercase">Pre-Vitals</label>
                                     <div class="grid grid-cols-4 gap-2">
-                                        <input type="text" id="pre-vital-hr" placeholder="HR" class="p-2 border rounded text-center dark:bg-slate-700 dark:border-slate-600">
-                                        <input type="text" id="pre-vital-bp" placeholder="BP" class="p-2 border rounded text-center dark:bg-slate-700 dark:border-slate-600">
-                                        <input type="text" id="pre-vital-spo2" placeholder="SpO2" class="p-2 border rounded text-center dark:bg-slate-700 dark:border-slate-600">
-                                        <input type="text" id="pre-vital-rr" placeholder="RR" class="p-2 border rounded text-center dark:bg-slate-700 dark:border-slate-600">
+                                        <input type="text" id="pv_hr" placeholder="HR" class="p-2 border rounded text-center dark:bg-slate-700 dark:border-slate-600">
+                                        <input type="text" id="pv_bp" placeholder="BP" class="p-2 border rounded text-center dark:bg-slate-700 dark:border-slate-600">
+                                        <input type="text" id="pv_spo2" placeholder="SpO2" class="p-2 border rounded text-center dark:bg-slate-700 dark:border-slate-600">
+                                        <input type="text" id="pv_rr" placeholder="RR" class="p-2 border rounded text-center dark:bg-slate-700 dark:border-slate-600">
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                         <div id="section-4" class="bg-slate-800 dark:bg-black rounded-xl p-4 text-white shadow-lg border-2 border-slate-900 page-break scroll-mt-36">
-                            
                             <div class="flex flex-col items-center justify-center gap-4 mb-4">
                                 <div class="w-full flex justify-between items-center mb-2">
                                     <span class="text-xs uppercase font-bold text-slate-400">Sedation Timer</span>
                                     <button type="button" onclick="document.getElementById('complications-guide').classList.toggle('hidden')" class="text-xs bg-slate-700 px-2 py-1 rounded hover:bg-slate-600">Emergency Guide</button>
                                 </div>
-                                
                                 <div id="complications-guide" class="hidden w-full text-xs text-yellow-300 bg-slate-700 p-2 rounded mb-2 border border-yellow-600">
-                                    <strong>TROOPS/SIVA Quick Ref:</strong><br>
-                                    • Laryngospasm: 100% O₂ / Jaw Thrust / Succinylcholine<br>
-                                    • Hypotension: Fluids / Metaraminol<br>
-                                    • Apnoea: BVM / Airway adjuncts
+                                    <strong>TROOPS/SIVA Quick Ref:</strong><br>• Laryngospasm: 100% O₂ / Jaw Thrust / Succinylcholine<br>• Hypotension: Fluids / Metaraminol<br>• Apnoea: BVM / Airway adjuncts
                                 </div>
-
                                 <div id="timer-display" class="text-6xl md:text-7xl font-mono font-black tracking-widest text-white tabular-nums">00:00</div>
-                                <button type="button" id="sedation-timer-button" class="w-full py-4 bg-green-600 hover:bg-green-500 text-white font-black text-xl rounded-lg shadow-lg border-b-4 border-green-800 active:border-b-0 active:translate-y-1 transition-all">
-                                    START SEDATION TIMER
-                                </button>
+                                <button type="button" id="sedation-timer-button" class="w-full py-4 bg-green-600 hover:bg-green-500 text-white font-black text-xl rounded-lg shadow-lg border-b-4 border-green-800 active:border-b-0 active:translate-y-1 transition-all">START SEDATION TIMER</button>
                             </div>
-
                             <div class="grid grid-cols-3 gap-2 border-t border-slate-700 pt-4">
-                                <div class="text-center">
-                                    <button type="button" id="procedure-start-button" class="w-full py-2 bg-slate-700 rounded text-slate-300 font-bold text-xs border border-slate-600 hover:bg-slate-600">PROC START</button>
-                                    <span id="procedure-start-output" class="text-xs font-mono text-green-400 block h-4 mt-1"></span>
-                                </div>
-                                <div class="text-center">
-                                    <button type="button" id="procedure-end-button" class="w-full py-2 bg-slate-700 rounded text-slate-300 font-bold text-xs border border-slate-600 hover:bg-slate-600">PROC END</button>
-                                    <span id="procedure-end-output" class="text-xs font-mono text-green-400 block h-4 mt-1"></span>
-                                </div>
-                                <div class="text-center">
-                                    <button type="button" id="patient-awake-button" class="w-full py-2 bg-slate-700 rounded text-slate-300 font-bold text-xs border border-slate-600 hover:bg-slate-600">AWAKE</button>
-                                    <span id="patient-awake-output" class="text-xs font-mono text-green-400 block h-4 mt-1"></span>
-                                </div>
+                                <div class="text-center"><button type="button" id="btn-proc-start" class="w-full py-2 bg-slate-700 rounded text-slate-300 font-bold text-xs border border-slate-600 hover:bg-slate-600">PROC START</button><span id="out-proc-start" class="text-xs font-mono text-green-400 block h-4 mt-1"></span></div>
+                                <div class="text-center"><button type="button" id="btn-proc-end" class="w-full py-2 bg-slate-700 rounded text-slate-300 font-bold text-xs border border-slate-600 hover:bg-slate-600">PROC END</button><span id="out-proc-end" class="text-xs font-mono text-green-400 block h-4 mt-1"></span></div>
+                                <div class="text-center"><button type="button" id="btn-awake" class="w-full py-2 bg-slate-700 rounded text-slate-300 font-bold text-xs border border-slate-600 hover:bg-slate-600">AWAKE</button><span id="out-awake" class="text-xs font-mono text-green-400 block h-4 mt-1"></span></div>
                             </div>
                         </div>
 
                         <div class="section-card bg-white dark:bg-slate-800 border-l-[6px] border-l-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 p-4">
-                            
                             <div class="mb-6">
                                 <label class="text-xs font-bold text-slate-500 uppercase mb-2 block">Drugs Given</label>
                                 <div id="drug-table-container" class="space-y-2"></div> 
                                 <div id="empty-drugs-msg" class="text-sm text-slate-400 italic text-center py-2">No drugs recorded yet</div>
                             </div>
-
                             <div>
                                 <label class="text-xs font-bold text-slate-500 uppercase mb-2 block">Observations (q5min)</label>
                                 <div id="obs-table-container" class="space-y-2"></div>
                             </div>
-                            
                             <div class="mt-4">
                                 <label class="text-xs font-bold text-slate-500 uppercase mb-1 block">Notes</label>
-                                <textarea id="general-notes" rows="3" class="w-full p-2 border rounded dark:bg-slate-700 dark:border-slate-600"></textarea>
+                                <textarea id="general-notes" rows="3" class="w-full p-2 border rounded dark:bg-slate-700 dark:border-slate-600" placeholder="Additional clinical notes..."></textarea>
                             </div>
                         </div>
 
                         <div id="section-5" class="section-card bg-white dark:bg-slate-800 border-l-[6px] border-l-purple-600 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 p-4 scroll-mt-36">
                             <h2 class="text-lg font-black text-purple-800 dark:text-purple-400 mb-4">5. Discharge & Checklist</h2>
-                            
                             <div class="grid grid-cols-2 gap-4 mb-4">
-                                <label class="cursor-pointer">
-                                    <input type="radio" name="outcome-proc" value="Successful" class="peer sr-only">
-                                    <div class="touch-group-label dark-mode-target py-4">SUCCESSFUL</div>
-                                </label>
-                                <label class="cursor-pointer">
-                                    <input type="radio" name="outcome-proc" value="Unsuccessful" class="peer sr-only">
-                                    <div class="touch-group-label text-red-700 dark-mode-target py-4">FAILED</div>
-                                </label>
+                                <label class="cursor-pointer"><input type="radio" name="outcome" value="Successful" class="peer sr-only"><div class="touch-group-label dark-mode-target py-4">SUCCESSFUL</div></label>
+                                <label class="cursor-pointer"><input type="radio" name="outcome" value="Unsuccessful" class="peer sr-only"><div class="touch-group-label text-red-700 dark-mode-target py-4">FAILED</div></label>
                             </div>
-                            
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mb-4 p-3 bg-purple-50 dark:bg-purple-900/20 rounded">
-                                <label class="chk-label"><input type="checkbox" id="dc-vitals" class="chk-input"> Baseline Vitals</label>
-                                <label class="chk-label"><input type="checkbox" id="dc-aao" class="chk-input"> Alert & Orientated</label>
-                                <label class="chk-label"><input type="checkbox" id="dc-oral" class="chk-input"> Tolerating Fluids</label>
-                                <label class="chk-label"><input type="checkbox" id="dc-pain" class="chk-input"> Pain Managed</label>
-                                <label class="chk-label"><input type="checkbox" id="dc-home" class="chk-input"> Carer / Home</label>
+                                <label class="chk-label"><input type="checkbox" class="chk-input dc-chk" value="Baseline Vitals"> Baseline Vitals</label>
+                                <label class="chk-label"><input type="checkbox" class="chk-input dc-chk" value="Alert & Orientated"> Alert & Orientated</label>
+                                <label class="chk-label"><input type="checkbox" class="chk-input dc-chk" value="Tolerating Fluids"> Tolerating Fluids</label>
+                                <label class="chk-label"><input type="checkbox" class="chk-input dc-chk" value="Pain Managed"> Pain Managed</label>
+                                <label class="chk-label"><input type="checkbox" class="chk-input dc-chk" value="Carer / Home"> Carer / Home</label>
                             </div>
-                            
                             <div class="grid grid-cols-2 gap-4 mb-4">
-                                <div><label class="text-[10px] uppercase font-bold">Sign-off Name</label><input type="text" id="signoff-name" class="w-full p-2 border rounded dark:bg-slate-700 dark:border-slate-600"></div>
+                                <div><label class="text-[10px] uppercase font-bold">Sign-off Name</label><input type="text" id="dc_signName" class="w-full p-2 border rounded dark:bg-slate-700 dark:border-slate-600"></div>
                                 <div><label class="text-[10px] uppercase font-bold">Time</label>
                                     <div class="flex gap-1">
-                                        <input type="time" id="signoff-time" class="w-full p-2 border rounded dark:bg-slate-700 dark:border-slate-600">
-                                        <button type="button" onclick="setNow('signoff-time')" class="bg-slate-200 dark:bg-slate-600 text-xs font-bold px-2 rounded">NOW</button>
+                                        <input type="time" id="dc_signTime" class="w-full p-2 border rounded dark:bg-slate-700 dark:border-slate-600">
+                                        <button type="button" onclick="setNow('dc_signTime')" class="bg-slate-200 dark:bg-slate-600 text-xs font-bold px-2 rounded">NOW</button>
                                     </div>
                                 </div>
                             </div>
-
-                            <button type="button" id="create-discharge-letter-btn" class="w-full py-4 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-lg shadow-md mb-8">
-                                📝 GENERATE DISCHARGE LETTER
-                            </button>
                         </div>
                     </div>
                 </form>
@@ -516,12 +413,9 @@
                     <div id="epr-log-container" class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-lg border border-slate-300 dark:border-slate-700">
                         <div class="flex justify-between items-center mb-3">
                             <h2 class="text-sm font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wide">EPR Quick Log</h2>
-                            <button type="button" id="copy-log-button" class="px-3 py-1 text-xs font-bold bg-blue-600 text-white rounded hover:bg-blue-700 transition shadow-sm">
-                                Copy Rich Text
-                            </button>
+                            <button type="button" id="copy-log-button" class="px-3 py-1 text-xs font-bold bg-blue-600 text-white rounded hover:bg-blue-700 transition shadow-sm">Copy Rich Text</button>
                         </div>
-                        <div id="epr-log-output" class="rich-output focus:ring-2 ring-blue-500 ring-offset-2 text-xs" contenteditable="true">
-                            </div>
+                        <div id="epr-log-output" class="rich-output focus:ring-2 ring-blue-500 ring-offset-2 text-xs" contenteditable="true"></div>
                     </div>
                 </div>
             </div>
@@ -533,47 +427,20 @@
                 <h1 class="text-2xl md:text-4xl font-black text-red-900 uppercase leading-none">Agitated Patient Protocol</h1>
                 <p class="text-red-800 font-bold mt-2 text-sm uppercase">Immediate Threat to Safety</p>
             </div>
-
             <div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow border border-slate-200 dark:border-slate-700 mb-6">
                 <label class="block text-slate-500 font-bold text-xs uppercase mb-1">Estimated Weight (kg)</label>
                 <div class="flex gap-2 mb-4">
-                    <input type="number" id="agitated-weight" placeholder="kg" class="text-3xl font-black w-full p-3 border-2 border-slate-300 rounded-lg dark:bg-slate-700 dark:border-slate-600 dark:text-white focus:border-red-500">
-                    <button id="calc-agitated-btn" class="bg-red-600 text-white font-black px-6 rounded-lg shadow-lg active:scale-95 transition">CALC</button>
+                    <input type="number" id="ag_weight" placeholder="kg" class="text-3xl font-black w-full p-3 border-2 border-slate-300 rounded-lg dark:bg-slate-700 dark:border-slate-600 dark:text-white focus:border-red-500">
                 </div>
-
                 <div id="agitated-output" class="hidden grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="bg-red-50 dark:bg-red-900/30 border-2 border-red-500 rounded-xl p-4 text-center">
                         <span class="block text-xs font-black text-red-600 dark:text-red-400 uppercase tracking-widest mb-2">IM Ketamine (4mg/kg)</span>
                         <span id="val-ket-im" class="block text-6xl md:text-7xl font-black text-slate-900 dark:text-white leading-none tracking-tighter my-2">--</span>
-                        <span class="text-sm font-bold text-slate-500 dark:text-slate-400">milligrams</span>
                     </div>
                     <div class="bg-orange-50 dark:bg-orange-900/30 border-2 border-orange-400 rounded-xl p-4 text-center opacity-75">
                          <span class="block text-xs font-black text-orange-600 dark:text-orange-400 uppercase tracking-widest mb-2">IV Ketamine (1mg/kg)</span>
                          <span id="val-ket-iv" class="block text-5xl font-black text-slate-900 dark:text-white leading-none tracking-tighter my-2">--</span>
-                         <span class="text-sm font-bold text-slate-500 dark:text-slate-400">milligrams</span>
                     </div>
-                </div>
-            </div>
-
-            <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
-                <h3 class="font-bold text-slate-700 dark:text-slate-200 mb-3 border-b pb-2">Post-Sedation Checklist</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <label class="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-700 rounded-lg border border-slate-200 dark:border-slate-600 cursor-pointer">
-                        <input type="checkbox" class="w-6 h-6 text-blue-600 rounded">
-                        <span class="font-bold text-sm">Full Monitoring Applied</span>
-                    </label>
-                    <label class="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-700 rounded-lg border border-slate-200 dark:border-slate-600 cursor-pointer">
-                        <input type="checkbox" class="w-6 h-6 text-blue-600 rounded">
-                        <span class="font-bold text-sm">Transfer to Resus</span>
-                    </label>
-                    <label class="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-700 rounded-lg border border-slate-200 dark:border-slate-600 cursor-pointer">
-                        <input type="checkbox" class="w-6 h-6 text-blue-600 rounded">
-                        <span class="font-bold text-sm">ECG (12 Lead)</span>
-                    </label>
-                    <label class="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-700 rounded-lg border border-slate-200 dark:border-slate-600 cursor-pointer">
-                        <input type="checkbox" class="w-6 h-6 text-blue-600 rounded">
-                        <span class="font-bold text-sm">Blood Gas / Labs</span>
-                    </label>
                 </div>
             </div>
         </div>
@@ -585,13 +452,8 @@
             <div class="text-[10px] uppercase font-bold text-slate-400">Timer</div>
             <div id="footer-timer" class="text-xl font-mono font-black text-slate-800 dark:text-white">00:00</div>
         </div>
-        
-        <button id="footer-drug-btn" class="flex-1 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-200 border border-blue-200 dark:border-blue-700 rounded-lg font-bold py-3 active:scale-95 transition">
-            + DRUG
-        </button>
-        <button id="footer-obs-btn" class="flex-1 bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-200 border border-green-200 dark:border-green-700 rounded-lg font-bold py-3 active:scale-95 transition">
-            + OBS
-        </button>
+        <button id="footer-drug-btn" class="flex-1 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-200 border border-blue-200 dark:border-blue-700 rounded-lg font-bold py-3 active:scale-95 transition">+ DRUG</button>
+        <button id="footer-obs-btn" class="flex-1 bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-200 border border-green-200 dark:border-green-700 rounded-lg font-bold py-3 active:scale-95 transition">+ OBS</button>
     </div>
 
     <div id="drug-modal" class="fixed inset-0 hidden bg-black/50 z-50 flex items-end sm:items-center justify-center p-4 backdrop-blur-sm">
@@ -607,507 +469,366 @@
                 <button class="drug-select-btn drug-btn h-16 text-lg border-purple-200 bg-purple-50 text-purple-800" data-drug="Fentanyl">Fentanyl</button>
             </div>
             <div class="p-4 bg-slate-50 dark:bg-slate-700">
-                 <input type="number" id="quick-drug-dose" placeholder="Dose (mg)" class="w-full p-3 text-xl font-bold rounded-lg border-slate-300 dark:bg-slate-600 dark:border-slate-500 mb-3">
+                 <input type="number" id="quick-drug-dose" placeholder="Dose (mg/mcg)" class="w-full p-3 text-xl font-bold rounded-lg border-slate-300 dark:bg-slate-600 dark:border-slate-500 mb-3">
                  <button id="confirm-drug-btn" class="w-full bg-blue-600 text-white font-bold py-3 rounded-lg">CONFIRM</button>
             </div>
         </div>
     </div>
 
-    <div id="discharge-letter-view" class="hidden bg-white p-8 max-w-3xl mx-auto border shadow-2xl my-8 text-slate-900 print:block print:p-0 print:shadow-none print:border-none print:my-0 print:absolute print:top-0 print:left-0 print:w-full">
-        <div class="no-print flex justify-between items-center mb-6 border-b pb-4">
-            <h2 class="text-xl font-bold text-slate-700">Preview: Discharge Letter</h2>
-            <div class="flex gap-2">
-                <button onclick="document.getElementById('discharge-letter-view').classList.add('hidden'); document.getElementById('main-app-container').classList.remove('hidden');" class="px-4 py-2 border rounded hover:bg-slate-100">Back</button>
-                <button onclick="window.print()" class="px-4 py-2 bg-blue-600 text-white font-bold rounded hover:bg-blue-700 shadow">Print</button>
-            </div>
-        </div>
-        <div class="font-[Inter] leading-snug">
-             <div class="border-b-2 border-slate-800 pb-3 mb-4 flex justify-between items-start">
-                <div>
-                    <h1 class="text-xl font-black uppercase tracking-tight">Emergency Department</h1>
-                    <p class="text-base font-bold text-slate-600">Discharge Advice Following Procedural Sedation</p>
-                </div>
-                <div class="text-right text-xs">
-                    <p class="font-bold">Date: <span id="letter-date"></span></p>
-                </div>
-            </div>
-            <div class="mb-4 text-sm"><p><strong>Procedure:</strong> <span id="letter-procedure"></span></p></div>
-            <p class="mb-2 text-sm font-bold">Dear Patient,</p>
-            <p class="mb-4 text-sm text-slate-800">Today you received: <span id="letter-drugs-given" class="font-bold"></span>.</p>
-            <div class="bg-blue-50 border-l-4 border-blue-600 p-3 mb-4">
-                <h3 class="font-bold text-blue-900 mb-1 uppercase text-sm">⚠️ The 24-Hour Safety Rules</h3>
-                <div class="mb-2 text-sm font-semibold text-blue-800">
-                    <p>No driving, operating machinery, signing documents, or alcohol until: <br><span id="letter-time-end" class="text-lg font-black bg-yellow-200 px-1"></span> on <span id="letter-date-end" class="font-bold"></span>.</p>
-                </div>
-            </div>
-            <div class="mb-4"><h3 class="font-bold text-slate-900 border-b border-slate-300 mb-1 pb-1 text-sm">Supervision</h3><p class="text-sm">You must be accompanied home by a responsible adult who can stay with you for 24 hours.</p></div>
-            <div class="mb-4"><h3 class="font-bold text-slate-900 border-b border-slate-300 mb-1 pb-1 text-sm">Side Effects</h3><ul id="letter-side-effects-list" class="list-disc ml-5 space-y-1 text-sm text-slate-700"></ul></div>
-            <div class="mt-4 pt-4 border-t border-slate-200 text-xs text-slate-500"><p>Clinician Signature: __________________________</p></div>
-        </div>
-    </div>
-
-    <template id="obs-row-template">
-        <div class="grid grid-cols-6 gap-1 items-center bg-slate-50 dark:bg-slate-700/50 p-2 rounded border border-slate-200 dark:border-slate-600 text-xs mb-1">
-            <div class="col-span-1 font-mono font-bold text-slate-500 row-time">--:--</div>
-            <input type="number" placeholder="HR" class="col-span-1 p-1 text-center font-bold rounded border dark:bg-slate-600 dark:border-slate-500 obs-input">
-            <input type="number" placeholder="BP" class="col-span-1 p-1 text-center font-bold rounded border dark:bg-slate-600 dark:border-slate-500 obs-input">
-            <input type="number" placeholder="SpO2" class="col-span-1 p-1 text-center font-bold rounded border dark:bg-slate-600 dark:border-slate-500 obs-input">
-            <input type="number" placeholder="RR" class="col-span-1 p-1 text-center font-bold rounded border dark:bg-slate-600 dark:border-slate-500 obs-input">
-            <div class="col-span-1 text-center"><button class="text-red-500 font-bold px-2 py-1 bg-red-50 rounded hover:bg-red-100 dark:bg-slate-800 remove-btn">×</button></div>
-        </div>
-    </template>
-
-    <template id="drug-row-template">
-        <div class="flex justify-between items-center bg-blue-50 dark:bg-blue-900/20 p-2 rounded border border-blue-100 dark:border-blue-800 text-sm mb-1">
-            <div class="flex gap-3 items-center">
-                <span class="font-mono text-xs text-blue-400 row-time">--:--</span>
-                <span class="font-bold text-blue-900 dark:text-blue-100 row-drug">Drug</span>
-                <span class="font-black text-slate-800 dark:text-white row-dose">0mg</span>
-            </div>
-            <button class="text-red-400 hover:text-red-600 font-bold px-2 remove-btn">×</button>
-        </div>
-    </template>
-
     <script>
-        // --- HELPERS ---
-        window.setNow = (id) => {
-            const now = new Date();
-            const timeStr = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
-            document.getElementById(id).value = timeStr;
-            saveState();
-        };
-
-        window.toggleSection = (id) => {
-            const el = document.getElementById(id);
-            const header = el.previousElementSibling;
-            const icon = header.querySelector('.toggle-icon');
-            if (el.style.maxHeight) {
-                el.style.maxHeight = null;
-                el.classList.add('opacity-50');
-                icon.style.transform = 'rotate(-90deg)';
-            } else {
-                el.style.maxHeight = el.scrollHeight + "px";
-                el.classList.remove('opacity-50');
-                icon.style.transform = 'rotate(0deg)';
-            }
-        };
-        
-        // FIX: Helper to force open a section and scroll to it
-        window.scrollToSection = (id) => {
-            const el = document.getElementById(id);
-            // If the element is an accordion content, open it
-            if(el.classList.contains('transition-height')) {
-                el.style.maxHeight = el.scrollHeight + "px";
-                el.classList.remove('opacity-50');
-                const header = el.previousElementSibling;
-                const icon = header.querySelector('.toggle-icon');
-                if(icon) icon.style.transform = 'rotate(0deg)';
-                
-                // Scroll the header into view
-                header.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            } else {
-                // Regular element (like timer)
-                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
-        };
-
-        const val = (id) => document.getElementById(id)?.value || '';
-        const isChecked = (id) => document.getElementById(id)?.checked;
-        const findCheckedRadio = (name) => {
-            const el = document.querySelector(`input[name="${name}"]:checked`);
-            return el ? el.value : '';
-        };
-
         document.addEventListener('DOMContentLoaded', () => {
             const $ = (id) => document.getElementById(id);
+            const getTime = () => new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
 
-            // --- STATE & AUTO-SAVE ---
-            let timerInterval = null;
-            // We store startTime (timestamp) instead of elapsed seconds for robustness
-            let startTime = null; 
-            let elapsedWhenPaused = 0; 
+            // --- CENTRAL DATA STORE ---
+            let patientData = {
+                pt: { age:'', weight:'', estWeight:false, allergies:'', procedure:'', indication:'', preAnalgesia:'' },
+                staff: { sed:'', grade:'', doc:'', nurse:'' },
+                assess: { capacity:'Yes', mallampati:'', ulbt:'', asa:'', predictors:[], risks:[], lastFood:'', lastFluid:'' },
+                plan: { soap:[], timeout:[], preVitals:{hr:'',bp:'',spo2:'',rr:''} },
+                proc: { start:'', end:'', awake:'', drugs:[], obs:[], notes:'' },
+                agitated: { weight:'' },
+                dc: { outcome:'', criteria:[], signName:'', signTime:'' },
+                timer: { start: null, pausedElapsed: 0, running: false }
+            };
 
+            // --- SAVE & LOAD ---
             function saveState() {
-                const data = {};
-                // Inputs
-                document.querySelectorAll('input, textarea, select').forEach(el => {
-                    if (el.type === 'checkbox' || el.type === 'radio') {
-                        if (el.checked) data[el.id || el.name + ':' + el.value] = true;
-                    } else if (el.id) {
-                        data[el.id] = el.value;
-                    }
-                });
-                // Dynamic HTML
-                data['drug-html'] = $('drug-table-container').innerHTML;
-                data['obs-html'] = $('obs-table-container').innerHTML;
-                
-                // Timer State
-                data['timer-start-time'] = startTime;
-                data['timer-running'] = !!timerInterval;
-                data['timer-elapsed-paused'] = elapsedWhenPaused;
-                
-                data['btn-proc-start'] = $('procedure-start-output').textContent;
-                data['btn-proc-end'] = $('procedure-end-output').textContent;
-                data['btn-awake'] = $('patient-awake-output').textContent;
-                data['dose-output'] = $('dose-output').innerHTML;
-                data['dose-visible'] = !$('dose-output').classList.contains('hidden');
-                
-                localStorage.setItem('sedation_v3_data', JSON.stringify(data));
-                generateEPRLog();
+                localStorage.setItem('sedation_v2_data', JSON.stringify(patientData));
             }
-
             function loadState() {
-                const saved = localStorage.getItem('sedation_v3_data');
-                if(!saved) return;
-                try {
-                    const data = JSON.parse(saved);
-                    // Inputs
-                    document.querySelectorAll('input, textarea, select').forEach(el => {
-                        if (el.type === 'checkbox') {
-                            if (data[el.id]) el.checked = true;
-                        } else if (el.type === 'radio') {
-                            if (data[el.name + ':' + el.value]) el.checked = true;
-                        } else if (el.id && data[el.id] !== undefined) {
-                            el.value = data[el.id];
-                        }
-                    });
-                    
-                    if(data['drug-html']) $('drug-table-container').innerHTML = data['drug-html'];
-                    if(data['obs-html']) $('obs-table-container').innerHTML = data['obs-html'];
-                    
-                    // Re-attach listeners to dynamic elements
-                    document.querySelectorAll('.remove-btn').forEach(btn => btn.onclick = (e) => { e.target.closest('div.flex, div.grid').remove(); saveState(); });
-                    document.querySelectorAll('.obs-input').forEach(inp => inp.oninput = saveState);
-
-                    // Restore Timer Logic
-                    elapsedWhenPaused = data['timer-elapsed-paused'] || 0;
-                    if(data['timer-running'] && data['timer-start-time']) {
-                         startTime = data['timer-start-time'];
-                         startTimerUI();
-                    } else if (elapsedWhenPaused > 0) {
-                         // Was paused, show the time
-                         updateTimerDisplay(elapsedWhenPaused);
-                         $('sticky-footer').classList.replace('translate-y-full', 'translate-y-0');
-                    }
-                    
-                    if(data['btn-proc-start']) $('procedure-start-output').textContent = data['btn-proc-start'];
-                    if(data['btn-proc-end']) $('procedure-end-output').textContent = data['btn-proc-end'];
-                    if(data['btn-awake']) $('patient-awake-output').textContent = data['btn-awake'];
-                    
-                    if(data['dose-output']) $('dose-output').innerHTML = data['dose-output'];
-                    if(data['dose-visible']) $('dose-output').classList.remove('hidden');
-                    
-                    generateEPRLog();
-                } catch(e) { console.error(e); }
+                const saved = localStorage.getItem('sedation_v2_data');
+                if(saved) {
+                    try {
+                        patientData = { ...patientData, ...JSON.parse(saved) };
+                        restoreUI();
+                        updateNotes();
+                    } catch(e) { console.error(e); }
+                }
             }
 
-            // --- LISTENERS FOR AUTO-SAVE ---
-            document.body.addEventListener('input', (e) => { if(e.target.matches('input, textarea')) saveState(); });
-            document.body.addEventListener('change', (e) => { if(e.target.matches('input, select')) saveState(); });
+            // --- UI RESTORE ---
+            function restoreUI() {
+                const p = patientData;
+                // PT
+                setVal('pt_age', p.pt.age);
+                setVal('pt_weight', p.pt.weight);
+                setCheck('pt_estWeight', p.pt.estWeight);
+                setVal('pt_allergies', p.pt.allergies);
+                setVal('pt_procedure', p.pt.procedure);
+                setVal('pt_indication', p.pt.indication);
+                setVal('pt_preAnalgesia', p.pt.preAnalgesia);
+                // Staff
+                setVal('st_sed', p.staff.sed);
+                setVal('st_grade', p.staff.grade);
+                setVal('st_doc', p.staff.doc);
+                setVal('st_nurse', p.staff.nurse);
+                // Assess
+                setRadio('ass_capacity', p.assess.capacity);
+                setRadio('ass_mallampati', p.assess.mallampati);
+                setRadio('ass_ulbt', p.assess.ulbt);
+                setRadio('ass_asa', p.assess.asa);
+                setVal('ass_lastFood', p.assess.lastFood);
+                setVal('ass_lastFluid', p.assess.lastFluid);
+                p.assess.predictors.forEach(v => checkVal('.pred-chk', v));
+                p.assess.risks.forEach(v => checkVal('.risk-chk', v));
+                // Plan
+                p.plan.soap.forEach(v => checkVal('.soap-chk', v));
+                p.plan.timeout.forEach(v => checkVal('.time-chk', v));
+                setVal('pv_hr', p.plan.preVitals.hr);
+                setVal('pv_bp', p.plan.preVitals.bp);
+                setVal('pv_spo2', p.plan.preVitals.spo2);
+                setVal('pv_rr', p.plan.preVitals.rr);
+                // Proc
+                setVal('general-notes', p.proc.notes);
+                if(p.proc.start) $('out-proc-start').textContent = p.proc.start;
+                if(p.proc.end) $('out-proc-end').textContent = p.proc.end;
+                if(p.proc.awake) $('out-awake').textContent = p.proc.awake;
+                renderDrugs();
+                renderObs();
+                // Agitated
+                setVal('ag_weight', p.agitated.weight);
+                if(p.agitated.weight) calcAgitated(p.agitated.weight);
+                // DC
+                setRadio('outcome', p.dc.outcome);
+                p.dc.criteria.forEach(v => checkVal('.dc-chk', v));
+                setVal('dc_signName', p.dc.signName);
+                setVal('dc_signTime', p.dc.signTime);
+                
+                // Timer
+                if(p.timer.running) startTimerUI();
+                else if(p.timer.pausedElapsed > 0) updateTimerDisplay(p.timer.pausedElapsed);
 
-            // --- DARK MODE ---
-            if(localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark');
-            $('dark-mode-toggle').onclick = () => {
-                document.documentElement.classList.toggle('dark');
-                localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
-            };
+                updateAirwayUI();
+            }
 
-            $('reset-btn').onclick = () => {
-                if(confirm("Clear all data and reset form?")) {
-                    localStorage.removeItem('sedation_v3_data');
-                    location.reload();
+            // --- BINDINGS ---
+            // Inputs
+            const bind = (id, cat, key) => $(id).addEventListener('input', e => { patientData[cat][key] = e.target.value; updateNotes(); saveState(); });
+            const bindChk = (id, cat, key) => $(id).addEventListener('change', e => { patientData[cat][key] = e.target.checked; updateNotes(); saveState(); });
+            const bindRadio = (name, cat, key) => document.querySelectorAll(`input[name="${name}"]`).forEach(r => r.addEventListener('change', e => { patientData[cat][key] = e.target.value; updateNotes(); saveState(); updateAirwayUI(); }));
+            const bindArr = (cls, cat, key) => document.querySelectorAll(cls).forEach(c => c.addEventListener('change', e => { 
+                if(e.target.checked) patientData[cat][key].push(e.target.value);
+                else patientData[cat][key] = patientData[cat][key].filter(x => x !== e.target.value);
+                updateNotes(); saveState(); updateAirwayUI();
+            }));
+
+            // Apply Bindings
+            bind('pt_age', 'pt', 'age'); bind('pt_weight', 'pt', 'weight'); bindChk('pt_estWeight', 'pt', 'estWeight');
+            bind('pt_allergies', 'pt', 'allergies'); bind('pt_procedure', 'pt', 'procedure'); bind('pt_indication', 'pt', 'indication'); bind('pt_preAnalgesia', 'pt', 'preAnalgesia');
+            bind('st_sed', 'staff', 'sed'); bind('st_grade', 'staff', 'grade'); bind('st_doc', 'staff', 'doc'); bind('st_nurse', 'staff', 'nurse');
+            bindRadio('ass_capacity', 'assess', 'capacity'); bindRadio('ass_mallampati', 'assess', 'mallampati'); bindRadio('ass_ulbt', 'assess', 'ulbt'); bindRadio('ass_asa', 'assess', 'asa');
+            bind('ass_lastFood', 'assess', 'lastFood'); bind('ass_lastFluid', 'assess', 'lastFluid');
+            bindArr('.pred-chk', 'assess', 'predictors'); bindArr('.risk-chk', 'assess', 'risks');
+            bindArr('.soap-chk', 'plan', 'soap'); bindArr('.time-chk', 'plan', 'timeout');
+            bind('pv_hr', 'plan', 'preVitals'); bind('pv_bp', 'plan', 'preVitals'); // Note: Nested obj needs specific handler if deep, simplified here:
+            ['hr','bp','spo2','rr'].forEach(k => $(`pv_${k}`).addEventListener('input', e => { patientData.plan.preVitals[k] = e.target.value; updateNotes(); saveState(); }));
+            
+            bind('general-notes', 'proc', 'notes');
+            bind('ag_weight', 'agitated', 'weight'); $('ag_weight').addEventListener('input', e => calcAgitated(e.target.value));
+            
+            bindRadio('outcome', 'dc', 'outcome'); bindArr('.dc-chk', 'dc', 'criteria');
+            bind('dc_signName', 'dc', 'signName'); bind('dc_signTime', 'dc', 'signTime');
+
+            // --- NOTE GENERATOR (THE CORE LOGIC) ---
+            function updateNotes() {
+                const p = patientData;
+                let h = `<strong>Procedural Sedation Record</strong><br>`;
+                
+                // Patient
+                h += `Patient: ${p.pt.age || '?'}yr | ${p.pt.weight || '?'}kg ${p.pt.estWeight?'(Est)':''} | ASA ${p.assess.asa || '-'}.<br>`;
+                if(p.pt.allergies) h += `<strong>ALLERGIES: ${p.pt.allergies}</strong><br>`;
+                h += `Procedure: ${p.pt.procedure} (${p.pt.indication}).<br>`;
+                h += `Staff: ${p.staff.sed} (Sed), ${p.staff.doc} (Proc), ${p.staff.nurse} (Nrs).<br>`;
+                
+                // Assessment
+                if(p.assess.mallampati || p.assess.ulbt || p.assess.predictors.length > 0) {
+                    h += `Airway: Mallampati ${p.assess.mallampati || '-'}, ULBT ${p.assess.ulbt || '-'}. `;
+                    if(p.assess.predictors.length) h += `Predictors: ${p.assess.predictors.join(', ')}. `;
+                    h += `<br>`;
                 }
-            };
+                if(p.assess.risks.length) h += `Risks Discussed: ${p.assess.risks.join(', ')}.<br>`;
+                h += `Fasting: Food ${p.assess.lastFood || '-'} | Fluid ${p.assess.lastFluid || '-'}.<br>`;
+                
+                // Plan
+                h += `Checks: SOAP-ME [${p.plan.soap.length}/5] | Time Out [${p.plan.timeout.length}/4].<br>`;
+                const pv = p.plan.preVitals;
+                if(pv.hr || pv.bp) h += `Pre-Vitals: HR${pv.hr} BP${pv.bp} SpO2${pv.spo2}% RR${pv.rr}.<br>`;
+                
+                // Procedure
+                h += `<br><strong>Procedure Log</strong><br>`;
+                if(p.proc.drugs.length > 0) {
+                    h += `Drugs:<br>`;
+                    p.proc.drugs.forEach(d => h += `- ${d.time}: ${d.name} ${d.dose}<br>`);
+                } else h += `No drugs recorded.<br>`;
+                
+                if(p.proc.obs.length > 0) {
+                    h += `Observations:<br>`;
+                    p.proc.obs.forEach(o => h += `- ${o.time}: HR${o.hr} BP${o.bp} SpO2${o.spo2}% RR${o.rr}<br>`);
+                }
+                
+                if(p.proc.start || p.proc.end) h += `Times: Start ${p.proc.start || '-'} | End ${p.proc.end || '-'} | Awake ${p.proc.awake || '-'}.<br>`;
+                if(p.proc.notes) h += `Notes: ${p.proc.notes}<br>`;
+                
+                // Outcome
+                h += `<br><strong>Discharge</strong><br>`;
+                h += `Outcome: ${p.dc.outcome}. `;
+                if(p.dc.criteria.length) h += `Criteria: ${p.dc.criteria.join(', ')}. `;
+                if(p.dc.signName) h += `Signed: ${p.dc.signName} @ ${p.dc.signTime}.`;
 
-            // --- TABS ---
-            $('btn-tab-procedural').onclick = () => {
-                $('tab-procedural').classList.remove('hidden');
-                $('tab-agitated').classList.add('hidden');
-                $('btn-tab-procedural').classList.add('border-blue-600', 'text-blue-800');
-                $('btn-tab-procedural').classList.remove('border-transparent', 'text-slate-500');
-                $('btn-tab-agitated').classList.remove('border-red-600', 'text-red-800');
-                $('btn-tab-agitated').classList.add('border-transparent', 'text-slate-500');
-            };
-            $('btn-tab-agitated').onclick = () => {
-                $('tab-agitated').classList.remove('hidden');
-                $('tab-procedural').classList.add('hidden');
-                $('btn-tab-agitated').classList.add('border-red-600', 'text-red-800');
-                $('btn-tab-agitated').classList.remove('border-transparent', 'text-slate-500');
-                $('btn-tab-procedural').classList.remove('border-blue-600', 'text-blue-800');
-                $('btn-tab-procedural').classList.add('border-transparent', 'text-slate-500');
-            };
+                $('epr-log-output').innerHTML = h;
+            }
 
-            // --- TRAFFIC LIGHTS ---
-            $('allergies').addEventListener('input', (e) => {
-                $('allergy-container').classList.toggle('bg-red-100', e.target.value.length > 0);
-                $('allergy-container').classList.toggle('border-red-300', e.target.value.length > 0);
-            });
-            const updateAirwayColor = () => {
-                const card = $('airway-card');
-                const m = findCheckedRadio('airway-mallampati');
-                const ulbt = findCheckedRadio('airway-ulbt');
-                const a = findCheckedRadio('asa-grade');
-                const risk = m === 'IV' || m === 'III' || ulbt === '3' || a === 'IV' || a === 'III' || isChecked('airway-mouth') || isChecked('airway-neck') || isChecked('airway-tmd') || isChecked('airway-bmi');
-                
-                card.className = "p-3 border rounded-lg mb-4 transition-colors duration-300 " + 
-                    (risk ? 'bg-orange-50 border-orange-300 dark:bg-orange-900/20 dark:border-orange-600' : 'bg-slate-50 border-slate-200 dark:bg-slate-700/30 dark:border-slate-600');
-            };
-            document.querySelectorAll('input[name="airway-mallampati"], input[name="airway-ulbt"], input[name="asa-grade"], .chk-input').forEach(el => el.addEventListener('change', updateAirwayColor));
+            // --- LOGIC HELPERS ---
+            function setVal(id, v) { if($(id)) $(id).value = v || ''; }
+            function setCheck(id, v) { if($(id)) $(id).checked = !!v; }
+            function setRadio(name, v) { const el = document.querySelector(`input[name="${name}"][value="${v}"]`); if(el) el.checked = true; }
+            function checkVal(cls, v) { const el = document.querySelector(`${cls}[value="${v}"]`); if(el) el.checked = true; }
+            
+            function updateAirwayUI() {
+                const m = patientData.assess.mallampati;
+                const ulbt = patientData.assess.ulbt;
+                const asa = patientData.assess.asa;
+                const preds = patientData.assess.predictors.length > 0;
+                const risk = (m==='III'||m==='IV'||ulbt==='3'||asa==='III'||asa==='IV'||preds);
+                $('airway-card').className = `p-3 border rounded-lg mb-4 transition-colors duration-300 ${risk ? 'bg-orange-50 border-orange-300 dark:bg-orange-900/20' : 'bg-slate-50 border-slate-200 dark:bg-slate-700/30'}`;
+            }
 
-            // --- CALCULATORS ---
-            $('calculate-doses-button').onclick = () => {
-                const w = parseFloat($('weight').value);
-                if(!w) return alert("Enter weight first");
-                const frail = isChecked('frail-elderly');
-                
-                const p_std_low = (0.5 * w).toFixed(0);
-                const p_std_high = (1.0 * w).toFixed(0);
-                const p_frail_low = (0.25 * w).toFixed(0); 
-                const p_frail_high = (0.5 * w).toFixed(0);
-                
-                const k_diss_low = (1.0 * w).toFixed(0);
-                const k_diss_high = (2.0 * w).toFixed(0); 
-                
-                const m_initial_low = 1; 
-                const m_initial_high = Math.min(2.0, 0.05 * w).toFixed(1); 
-                const f_initial_max_mcg = (0.5 * w).toFixed(0); 
-                
-                let p_output = frail 
-                    ? `<strong>Propofol (Frail):</strong> ${p_frail_low}-${p_frail_high} mg`
-                    : `<strong>Propofol (Adult):</strong> ${p_std_low}-${p_std_high} mg`;
-                
-                $('dose-output').innerHTML = `
-                    <p class="mb-1">${p_output}</p>
-                    <p class="mb-1"><strong>Ketamine:</strong> ${k_diss_low}-${k_diss_high} mg (Dissoc)</p>
-                    <p class="mb-1"><strong>Midazolam:</strong> ${m_initial_low}-${m_initial_high} mg</p>
-                    <p class="mb-1"><strong>Fentanyl:</strong> Max ${f_initial_max_mcg} mcg</p>
-                `;
-                $('dose-output').classList.remove('hidden');
-                saveState();
-            };
-
-            $('calc-agitated-btn').onclick = () => {
-                const w = parseFloat($('agitated-weight').value);
+            function calcAgitated(w) {
                 if(w > 0) {
                     $('val-ket-im').textContent = (w * 4).toFixed(0);
                     $('val-ket-iv').textContent = (w * 1).toFixed(0);
                     $('agitated-output').classList.remove('hidden');
+                } else $('agitated-output').classList.add('hidden');
+            }
+
+            // --- DRUGS & OBS ---
+            const renderDrugs = () => {
+                const c = $('drug-table-container'); c.innerHTML = '';
+                $('empty-drugs-msg').classList.toggle('hidden', patientData.proc.drugs.length > 0);
+                patientData.proc.drugs.forEach((d, idx) => {
+                    const div = document.createElement('div');
+                    div.className = 'flex justify-between items-center bg-blue-50 dark:bg-blue-900/20 p-2 rounded border border-blue-100 dark:border-blue-800 text-sm mb-1';
+                    div.innerHTML = `<div class="flex gap-3 items-center"><span class="font-mono text-xs text-blue-400">${d.time}</span><span class="font-bold text-blue-900 dark:text-blue-100">${d.name}</span><span class="font-black text-slate-800 dark:text-white">${d.dose}</span></div><button class="text-red-400 hover:text-red-600 font-bold px-2 remove-drug" data-idx="${idx}">×</button>`;
+                    c.appendChild(div);
+                });
+                document.querySelectorAll('.remove-drug').forEach(b => b.onclick = e => {
+                    patientData.proc.drugs.splice(e.target.dataset.idx, 1);
+                    renderDrugs(); updateNotes(); saveState();
+                });
+            };
+
+            const renderObs = () => {
+                const c = $('obs-table-container'); c.innerHTML = '';
+                patientData.proc.obs.forEach((o, idx) => {
+                    const div = document.createElement('div');
+                    div.className = 'grid grid-cols-6 gap-1 items-center bg-slate-50 dark:bg-slate-700/50 p-2 rounded border border-slate-200 dark:border-slate-600 text-xs mb-1';
+                    div.innerHTML = `
+                        <div class="col-span-1 font-mono font-bold text-slate-500">${o.time}</div>
+                        <input type="number" placeholder="HR" class="col-span-1 p-1 text-center font-bold rounded border dark:bg-slate-600 dark:border-slate-500 obs-inp" data-idx="${idx}" data-field="hr" value="${o.hr}">
+                        <input type="number" placeholder="BP" class="col-span-1 p-1 text-center font-bold rounded border dark:bg-slate-600 dark:border-slate-500 obs-inp" data-idx="${idx}" data-field="bp" value="${o.bp}">
+                        <input type="number" placeholder="SpO2" class="col-span-1 p-1 text-center font-bold rounded border dark:bg-slate-600 dark:border-slate-500 obs-inp" data-idx="${idx}" data-field="spo2" value="${o.spo2}">
+                        <input type="number" placeholder="RR" class="col-span-1 p-1 text-center font-bold rounded border dark:bg-slate-600 dark:border-slate-500 obs-inp" data-idx="${idx}" data-field="rr" value="${o.rr}">
+                        <div class="col-span-1 text-center"><button class="text-red-500 font-bold px-2 py-1 bg-red-50 rounded hover:bg-red-100 dark:bg-slate-800 remove-obs" data-idx="${idx}">×</button></div>
+                    `;
+                    c.appendChild(div);
+                });
+                document.querySelectorAll('.obs-inp').forEach(i => i.oninput = e => {
+                    patientData.proc.obs[e.target.dataset.idx][e.target.dataset.field] = e.target.value;
+                    updateNotes(); saveState();
+                });
+                document.querySelectorAll('.remove-obs').forEach(b => b.onclick = e => {
+                    patientData.proc.obs.splice(e.target.dataset.idx, 1);
+                    renderObs(); updateNotes(); saveState();
+                });
+            };
+
+            // Add Drug Logic
+            let selDrug = null;
+            $('footer-drug-btn').onclick = () => { $('drug-modal').classList.remove('hidden'); $('drug-modal').classList.add('flex'); };
+            $('close-drug-modal').onclick = () => $('drug-modal').classList.add('hidden');
+            document.querySelectorAll('.drug-select-btn').forEach(b => b.onclick = () => {
+                document.querySelectorAll('.drug-select-btn').forEach(x=>x.classList.remove('ring-4','ring-blue-400'));
+                b.classList.add('ring-4','ring-blue-400');
+                selDrug = b.dataset.drug;
+                $('quick-drug-dose').focus();
+            });
+            $('confirm-drug-btn').onclick = () => {
+                const dose = $('quick-drug-dose').value;
+                if(selDrug && dose) {
+                    patientData.proc.drugs.push({ time: getTime(), name: selDrug, dose: dose + (selDrug==='Fentanyl'?'mcg':'mg') });
+                    $('drug-modal').classList.add('hidden');
+                    $('quick-drug-dose').value = '';
+                    renderDrugs(); updateNotes(); saveState();
                 }
             };
 
-            // --- TIMER LOGIC (ROBUST) ---
-            function updateTimerDisplay(totalSeconds) {
-                const m = Math.floor(totalSeconds / 60).toString().padStart(2,'0');
-                const s = Math.floor(totalSeconds % 60).toString().padStart(2,'0');
-                $('timer-display').textContent = `${m}:${s}`;
-                $('footer-timer').textContent = `${m}:${s}`;
-            }
+            // Add Obs Logic
+            $('footer-obs-btn').onclick = () => {
+                patientData.proc.obs.push({ time: getTime(), hr:'', bp:'', spo2:'', rr:'' });
+                renderObs(); updateNotes(); saveState();
+            };
 
+            // --- TIMER ---
+            let timerInt = null;
+            const updateTimerDisplay = (s) => {
+                const m = Math.floor(s/60).toString().padStart(2,'0');
+                const sec = (s%60).toString().padStart(2,'0');
+                $('timer-display').textContent = `${m}:${sec}`;
+                $('footer-timer').textContent = `${m}:${sec}`;
+            };
             function startTimerUI() {
-                 timerInterval = setInterval(() => {
-                    const now = Date.now();
-                    const diff = Math.floor((now - startTime) / 1000) + elapsedWhenPaused;
-                    updateTimerDisplay(diff);
-                }, 1000);
                 $('sedation-timer-button').textContent = "STOP TIMER";
                 $('sedation-timer-button').classList.replace('bg-green-600', 'bg-red-600');
                 $('sedation-timer-button').classList.replace('border-green-800', 'border-red-800');
                 $('sticky-footer').classList.replace('translate-y-full', 'translate-y-0');
+                timerInt = setInterval(() => {
+                    const diff = Math.floor((Date.now() - patientData.timer.start)/1000) + patientData.timer.pausedElapsed;
+                    updateTimerDisplay(diff);
+                }, 1000);
             }
-
             $('sedation-timer-button').onclick = () => {
-                if(timerInterval) {
+                if(patientData.timer.running) {
                     // STOP
-                    clearInterval(timerInterval);
-                    timerInterval = null;
-                    const now = Date.now();
-                    elapsedWhenPaused += Math.floor((now - startTime) / 1000);
-                    startTime = null; // Reset current session start
-                    
+                    clearInterval(timerInt);
+                    patientData.timer.pausedElapsed += Math.floor((Date.now() - patientData.timer.start)/1000);
+                    patientData.timer.running = false;
                     $('sedation-timer-button').textContent = "RESUME TIMER";
                     $('sedation-timer-button').classList.replace('bg-red-600', 'bg-green-600');
                     $('sedation-timer-button').classList.replace('border-red-800', 'border-green-800');
                 } else {
                     // START
-                    if(elapsedWhenPaused === 0) {
-                        // First start
-                        toggleSection('section-1-content');
-                        toggleSection('section-2-content');
-                        toggleSection('section-3-content');
-                        addObsRow(); 
+                    patientData.timer.start = Date.now();
+                    patientData.timer.running = true;
+                    if(patientData.proc.drugs.length===0 && patientData.proc.obs.length===0) {
+                        // First start logic: Open accordions
+                        ['section-1-content','section-2-content','section-3-content'].forEach(id => {
+                            $(id).style.maxHeight = $(id).scrollHeight + "px"; $(id).classList.remove('opacity-50');
+                        });
+                        patientData.proc.obs.push({ time: getTime(), hr:'', bp:'', spo2:'', rr:'' });
+                        renderObs();
                     }
-                    startTime = Date.now();
                     startTimerUI();
                 }
                 saveState();
             };
 
-            // Timestamp Buttons
-            ['procedure-start', 'procedure-end', 'patient-awake'].forEach(key => {
-                $(`${key}-button`).onclick = function() {
-                    $(`${key}-output`).textContent = new Date().toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
-                    saveState();
-                }
+            // Timestamp buttons
+            ['btn-proc-start','btn-proc-end','btn-awake'].forEach(id => $(id).onclick = () => {
+                const k = id.replace('btn-proc-','').replace('btn-','');
+                patientData.proc[k] = getTime();
+                $(`out-${id.replace('btn-','')}`).textContent = patientData.proc[k];
+                updateNotes(); saveState();
             });
 
-            // --- ADDING ROWS ---
-            function addObsRow() {
-                const tmpl = $('obs-row-template').content.cloneNode(true);
-                const now = new Date().toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
-                tmpl.querySelector('.row-time').textContent = now;
-                tmpl.querySelector('.remove-btn').onclick = (e) => { e.target.closest('.grid').remove(); saveState(); };
-                tmpl.querySelectorAll('input').forEach(i => i.oninput = saveState);
-                $('obs-table-container').prepend(tmpl);
-                saveState();
-            }
-            $('footer-obs-btn').onclick = addObsRow;
-
-            // Drug Modal
-            let selectedDrug = null;
-            $('footer-drug-btn').onclick = () => { $('drug-modal').classList.remove('hidden'); $('drug-modal').classList.add('flex'); };
-            $('close-drug-modal').onclick = () => $('drug-modal').classList.add('hidden');
+            // Utils
+            window.setNow = (id) => { $(id).value = getTime(); $(id).dispatchEvent(new Event('input')); };
+            window.toggleSection = (id) => {
+                const el = $(id);
+                if(el.style.maxHeight){ el.style.maxHeight=null; el.classList.add('opacity-50'); }
+                else { el.style.maxHeight=el.scrollHeight+"px"; el.classList.remove('opacity-50'); }
+            };
+            window.scrollToSection = (id) => {
+                const el = $(id);
+                if(el.classList.contains('transition-height')) { el.style.maxHeight=el.scrollHeight+"px"; el.classList.remove('opacity-50'); el.previousElementSibling.scrollIntoView({behavior:'smooth'}); }
+                else el.scrollIntoView({behavior:'smooth', block:'center'});
+            };
             
-            document.querySelectorAll('.drug-select-btn').forEach(btn => {
-                btn.onclick = () => {
-                    document.querySelectorAll('.drug-select-btn').forEach(b => b.classList.remove('ring-4', 'ring-blue-400'));
-                    btn.classList.add('ring-4', 'ring-blue-400');
-                    selectedDrug = btn.dataset.drug;
-                    $('quick-drug-dose').focus();
+            // --- UPDATED COPY FUNCTION ---
+            $('copy-log-button').onclick = async () => {
+                const el = $('epr-log-output');
+                try {
+                    const htmlBlob = new Blob([el.innerHTML], { type: 'text/html' });
+                    const textBlob = new Blob([el.innerText], { type: 'text/plain' });
+                    await navigator.clipboard.write([
+                        new ClipboardItem({ 
+                            'text/html': htmlBlob, 
+                            'text/plain': textBlob 
+                        })
+                    ]);
+                    const b = $('copy-log-button'); const t = b.innerText; b.innerText="✅ COPIED!"; b.classList.replace('bg-blue-600','bg-green-600');
+                    setTimeout(()=>{ b.innerText=t; b.classList.replace('bg-green-600','bg-blue-600'); }, 2000);
+                } catch (err) {
+                    alert('Copy failed. Please manually select the text.');
                 }
-            });
-
-            $('confirm-drug-btn').onclick = () => {
-                const dose = $('quick-drug-dose').value;
-                if(!selectedDrug || !dose) return;
-                const tmpl = $('drug-row-template').content.cloneNode(true);
-                tmpl.querySelector('.row-time').textContent = new Date().toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
-                tmpl.querySelector('.row-drug').textContent = selectedDrug;
-                tmpl.querySelector('.row-dose').textContent = dose + 'mg';
-                tmpl.querySelector('.remove-btn').onclick = (e) => { e.target.closest('div.flex').remove(); saveState(); };
-                $('drug-table-container').appendChild(tmpl);
-                $('empty-drugs-msg').classList.add('hidden');
-                $('drug-modal').classList.add('hidden');
-                $('quick-drug-dose').value = '';
-                document.querySelectorAll('.drug-select-btn').forEach(b => b.classList.remove('ring-4', 'ring-blue-400'));
-                selectedDrug = null;
-                saveState();
             };
 
-            // --- DISCHARGE LETTER ---
-            $('create-discharge-letter-btn').onclick = () => {
-                 const now = new Date();
-                 $('letter-date').textContent = now.toLocaleDateString();
-                 const proc = val('procedure') || 'Sedation';
-                 const indic = val('indication');
-                 $('letter-procedure').textContent = indic ? `${proc} for ${indic}` : proc;
-                 
-                 // Get drugs given for side effects logic
-                 let drugs = [];
-                 document.querySelectorAll('.row-drug').forEach(el => drugs.push(el.textContent));
-                 const uniqueDrugs = [...new Set(drugs)];
-                 $('letter-drugs-given').textContent = uniqueDrugs.join(', ') || 'Sedation Medication';
-                 
-                 // Time Calc
-                 const end = new Date(now.getTime() + 24*60*60*1000);
-                 $('letter-time-end').textContent = end.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-                 $('letter-date-end').textContent = end.toLocaleDateString();
-
-                 // Specific Side Effects Logic (Restored)
-                 const ul = $('letter-side-effects-list');
-                 ul.innerHTML = '';
-                 const addLi = (txt) => { const li = document.createElement('li'); li.textContent = txt; ul.appendChild(li); };
-                 
-                 addLi("You may feel tired, dizzy, or unsteady. Rest today.");
-                 addLi("Amnesia (forgetting the event) is normal.");
-                 
-                 const dStr = uniqueDrugs.join(' ').toLowerCase();
-                 if(dStr.includes('ketamine')) addLi("Ketamine can cause vivid dreams. Rest in a quiet, low-light room.");
-                 if(dStr.includes('propofol')) addLi("Propofol may leave you feeling groggy.");
-                 if(dStr.includes('fentanyl') || dStr.includes('morphine')) addLi("Strong painkillers can cause nausea or itching.");
-                 
-                 $('main-app-container').classList.add('hidden');
-                 $('discharge-letter-view').classList.remove('hidden');
-                 window.scrollTo(0,0);
-            };
-
-            // --- EPR LOG GENERATOR (FULL) ---
-            function generateEPRLog() {
-                let log = `<strong>PROCEDURAL SEDATION RECORD</strong><br>`;
-                log += `Procedure: ${val('procedure')} | Indication: ${val('indication')}<br>`;
-                log += `Staff: ${val('sedationist')} (Sed), ${val('sedationist-grade')}<br>`;
-                log += `Patient: ${val('age')}yrs | ${val('weight')}kg ${isChecked('weight-estimated')?'(Est)':''} | ASA ${findCheckedRadio('asa-grade')}<br>`;
-                log += `Allergies: ${val('allergies') || 'NKDA'} | Fasting: Food ${val('last-food')} Fluid ${val('last-fluid')}<br>`;
-                
-                // Risk/Airway
-                const mall = findCheckedRadio('airway-mallampati');
-                const ulbt = findCheckedRadio('airway-ulbt');
-                const risks = [];
-                if(isChecked('risk-nausea')) risks.push('Nausea');
-                if(isChecked('risk-resp-depress')) risks.push('Hypoxia');
-                if(isChecked('risk-laryngospasm')) risks.push('Laryngospasm');
-                if(isChecked('risk-aspiration')) risks.push('Aspiration');
-                if(isChecked('risk-allergy')) risks.push('Anaphylaxis');
-                
-                let airwayIssues = [];
-                if(mall === 'III' || mall === 'IV') airwayIssues.push(`Mallampati ${mall}`);
-                if(ulbt === '3') airwayIssues.push('ULBT 3');
-                if(isChecked('airway-mouth')) airwayIssues.push('Mouth<3cm');
-                if(isChecked('airway-neck')) airwayIssues.push('Neck Immobile');
-                
-                if(airwayIssues.length) log += `<strong>AIRWAY ALERT: ${airwayIssues.join(', ')}</strong><br>`;
-                if(risks.length) log += `Risks Discussed: ${risks.join(', ')}<br>`;
-                
-                // Drugs
-                const drugs = [];
-                document.querySelectorAll('.row-drug').forEach((el, i) => {
-                    const dose = document.querySelectorAll('.row-dose')[i].textContent;
-                    const time = document.querySelectorAll('.row-time')[i].textContent;
-                    drugs.push(`${time} ${el.textContent} ${dose}`);
-                });
-                if(drugs.length) log += `<br><strong>Drugs:</strong><br>${drugs.join('<br>')}<br>`;
-                
-                // Vitals
-                const vitals = [];
-                document.querySelectorAll('.obs-input').forEach((el, i) => {
-                    if(i % 4 === 0 && el.value) { // HR is index 0, 4, 8...
-                        const row = el.closest('.grid');
-                        const t = row.querySelector('.row-time').textContent;
-                        const hr = el.value; 
-                        const bp = row.querySelectorAll('.obs-input')[1].value;
-                        const sp = row.querySelectorAll('.obs-input')[2].value;
-                        const rr = row.querySelectorAll('.obs-input')[3].value;
-                        vitals.push(`${t}: HR${hr} BP${bp} SaO2${sp}% RR${rr}`);
-                    }
-                });
-                if(vitals.length) log += `<br><strong>Vitals:</strong><br>${vitals.join('<br>')}<br>`;
-                
-                // Discharge
-                const dc = [];
-                if(isChecked('dc-vitals')) dc.push('Vitals OK');
-                if(isChecked('dc-aao')) dc.push('A&O');
-                if(isChecked('dc-home')) dc.push('Escort present');
-                
-                log += `<br>Outcome: ${findCheckedRadio('outcome-proc')}<br>`;
-                if(dc.length) log += `DC Criteria: ${dc.join(', ')}<br>`;
-                log += `Signed: ${val('signoff-name')} @ ${val('signoff-time')}`;
-                
-                $('epr-log-output').innerHTML = log;
-            }
+            $('reset-btn').onclick = () => { if(confirm('Reset all data?')) { localStorage.removeItem('sedation_v2_data'); location.reload(); }};
             
-            // Start Tabs & Accordions
+            // Tab Logic
+            $('btn-tab-procedural').onclick = () => { $('tab-procedural').classList.remove('hidden'); $('tab-agitated').classList.add('hidden'); $('btn-tab-procedural').classList.add('border-blue-600','text-blue-800'); $('btn-tab-procedural').classList.remove('border-transparent','text-slate-500'); $('btn-tab-agitated').classList.remove('border-red-600','text-red-800'); $('btn-tab-agitated').classList.add('border-transparent','text-slate-500'); };
+            $('btn-tab-agitated').onclick = () => { $('tab-agitated').classList.remove('hidden'); $('tab-procedural').classList.add('hidden'); $('btn-tab-agitated').classList.add('border-red-600','text-red-800'); $('btn-tab-agitated').classList.remove('border-transparent','text-slate-500'); $('btn-tab-procedural').classList.remove('border-blue-600','text-blue-800'); $('btn-tab-procedural').classList.add('border-transparent','text-slate-500'); };
+
+            // Dark Mode Toggle
+            const toggleDark = $('dark-mode-toggle');
+            const htmlEl = document.documentElement;
+            if(localStorage.getItem('dark-mode') === 'true') htmlEl.classList.add('dark');
+            toggleDark.onclick = () => {
+                htmlEl.classList.toggle('dark');
+                localStorage.setItem('dark-mode', htmlEl.classList.contains('dark'));
+            };
+
             loadState();
-            ['section-1-content', 'section-2-content', 'section-3-content'].forEach(id => {
-               const el = $(id); el.style.maxHeight = el.scrollHeight + "px";
-            });
-            $('header-print-btn').onclick = () => window.print();
-            $('header-print-letter-btn').onclick = $('create-discharge-letter-btn').onclick;
-            $('copy-log-button').onclick = () => {
-                navigator.clipboard.writeText($('epr-log-output').innerText);
-                const btn = $('copy-log-button');
-                const orig = btn.innerText;
-                btn.innerText = "COPIED!";
-                setTimeout(()=>btn.innerText = orig, 1000);
-            };
         });
     </script>
 </body>
