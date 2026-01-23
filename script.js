@@ -400,8 +400,9 @@ document.addEventListener('DOMContentLoaded', () => {
     $('print-button').onclick = () => window.print();
     $('header-print-btn').onclick = () => window.print();
     
+    // Updated CLEAR FORM Button Logic
     $('clear-form-button').onclick = () => {
-        if(confirm("Reset form? This will clear all data.")) {
+        if(confirm("⚠️ ARE YOU SURE?\n\nThis will permanently delete all entered data and reset the form.")) {
             localStorage.removeItem('sedation_record_data');
             location.reload();
         }
