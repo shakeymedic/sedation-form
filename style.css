@@ -2,9 +2,12 @@
 body { font-family: 'Inter', sans-serif; }
 
 /* Custom Scrollbar */
-::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar { width: 8px; height: 4px; }
 ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
 ::-webkit-scrollbar-thumb { background: #64748b; border-radius: 4px; }
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
 html { scroll-behavior: smooth; }
 
 /* Inputs & Controls */
@@ -25,6 +28,20 @@ input:focus, textarea:focus, select:focus { border-color: #2563eb; ring: 2px; bo
     overflow-y: auto;
     white-space: pre-wrap; 
 }
+
+/* Nav Pills */
+.nav-pill {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    border-radius: 9999px;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+    background-color: white;
+    white-space: nowrap;
+}
+.nav-pill:active { transform: scale(0.95); }
 
 /* Buttons */
 .std-btn { 
