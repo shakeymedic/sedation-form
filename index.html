@@ -11,41 +11,49 @@
 <body class="bg-slate-100 text-slate-900 antialiased pb-10">
 
     <header class="bg-white shadow-sm sticky top-0 z-50 border-b border-slate-300 no-print">
-        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="flex items-center gap-4">
-                <img src="https://iili.io/KGQOvkl.md.png" alt="Logo" class="h-16 md:h-20 w-auto object-contain" onerror="this.style.display='none'">
+        
+        <div class="container mx-auto px-4 py-2 flex justify-between items-center border-b border-slate-100">
+            
+            <div class="flex items-center gap-3">
+                <img src="https://iili.io/KGQOvkl.md.png" alt="Logo" class="h-10 w-auto object-contain hidden md:block" onerror="this.style.display='none'">
                 <div>
-                    <h1 class="text-xl md:text-2xl font-black text-slate-900 leading-tight">Sedation Record <span class="text-xs font-normal text-slate-500 bg-slate-100 px-2 py-0.5 rounded border ml-2">RCEM 2022</span></h1>
-                    <p class="text-xs text-green-600 font-bold flex items-center gap-1">
-                        <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> Auto-save enabled
-                    </p>
+                    <h1 class="text-lg md:text-xl font-black text-slate-900 leading-none">Sedation Record</h1>
+                    <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">RCEM Best Practice 2022</p>
                 </div>
             </div>
+
             <div class="flex items-center gap-2">
-                 <a href="https://drive.google.com/file/d/1nI7EvvR_6Pg1l_L7c0Z5PevoseCy7Qia/view?usp=sharing" target="_blank" class="hidden sm:inline-flex items-center gap-2 px-3 py-1 text-xs font-bold text-blue-700 bg-blue-50 rounded border border-blue-200 hover:bg-blue-100 transition">
-                    Paper Form
-                </a>
-                <button id="header-print-letter-btn" class="hidden sm:block px-4 py-2 bg-purple-600 text-white text-xs font-bold rounded hover:bg-purple-700 transition border-2 border-purple-800">
-                    DISCHARGE LETTER
+                <p class="hidden lg:flex text-xs text-green-600 font-bold items-center gap-1 mr-2">
+                    <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> Saved
+                </p>
+
+                <button id="clear-form-button" class="px-3 py-1.5 bg-red-600 text-white hover:bg-red-700 border border-red-800 rounded text-xs font-bold transition shadow-sm flex items-center gap-1 mr-2">
+                    <span>🗑</span> Clear Form
                 </button>
-                <button id="header-print-btn" class="px-4 py-2 bg-slate-800 text-white text-xs font-bold rounded hover:bg-slate-700 transition border-2 border-slate-900">
-                    PRINT RECORD
+
+                <button id="header-print-letter-btn" class="hidden sm:inline-block px-3 py-1.5 bg-purple-50 text-purple-700 text-xs font-bold rounded hover:bg-purple-100 transition border border-purple-200">
+                    Discharge Letter
                 </button>
+                <button id="header-print-btn" class="px-3 py-1.5 bg-slate-800 text-white text-xs font-bold rounded hover:bg-slate-700 transition border border-slate-900">
+                    Print
+                </button>
+            </div>
+        </div>
+
+        <div class="bg-slate-50/80 backdrop-blur">
+            <div class="container mx-auto px-4 py-1.5 flex items-center gap-1 overflow-x-auto hide-scrollbar">
+                <span class="text-[10px] font-bold uppercase text-slate-400 mr-2 whitespace-nowrap">Jump to:</span>
+                
+                <a href="#sec-patient" class="nav-pill border-blue-200 text-blue-700 hover:bg-blue-50">Patient</a>
+                <a href="#sec-assessment" class="nav-pill border-orange-200 text-orange-700 hover:bg-orange-50">Assessment</a>
+                <a href="#sec-plan" class="nav-pill border-green-200 text-green-700 hover:bg-green-50">Plan</a>
+                <a href="#sec-intra" class="nav-pill border-slate-300 text-slate-800 hover:bg-slate-200">Intra-Sedation</a>
+                <a href="#sec-outcome" class="nav-pill border-purple-200 text-purple-700 hover:bg-purple-50">Outcome</a>
             </div>
         </div>
     </header>
 
     <main id="main-app-container" class="container mx-auto px-4 py-6"> 
-        
-        <div class="no-print mb-6 flex flex-wrap gap-2 sticky top-24 z-40 bg-slate-100/95 backdrop-blur py-2 border-b border-slate-200">
-            <span class="text-xs font-bold uppercase text-slate-500 self-center mr-2">Jump to:</span>
-            <a href="#sec-patient" class="px-3 py-1 bg-white border border-slate-300 rounded text-xs font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300 transition">Patient</a>
-            <a href="#sec-assessment" class="px-3 py-1 bg-white border border-slate-300 rounded text-xs font-bold text-slate-700 hover:bg-orange-50 hover:text-orange-700 hover:border-orange-300 transition">Assessment</a>
-            <a href="#sec-plan" class="px-3 py-1 bg-white border border-slate-300 rounded text-xs font-bold text-slate-700 hover:bg-green-50 hover:text-green-700 hover:border-green-300 transition">Plan</a>
-            <a href="#sec-intra" class="px-3 py-1 bg-white border border-slate-300 rounded text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-slate-800 hover:border-slate-400 transition">Intra-Sedation</a>
-            <a href="#sec-outcome" class="px-3 py-1 bg-white border border-slate-300 rounded text-xs font-bold text-slate-700 hover:bg-purple-50 hover:text-purple-700 hover:border-purple-300 transition">Outcome</a>
-        </div>
-
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
             <div class="lg:col-span-8 flex flex-col gap-6">
@@ -59,7 +67,7 @@
                     
                     <div class="flex flex-col gap-6">
 
-                        <div id="sec-patient" class="section-card border-l-[8px] border-l-blue-600">
+                        <div id="sec-patient" class="section-card border-l-[8px] border-l-blue-600 scroll-mt-32"> 
                             <div class="section-title text-blue-800">1. Patient & Procedure</div>
                             
                             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -124,7 +132,7 @@
                             </div>
                         </div>
 
-                        <div id="sec-assessment" class="section-card border-l-[8px] border-l-orange-500">
+                        <div id="sec-assessment" class="section-card border-l-[8px] border-l-orange-500 scroll-mt-32">
                             <div class="section-title text-orange-800">2. Pre-Sedation Assessment</div>
                             
                             <div class="flex flex-col gap-4">
@@ -276,7 +284,7 @@
                             </div>
                         </div>
 
-                        <div id="sec-plan" class="section-card border-l-[8px] border-l-green-500">
+                        <div id="sec-plan" class="section-card border-l-[8px] border-l-green-500 scroll-mt-32">
                             <div class="section-title text-green-800">3. Plan & Preparation</div>
                             
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -337,7 +345,7 @@
                             </div>
                         </div>
 
-                        <div id="sec-intra" class="section-card border-l-[8px] border-l-slate-800 page-break">
+                        <div id="sec-intra" class="section-card border-l-[8px] border-l-slate-800 page-break scroll-mt-32">
                             <div class="section-title text-slate-800">
                                 4. Intra-Sedation Record
                                 <button type="button" id="complications-guide-button" class="text-[10px] bg-slate-200 px-2 py-1 rounded hover:bg-slate-300 no-print">Guide</button>
@@ -445,7 +453,7 @@
                             </div>
                         </div>
 
-                        <div id="sec-outcome" class="section-card border-l-[8px] border-l-purple-600">
+                        <div id="sec-outcome" class="section-card border-l-[8px] border-l-purple-600 scroll-mt-32">
                             <div class="section-title text-purple-800">5. Outcome & Discharge</div>
                             
                             <div class="flex flex-col gap-4">
@@ -521,9 +529,6 @@
                          <button type="button" id="print-button" class="w-full std-btn bg-slate-800 text-white text-sm py-3 shadow-lg hover:bg-slate-900 border-2 border-slate-900">
                             Print Medical Record
                          </button>
-                         <p class="mt-4 text-xs text-slate-500">
-                             <a href="#" id="clear-form-button" class="text-red-500 underline font-bold">Reset Form</a>
-                         </p>
                     </div>
                 </div>
             </div>
