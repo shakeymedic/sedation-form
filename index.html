@@ -34,9 +34,7 @@
             overflow-y: auto;
             white-space: pre-wrap; 
         }
-        .rich-output strong { font-weight: 800; color: #0f172a; }
-        .rich-output u { text-decoration: underline; }
-        .rich-output em { color: #64748b; font-style: italic; }
+        /* NOTE: Inline styles are now used in JS generation for better copy-paste compatibility */
 
         /* Buttons */
         .std-btn { 
@@ -137,7 +135,6 @@
             body { background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             .no-print { display: none !important; }
             
-            /* Logic to switch between printing Form vs Letter */
             body.printing-letter header, 
             body.printing-letter main,
             body.printing-letter .print-header { 
@@ -160,7 +157,6 @@
                 display: none !important;
             }
 
-            /* Standard Form Print Styles */
             body:not(.printing-letter) .section-card { 
                 box-shadow: none !important; 
                 border: 1px solid #ccc !important;
@@ -221,10 +217,13 @@
                             <div class="section-title text-blue-800">1. Patient & Procedure</div>
                             
                             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                                <div class="md:col-span-2">
-                                    <label for="patient-name">Patient Name / Sticker</label>
-                                    <input type="text" id="patient-name" placeholder="Patient Name" class="font-bold border-slate-400 rounded-md">
+                                <div class="md:col-span-4 bg-yellow-50 p-2 border border-yellow-200 rounded mb-2 flex items-center gap-3">
+                                    <label class="flex items-center gap-2 font-bold text-slate-800 cursor-pointer text-sm">
+                                        <input type="checkbox" id="senior-aware" class="w-5 h-5 text-blue-600 rounded border-slate-400">
+                                        Senior in Department Aware?
+                                    </label>
                                 </div>
+
                                 <div>
                                     <label for="age">Age</label>
                                     <input type="number" id="age" placeholder="Yr" class="font-bold border-slate-400 rounded-md">
@@ -239,7 +238,7 @@
                                         </label>
                                     </div>
                                 </div>
-                                <div class="md:col-span-4">
+                                <div class="md:col-span-2">
                                     <label for="allergies">Allergies</label>
                                     <input type="text" id="allergies" placeholder="Reaction details..." class="text-red-700 font-bold border-slate-400 rounded-md">
                                 </div>
@@ -391,14 +390,26 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="sub-card border-slate-300 mt-0">
+
+                                <div class="sub-card border-slate-300 mt-0 relative">
                                     <div class="flex justify-between items-center mb-2">
-                                        <label class="mb-0">ASA Grade</label>
+                                        <label class="mb-0 flex items-center gap-4">
+                                            ASA Grade
+                                            <span class="flex items-center gap-1 cursor-pointer ml-4">
+                                                <input type="checkbox" id="asa-emergency" class="w-4 h-4 text-red-600 rounded border-red-400 focus:ring-red-500">
+                                                <span class="text-xs font-bold text-red-600">Emergency (E)</span>
+                                            </span>
+                                        </label>
                                         <button type="button" id="asa-guide-button" class="text-[10px] bg-slate-200 px-2 rounded font-bold hover:bg-slate-300 no-print">?</button>
                                     </div>
                                     <div id="asa-guide-content" class="hidden text-xs text-slate-600 mb-2 p-2 bg-slate-100 rounded border border-slate-300">
                                         I:Healthy, II:Mild, III:Severe, IV:Threat to life
                                     </div>
+                                    
+                                    <div id="asa-high-alert" class="hidden bg-red-100 border-l-4 border-red-600 text-red-800 p-3 mb-3 text-sm font-bold shadow-sm">
+                                        ⚠️ CAUTION: ASA Grade III or higher requires careful consideration as to whether it is appropriate to be done in ED.
+                                    </div>
+
                                     <div class="flex justify-between gap-1">
                                         <label class="cursor-pointer text-center flex-1"><input type="radio" name="asa-grade" value="I" class="sr-only peer"><div class="py-2 border-2 border-slate-300 rounded-md peer-checked:bg-blue-600 peer-checked:text-white peer-checked:border-blue-700 text-xs font-bold transition hover:bg-slate-50">I</div></label>
                                         <label class="cursor-pointer text-center flex-1"><input type="radio" name="asa-grade" value="II" class="sr-only peer"><div class="py-2 border-2 border-slate-300 rounded-md peer-checked:bg-blue-600 peer-checked:text-white peer-checked:border-blue-700 text-xs font-bold transition hover:bg-slate-50">II</div></label>
@@ -577,9 +588,14 @@
                                 </div>
                             </div>
                             
+                            <div class="mt-4 bg-red-50 border border-red-200 p-3 rounded-lg">
+                                <label class="text-red-900">Complications & Interventions</label>
+                                <textarea id="complications-notes" rows="2" placeholder="Describe any adverse events, what happened, and what was done..." class="w-full p-2 border border-red-300 rounded-md text-sm font-medium bg-white"></textarea>
+                            </div>
+
                             <div class="mt-4">
-                                <label>Notes / Adverse Events <span class="text-xs font-normal text-slate-500">(Consider TROOPS Intermediate/Sentinel reporting)</span></label>
-                                <textarea id="general-notes" rows="5" class="w-full p-2 border border-slate-400 rounded-md text-sm font-medium"></textarea>
+                                <label>General Notes <span class="text-xs font-normal text-slate-500">(Consider TROOPS Intermediate/Sentinel reporting)</span></label>
+                                <textarea id="general-notes" rows="4" class="w-full p-2 border border-slate-400 rounded-md text-sm font-medium"></textarea>
                             </div>
                         </div>
 
@@ -854,6 +870,7 @@
                     }
 
                     toggleCapacity();
+                    checkAsaAlert(); // Check on load
                     generateEPRLog();
                 } catch (e) { console.error("Load Error", e); }
             }
@@ -883,7 +900,23 @@
             };
             document.getElementsByName('capacity').forEach(r => r.addEventListener('change', () => { toggleCapacity(); saveState(); }));
 
-            // --- EPR LOG GENERATOR (UPDATED FOR FULL GRANULARITY) ---
+            // --- ASA Alert Logic ---
+            function checkAsaAlert() {
+                const grade = findCheckedRadio('asa-grade');
+                const alertBox = $('asa-high-alert');
+                
+                if(grade === 'III' || grade === 'IV' || grade === 'V') {
+                    alertBox.classList.remove('hidden');
+                } else {
+                    alertBox.classList.add('hidden');
+                }
+                generateEPRLog();
+            }
+            document.getElementsByName('asa-grade').forEach(r => r.addEventListener('change', () => { checkAsaAlert(); saveState(); }));
+            $('asa-emergency').addEventListener('change', () => { generateEPRLog(); saveState(); });
+
+
+            // --- EPR LOG GENERATOR (UPDATED FOR RICH TEXT & SUMMARY) ---
             function generateEPRLog() {
                 if (!$('epr-log-output')) return; 
 
@@ -891,33 +924,54 @@
                     let log = '';
                     const date = new Date().toLocaleDateString('en-GB', {year:'numeric', month:'short', day:'2-digit'});
                     
-                    log += `<strong>PROCEDURAL SEDATION RECORD (${date})</strong><br>`;
+                    // --- 1. SHORT SUMMARY HEADER ---
+                    // Calculate totals
+                    let drugTotals = {};
+                    const drugRows = $('drug-table-body').querySelectorAll('tr');
+                    drugRows.forEach(row => {
+                         const cells = row.querySelectorAll('td');
+                         const name = cells[1].textContent.trim();
+                         const dose = parseFloat(cells[2].textContent) || 0;
+                         if(!drugTotals[name]) drugTotals[name] = 0;
+                         drugTotals[name] += dose;
+                    });
+                    
+                    let drugsSummary = Object.entries(drugTotals).map(([name, total]) => {
+                         let unit = (name.toLowerCase().includes('fentanyl')) ? 'mcg' : 'mg';
+                         return `${name} ${total}${unit}`;
+                    }).join(', ');
+                    
+                    if(!drugsSummary) drugsSummary = "None Recorded";
+
+                    log += `<span style="font-weight:bold; font-size:1.1em; color:#1e293b;">SUMMARY:</span> `;
+                    log += `${val('procedure') || 'Procedure'} for ${val('indication') || '...'}. `;
+                    log += `<span style="font-weight:bold">${findCheckedRadio('outcome-proc') || 'Outcome Pending'}</span>. `;
+                    log += `Total Drugs: <span style="font-weight:bold">${drugsSummary}</span><br><br>`;
+                    
+                    log += `<span style="font-weight:bold">PROCEDURAL SEDATION RECORD (${date})</span><br>`;
                     log += `----------------------------------------------------------<br>`;
                     
-                    log += `<strong>1. Staff & Patient</strong><br>`;
-                    log += `Patient: ${val('patient-name') || '...'}<br>`;
-                    
-                    // FIXED: Added Procedure and Indication
-                    log += `Procedure: <strong>${val('procedure') || 'Not specified'}</strong><br>`;
+                    log += `<span style="font-weight:bold">1. Staff & Patient</span><br>`;
+                    // Removed Patient Name from here as per sticker request, or keep generic placeholder if needed
+                    log += `Procedure: <span style="font-weight:bold">${val('procedure') || 'Not specified'}</span><br>`;
                     log += `Indication: ${val('indication') || 'Not specified'}<br>`;
+                    
+                    if(isChecked('senior-aware')) log += `<span style="font-weight:bold; color:#166534;">✓ Senior in Department Aware</span><br>`;
                     
                     log += `Sedationist: ${val('sedationist') || '...'} (${val('sedationist-grade') || 'Grade'})<br>`;
                     log += `Proc. Dr: ${val('procedure-doctor') || '...'} | Nurse: ${val('nurse') || '...'}<br>`;
                     
-                    // FIXED: Added Estimated Weight flag
                     const weightEst = isChecked('weight-estimated') ? '(Est)' : '';
                     log += `Weight: ${val('weight') || '--'} kg ${weightEst} | Age: ${val('age') || '--'} yrs<br>`;
                     
-                    // FIXED: Added Frail/Elderly Flag
-                    if(isChecked('frail-elderly')) log += `<em>Patient flagged as Frail / >65</em><br>`;
+                    if(isChecked('frail-elderly')) log += `<span style="font-style:italic">Patient flagged as Frail / >65</span><br>`;
 
-                    log += `Allergies: <strong>${val('allergies') || 'None Known'}</strong><br>`;
+                    log += `Allergies: <span style="font-weight:bold; color:#b91c1c;">${val('allergies') || 'None Known'}</span><br>`;
                     log += `Pre-Analgesia: ${val('pre-analgesia') || 'None'}<br>`;
                     log += `Fasting: Food (${val('last-food') || '--:--'}) | Fluid (${val('last-fluid') || '--:--'})<br><br>`;
 
-                    log += `<strong>2. Assessment & Consent</strong><br>`;
+                    log += `<span style="font-weight:bold">2. Assessment & Consent</span><br>`;
                     
-                    // -- Airway --
                     const mallampati = findCheckedRadio('airway-mallampati');
                     const ulbt = findCheckedRadio('airway-ulbt');
                     let airwayFlags = [];
@@ -930,16 +984,19 @@
                         log += `Airway: Mallampati ${mallampati || '-'} | ULBT ${ulbt || '-'} | Flags: ${airwayFlags.length ? airwayFlags.join(', ') : 'None'}<br>`;
                     }
 
-                    // -- ASA & Contraindications --
-                    log += `ASA Grade: ${findCheckedRadio('asa-grade') || '-'}<br>`;
+                    // -- ASA Grade with Emergency Modifier --
+                    let asa = findCheckedRadio('asa-grade') || '-';
+                    if (isChecked('asa-emergency') && asa !== '-') {
+                        asa += 'E'; // Append E
+                    }
+                    log += `ASA Grade: <span style="font-weight:bold">${asa}</span><br>`;
                     
                     let ci = [];
                     if(isChecked('ci-allergy')) ci.push('Allergy');
                     if(isChecked('ci-hemo')) ci.push('Haemodynamic Instability');
                     if(isChecked('ci-gcs')) ci.push('Compromised Airway/GCS');
-                    if(ci.length > 0) log += `<strong>CONTRAINDICATIONS NOTED: ${ci.join(', ')}</strong><br>`;
+                    if(ci.length > 0) log += `<span style="font-weight:bold; color:#b91c1c;">CONTRAINDICATIONS NOTED: ${ci.join(', ')}</span><br>`;
 
-                    // -- Risks & Consent --
                     log += `Capacity: ${findCheckedRadio('capacity') || 'Yes'}<br>`;
                     
                     let risks = [];
@@ -950,7 +1007,6 @@
                     if(isChecked('risk-laryngospasm')) risks.push('Laryngospasm');
                     if(isChecked('risk-aspiration')) risks.push('Aspiration');
                     if(isChecked('risk-allergy')) risks.push('Anaphylaxis');
-                    
                     if(isChecked('risk-failure')) risks.push('Proc Failure');
                     if(isChecked('risk-treatment')) risks.push('Further Tx/Admission');
                     if(isChecked('risk-emergence')) risks.push('Emergence Reaction');
@@ -964,13 +1020,11 @@
                     if(isChecked('consent-questions')) consentExtras.push('Questions Answered');
                     if(consentExtras.length > 0) log += `Consent Notes: ${consentExtras.join(', ')}<br>`;
 
-                    log += `<br><strong>3. Plan & Safety</strong><br>`;
+                    log += `<br><span style="font-weight:bold">3. Plan & Safety</span><br>`;
                     log += `Target: ${val('plan-target') || '...'} | Agent: ${val('plan-agent') || '...'}<br>`;
                     
-                    // FIXED: Added RR to Pre-vitals
                     log += `Pre-Vitals: HR ${val('pre-vital-hr') || '-'} | BP ${val('pre-vital-bp') || '-'} | SpO2 ${val('pre-vital-spo2') || '-'}% | RR ${val('pre-vital-rr') || '-'} <br>`;
                     
-                    // -- SOAP-ME Explicit List --
                     let soap = [];
                     if(isChecked('soap-s')) soap.push('Suction');
                     if(isChecked('soap-o')) soap.push('Oxygen/BVM');
@@ -981,7 +1035,6 @@
 
                     if(isChecked('plan-aagbi')) log += `Monitoring: AAGBI Standards + Waveform Capnography Confirmed<br>`;
 
-                    // -- Time Out Explicit List --
                     let timeOut = [];
                     if(isChecked('to-identity')) timeOut.push('Patient ID');
                     if(isChecked('to-role')) timeOut.push('Roles Assigned');
@@ -989,13 +1042,11 @@
                     if(isChecked('to-monitoring')) timeOut.push('Monitoring Active');
                     log += `Safety Time Out: ${timeOut.length ? timeOut.join(', ') : 'None Recorded'}<br>`;
                     
-                    log += `<br><strong>4. Intra-Procedure Log</strong><br>`;
-                    // FIXED: Added Awake time
+                    log += `<br><span style="font-weight:bold">4. Intra-Procedure Log</span><br>`;
                     log += `Proc Start: ${$('procedure-start-output')?.textContent || '--:--'} | End: ${$('procedure-end-output')?.textContent || '--:--'} | Awake: ${$('patient-awake-output')?.textContent || '--:--'}<br>`;
                     
-                    const drugRows = $('drug-table-body').querySelectorAll('tr');
                     if (drugRows.length > 0) {
-                        log += `<u>Drugs Given:</u><br>`;
+                        log += `<span style="text-decoration:underline">Drugs Given:</span><br>`;
                         drugRows.forEach(row => {
                             const cells = row.querySelectorAll('td');
                             const inputVal = cells[0].querySelector('input').value;
@@ -1005,12 +1056,12 @@
                             log += `- ${dTime}: ${drugName} ${drugDose} mg<br>`;
                         });
                     } else {
-                        log += `<em>No drugs recorded yet.</em><br>`;
+                        log += `<span style="font-style:italic">No drugs recorded yet.</span><br>`;
                     }
 
                     const obsRows = $('monitoring-log-body').querySelectorAll('tr');
                     if (obsRows.length > 0) {
-                        log += `<u>Observations:</u><br>`;
+                        log += `<span style="text-decoration:underline">Observations:</span><br>`;
                         obsRows.forEach(row => {
                             const cells = row.querySelectorAll('td');
                             const oTime = cells[0].querySelector('input').value;
@@ -1024,14 +1075,18 @@
                         });
                     }
                     
-                    if(val('general-notes')) log += `<br><strong>Notes:</strong> ${val('general-notes')}<br>`;
+                    // Complications Section
+                    if(val('complications-notes')) {
+                        log += `<br><span style="font-weight:bold; color:#b91c1c;">COMPLICATIONS & INTERVENTION:</span><br>${val('complications-notes')}<br>`;
+                    }
+
+                    if(val('general-notes')) log += `<br><span style="font-weight:bold">Notes:</span> ${val('general-notes')}<br>`;
                     log += `<br>`;
 
-                    log += `<strong>5. Outcome & Discharge</strong><br>`;
+                    log += `<span style="font-weight:bold">5. Outcome & Discharge</span><br>`;
                     log += `Outcome: ${findCheckedRadio('outcome-proc') || '...'}<br>`;
                     log += `Disposal: ${findCheckedRadio('disposal') || '...'}<br>`;
                     
-                    // -- Discharge Criteria Explicit List --
                     let dc = [];
                     if(isChecked('dc-vitals')) dc.push('Vitals Baseline');
                     if(isChecked('dc-aao')) dc.push('Alert/Orientated');
@@ -1041,7 +1096,6 @@
                     if(isChecked('dc-reversal-time')) dc.push('Reversal Wait OK');
                     log += `Discharge Checks: ${dc.length ? dc.join(', ') : 'None Checked'}<br>`;
 
-                    // -- Instructions Explicit List --
                     let di = [];
                     if(isChecked('di-drive')) di.push('No Driving');
                     if(isChecked('di-adult')) di.push('Accompanied');
@@ -1049,9 +1103,8 @@
                     if(isChecked('di-decisions')) di.push('No Legal Decisions');
                     if(di.length > 0) log += `Instructions Given: ${di.join(', ')}<br>`;
                     
-                    // FIXED: Added Sign off details
                     if(val('signoff-name') || val('signoff-gmc')) {
-                        log += `<br><strong>Signed Off By:</strong> ${val('signoff-name')} (GMC: ${val('signoff-gmc')}) @ ${val('signoff-time')}`;
+                        log += `<br><span style="font-weight:bold">Signed Off By:</span> ${val('signoff-name')} (GMC: ${val('signoff-gmc')}) @ ${val('signoff-time')}`;
                     }
                     
                     $('epr-log-output').innerHTML = log;
@@ -1062,14 +1115,12 @@
 
             // --- DISCHARGE LETTER LOGIC ---
             const showDischargeLetter = () => {
-                // Populate Basic Fields
                 const now = new Date();
                 const nowStr = now.toLocaleDateString('en-GB', {day:'numeric', month:'long', year:'numeric'});
                 $('letter-date').textContent = nowStr;
-                $('letter-patient-name').textContent = val('patient-name') || '______________________';
+                $('letter-patient-name').textContent = val('patient-name') || '______________________'; // Keeps blank line if no input
                 $('letter-procedure').textContent = val('procedure') || 'Procedure';
 
-                // --- 1. Drug Extraction & Side Effect Logic ---
                 const drugRows = document.querySelectorAll('#drug-table-body tr td:nth-child(2)');
                 let drugsSet = new Set();
                 drugRows.forEach(td => drugsSet.add(td.textContent.trim()));
@@ -1078,9 +1129,8 @@
                 const drugsString = drugsArray.length > 0 ? drugsArray.join(' & ') : "Sedation";
                 $('letter-drugs-given').textContent = drugsString;
 
-                // Build Side Effects List
                 const sideEffectsList = $('letter-side-effects-list');
-                sideEffectsList.innerHTML = ''; // Clear previous
+                sideEffectsList.innerHTML = ''; 
 
                 const addEffect = (text) => {
                     const li = document.createElement('li');
@@ -1088,11 +1138,9 @@
                     sideEffectsList.appendChild(li);
                 };
 
-                // Default Effects
                 addEffect("You may feel tired, dizzy, or unsteady on your feet. Take it easy and rest.");
                 addEffect("You may not remember much about the procedure (Amnesia). This is normal.");
 
-                // Specific Effects
                 const hasKetamine = drugsArray.some(d => d.toLowerCase().includes('ketamine'));
                 const hasOpioid = drugsArray.some(d => d.toLowerCase().includes('fentanyl') || d.toLowerCase().includes('morphine'));
                 
@@ -1107,8 +1155,6 @@
                 
                 addEffect("If your cannula site (where the needle was) becomes red, hot, or swollen, please seek medical advice.");
 
-
-                // --- 2. Time Calculation Logic ---
                 let sedTimeStr = $('procedure-end-output').textContent;
                 if (!sedTimeStr || sedTimeStr.trim() === '') sedTimeStr = val('signoff-time');
                 if (!sedTimeStr || sedTimeStr.trim() === '') sedTimeStr = now.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
@@ -1128,7 +1174,6 @@
                 $('letter-time-end').textContent = expiryDate.toLocaleTimeString('en-GB', timeOpts);
                 $('letter-date-end').textContent = expiryDate.toLocaleDateString('en-GB', dateOpts);
                 
-                // Show View
                 $('main-app-container').classList.add('hidden');
                 $('discharge-letter-view').classList.remove('hidden');
                 window.scrollTo(0, 0);
@@ -1148,7 +1193,6 @@
                 document.body.classList.remove('printing-letter');
             };
 
-            // --- Event Listeners ---
             $('print-button').onclick = () => window.print();
             $('header-print-btn').onclick = () => window.print();
             
