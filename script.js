@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- State ---
     let sedationInterval = null;
     let secondsElapsed = 0;
+    let timerStartTime = 0;
     
     // --- Persistence (Auto-Save) Logic ---
     function saveState() {
@@ -473,12 +474,24 @@ document.addEventListener('DOMContentLoaded', () => {
         if(secondsElapsed === 0) addObsRow(); 
         saveState();
         
+        timerStartTime = Date.now() - (secondsElapsed * 1000);
+        
         sedationInterval = setInterval(() => {
-            secondsElapsed++;
-            const h = new Date(secondsElapsed * 1000).toISOString().substr(11, 8);
-            $('timer-display').textContent = h;
-            if(secondsElapsed % 300 === 0) $('obs-toast').classList.remove('hidden');
-        }, 1000);
+            const now = Date.now();
+            const newSecondsElapsed = Math.floor((now - timerStartTime) / 1000);
+            
+            if (newSecondsElapsed > secondsElapsed) {
+                for (let s = secondsElapsed + 1; s <= newSecondsElapsed; s++) {
+                    if (s % 300 === 0) {
+                        $('obs-toast').classList.remove('hidden');
+                    }
+                }
+                
+                secondsElapsed = newSecondsElapsed;
+                const h = new Date(secondsElapsed * 1000).toISOString().substr(11, 8);
+                $('timer-display').textContent = h;
+            }
+        }, 500);
     }
 
     function stopTimer() {
