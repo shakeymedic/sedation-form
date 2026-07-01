@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Procedural Sedation Record (RCEM) - Rich Text</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="tailwind.bundle.css">
+    <link rel="stylesheet" href="fonts/inter.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="bg-slate-100 text-slate-900 antialiased pb-10">
@@ -15,7 +15,7 @@
         <div class="container mx-auto px-4 py-2 flex justify-between items-center border-b border-slate-100">
             
             <div class="flex items-center gap-3">
-                <img src="https://iili.io/KGQOvkl.md.png" alt="Logo" class="h-10 w-auto object-contain hidden md:block" onerror="this.style.display='none'">
+                <img src="images/logo.png" alt="Logo" class="h-10 w-auto object-contain hidden md:block" onerror="this.style.display='none'">
                 <div>
                     <h1 class="text-lg md:text-xl font-black text-slate-900 leading-none">Sedation Record</h1>
                     <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">RCEM Best Practice 2022</p>
@@ -76,6 +76,15 @@
                                         <input type="checkbox" id="senior-aware" class="w-5 h-5 text-blue-600 rounded border-slate-400">
                                         Senior in Department Aware?
                                     </label>
+                                </div>
+
+                                <div class="md:col-span-2">
+                                    <label for="patient-name">Patient Name <span class="text-slate-400 font-normal normal-case">(for discharge letter)</span></label>
+                                    <input type="text" id="patient-name" placeholder="Full name or leave blank" class="border-slate-400 rounded-md">
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label for="patient-dob">Date of Birth</label>
+                                    <input type="text" id="patient-dob" placeholder="DD/MM/YYYY" class="border-slate-400 rounded-md">
                                 </div>
 
                                 <div>
@@ -402,7 +411,7 @@
                                             <tr>
                                                 <th class="px-3 py-2 text-left text-[10px] font-bold text-slate-600 uppercase">Time</th>
                                                 <th class="px-3 py-2 text-left text-[10px] font-bold text-slate-600 uppercase">Drug</th>
-                                                <th class="px-3 py-2 text-left text-[10px] font-bold text-slate-600 uppercase">Dose (mg)</th>
+                                                <th class="px-3 py-2 text-left text-[10px] font-bold text-slate-600 uppercase w-24">Dose (mg)</th>
                                                 <th class="px-3 py-2 text-left text-[10px] font-bold text-slate-600 uppercase">Given By</th>
                                                 <th class="px-3 py-2 w-8 no-print"></th>
                                             </tr>
@@ -540,7 +549,7 @@
         <div class="no-print flex justify-between items-center mb-6 border-b pb-4">
             <h2 class="text-xl font-bold text-slate-700">Preview: Patient Discharge Letter</h2>
             <div class="flex gap-2">
-                <button id="close-letter-btn" class="px-4 py-2 border rounded hover:bg-slate-100">Back to Form</button>
+                <button id="close-letter-btn" class="px-4 py-2 border rounded hover:bg-slate-100">← Back to Form</button>
                 <button id="print-letter-btn" class="px-4 py-2 bg-blue-600 text-white font-bold rounded hover:bg-blue-700 shadow">🖨️ Print Letter</button>
             </div>
         </div>
@@ -559,6 +568,7 @@
 
             <div class="mb-4 text-sm">
                 <p class="mb-1"><strong>Patient Name:</strong> <span id="letter-patient-name" class="border-b border-dotted border-slate-400 px-2 min-w-[200px] inline-block font-mono"></span></p>
+                <p class="mb-1"><strong>Date of Birth:</strong> <span id="letter-dob" class="border-b border-dotted border-slate-400 px-2 min-w-[120px] inline-block font-mono"></span></p>
                 <p><strong>Procedure:</strong> <span id="letter-procedure"></span></p>
             </div>
 
@@ -615,6 +625,12 @@
                 <p>This advice sheet is based on RCEM Best Practice Guidelines (2022). If you have any non-urgent concerns, please contact your GP.</p>
                 <p class="mt-4">Clinician Signature: __________________________</p>
             </div>
+        </div>
+
+        <!-- Sticky bottom back button for when user scrolls the letter -->
+        <div class="no-print sticky bottom-0 bg-white border-t border-slate-200 p-3 flex justify-between items-center mt-4">
+            <button id="close-letter-btn-bottom" class="px-4 py-2 border rounded hover:bg-slate-100 text-sm font-bold">← Back to Form</button>
+            <button id="print-letter-btn-bottom" class="px-4 py-2 bg-blue-600 text-white font-bold rounded hover:bg-blue-700 shadow text-sm">🖨️ Print Letter</button>
         </div>
     </div>
 

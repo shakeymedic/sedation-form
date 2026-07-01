@@ -157,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
             log += `----------------------------------------------------------<br>`;
             
             log += `<span style="font-weight:bold">1. Staff & Patient</span><br>`;
-            // Removed Patient Name from here as per sticker request, or keep generic placeholder if needed
+            if(val('patient-name')) log += `Patient: <span style="font-weight:bold">${val('patient-name')}</span>${val('patient-dob') ? ` (DOB: ${val('patient-dob')})` : ''}<br>`;
             log += `Procedure: <span style="font-weight:bold">${val('procedure') || 'Not specified'}</span><br>`;
             log += `Indication: ${val('indication') || 'Not specified'}<br>`;
             
@@ -323,8 +323,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const now = new Date();
         const nowStr = now.toLocaleDateString('en-GB', {day:'numeric', month:'long', year:'numeric'});
         $('letter-date').textContent = nowStr;
-        $('letter-patient-name').textContent = val('patient-name') || '______________________'; // Keeps blank line if no input
-        $('letter-procedure').textContent = val('procedure') || 'Procedure';
+        $('letter-patient-name').textContent = val('patient-name') || '______________________';
+        if ($('letter-dob')) $('letter-dob').textContent = val('patient-dob') || '______________________';
+        $('letter-procedure').textContent = val('procedure') || '[Procedure not recorded]';
 
         const drugRows = document.querySelectorAll('#drug-table-body tr td:nth-child(2)');
         let drugsSet = new Set();
@@ -387,16 +388,21 @@ document.addEventListener('DOMContentLoaded', () => {
     $('create-discharge-letter-btn').onclick = showDischargeLetter;
     $('header-print-letter-btn').onclick = showDischargeLetter;
 
-    $('close-letter-btn').onclick = () => {
+    const closeLetter = () => {
         $('discharge-letter-view').classList.add('hidden');
         $('main-app-container').classList.remove('hidden');
+        window.scrollTo(0, 0);
     };
-
-    $('print-letter-btn').onclick = () => {
+    const printLetter = () => {
         document.body.classList.add('printing-letter');
         window.print();
         document.body.classList.remove('printing-letter');
     };
+
+    $('close-letter-btn').onclick = closeLetter;
+    $('close-letter-btn-bottom').onclick = closeLetter;
+    $('print-letter-btn').onclick = printLetter;
+    $('print-letter-btn-bottom').onclick = printLetter;
 
     $('print-button').onclick = () => window.print();
     $('header-print-btn').onclick = () => window.print();
