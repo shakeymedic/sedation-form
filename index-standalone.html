@@ -251,7 +251,7 @@ input[type="text"], input[type="number"], input[type="time"], select {
     </header>
 
     <main id="main-app-container" class="container mx-auto px-4 py-6"> 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6" style="align-items: start;">
 
             <div class="lg:col-span-8 flex flex-col gap-6">
 
@@ -718,8 +718,8 @@ input[type="text"], input[type="number"], input[type="time"], select {
                 </form>
             </div> 
 
-            <div class="lg:col-span-4 relative">
-                <div class="sticky top-24 h-fit no-print space-y-4">
+            <div class="lg:col-span-4 no-print" style="position: sticky; top: 0; align-self: start; height: 100vh; overflow-y: auto; padding-top: 0.5rem;">
+                <div class="space-y-4">
                     <div id="epr-log-container" class="bg-white p-4 rounded-xl shadow-lg border border-slate-300">
                         <div class="flex justify-between items-center mb-3">
                             <h2 class="text-sm font-bold text-slate-700 uppercase tracking-wide">EPR Quick Log</h2>
@@ -1269,9 +1269,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Updated CLEAR FORM Button Logic
     $('clear-form-button').onclick = () => {
-        if(confirm("⚠️ ARE YOU SURE?
-
-This will permanently delete all entered data and reset the form.")) {
+        if(confirm("⚠️ ARE YOU SURE?\n\nThis will permanently delete all entered data and reset the form.")) {
             localStorage.removeItem('sedation_record_data');
             location.reload();
         }
