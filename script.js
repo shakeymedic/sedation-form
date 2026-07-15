@@ -1,3 +1,19 @@
+// Safe storage: uses localStorage when available, falls back to in-memory
+const _storage = (() => {
+    const mem = {};
+    try {
+        localStorage.setItem('__test__', '1');
+        localStorage.removeItem('__test__');
+        return localStorage;
+    } catch(e) {
+        return {
+            getItem: k => mem[k] !== undefined ? mem[k] : null,
+            setItem: (k, v) => { mem[k] = String(v); },
+            removeItem: k => { delete mem[k]; }
+        };
+    }
+})();
+
 document.addEventListener('DOMContentLoaded', () => {
     const $ = (id) => document.getElementById(id);
     const val = (id) => $(id)?.value || '';
@@ -30,12 +46,12 @@ document.addEventListener('DOMContentLoaded', () => {
         data['btn-end-text'] = $('procedure-end-output').textContent;
         data['btn-awake-text'] = $('patient-awake-output').textContent;
         
-        localStorage.setItem('sedation_record_data', JSON.stringify(data));
+        _storage.setItem('sedation_record_data', JSON.stringify(data));
         generateEPRLog();
     }
 
     function loadState() {
-        const saved = localStorage.getItem('sedation_record_data');
+        const saved = _storage.getItem('sedation_record_data');
         if (!saved) { generateEPRLog(); return; } 
         
         try {
@@ -410,7 +426,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Updated CLEAR FORM Button Logic
     $('clear-form-button').onclick = () => {
         if(confirm("⚠️ ARE YOU SURE?\n\nThis will permanently delete all entered data and reset the form.")) {
-            localStorage.removeItem('sedation_record_data');
+            _storage.removeItem('sedation_record_data');
             location.reload();
         }
     };
