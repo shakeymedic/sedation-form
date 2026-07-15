@@ -54,9 +54,9 @@
     </header>
 
     <main id="main-app-container" class="container mx-auto px-4 py-6"> 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6" style="align-items: start;">
+        <div style="display:grid; grid-template-columns: 1fr 320px; gap: 1.25rem; align-items: start;">
 
-            <div class="lg:col-span-8 flex flex-col gap-6">
+            <div style="min-width:0; display:flex; flex-direction:column; gap:1.5rem;">
 
                 <div class="hidden print-header mb-6 text-center border-b-2 border-slate-800 pb-4">
                      <h1 class="text-3xl font-black text-slate-900">Procedural Sedation Record</h1>
@@ -521,7 +521,7 @@
                 </form>
             </div> 
 
-            <div class="lg:col-span-4 no-print" style="position: sticky; top: 0; align-self: start; height: 100vh; overflow-y: auto; padding-top: 0.5rem;">
+            <div class="no-print" style="position: sticky; top: 80px; align-self: start; max-height: calc(100vh - 90px); overflow-y: auto;">
                 <div class="space-y-4">
                     <div id="epr-log-container" class="bg-white p-4 rounded-xl shadow-lg border border-slate-300">
                         <div class="flex justify-between items-center mb-3">
